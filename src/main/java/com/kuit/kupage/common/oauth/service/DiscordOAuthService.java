@@ -87,11 +87,9 @@ public class DiscordOAuthService {
 
     private AuthTokenResponse processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         if (memberId != null){
-            // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
             log.debug("[processLoginOrSignup] 기존 회원 로그인 처리");
             return memberService.updateToken(memberId, response);
         }
-        // 신규 회원 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
         log.debug("[processLoginOrSignup] 신규 회원 회원가입 처리");
         return memberService.signup(response, userInfo);
     }
