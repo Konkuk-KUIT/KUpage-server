@@ -1,0 +1,85 @@
+package com.kuit.kupage.common.oauth.service;
+
+import com.kuit.kupage.common.auth.JwtTokenService;
+import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
+import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.common.oauth.dto.SignupResponse;
+import com.kuit.kupage.domain.member.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.RestClient;
+
+import java.util.Map;
+
+@Slf4j
+@Transactional
+@Service
+public class DiscordOAuthService {
+    private final RestClient restClient;
+    private final JwtTokenService jwtTokenService;
+    private final MemberService memberService;
+
+    @Value("${spring.security.oauth2.client.registration.discord.redirect-uri}")
+    private String REDIRECT_URI;
+
+    @Value("${spring.security.oauth2.client.registration.discord.client-id}")
+    private String CLIENT_ID;
+
+    @Value("${spring.security.oauth2.client.registration.discord.client-secret}")
+    private String CLIENT_SECRET;
+
+    public DiscordOAuthService(RestClient.Builder builder, JwtTokenService jwtTokenService, MemberService memberService) {
+        this.restClient = builder
+                .baseUrl("https://discord.com/api/v10")
+                .build();
+        this.jwtTokenService = jwtTokenService;
+        this.memberService = memberService;
+    }
+
+    public SignupResponse requestToken(String code) {
+        log.info("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
+        DiscordTokenResponse response = requestAccessToken(code);
+        log.info("[requestToken] 디스코드로부터 받은 access token = {}", response.toString());
+        memberService.updateOauthToken(response);
+        DiscordInfoResponse userInfo = requestUserInfo(response.getAccessToken());
+        // TODO. 해당 사용자가 기존 회원인지 신규 회원인지를 user.id를 통해 확인
+        // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
+        // 신규 회원 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
+
+        return jwtTokenService.generateTokens(userInfo);
+    }
+
+    private DiscordTokenResponse requestAccessToken(String code) {
+        log.info("[requestAccessToken] access token 요청");
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("client_id", CLIENT_ID);
+        body.add("client_secret", CLIENT_SECRET);
+        body.add("grant_type", "authorization_code");
+        body.add("code", code);
+        body.add("redirect_uri", REDIRECT_URI);
+
+        log.info("[requestAccessToken] 요청 body = {}", body.toString());
+
+        Map map = restClient.post()
+                .uri("/oauth2/token")
+                .headers(headers -> {
+                    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//                    headers.setBasicAuth(CLIENT_ID, CLIENT_SECRET);
+                })
+                .body(body)
+                .retrieve()
+                .toEntity(Map.class)
+                .getBody();
+        log.info("[requestAccessToken] 토큰 응답 = {}", map.toString());
+        return null;
+    }
+
+    private DiscordInfoResponse requestUserInfo(String accessToken) {
+        // TODO. access token을 가지고 디스코드 서버에 사용자 정보를 요청
+        return null;
+    }
+}
