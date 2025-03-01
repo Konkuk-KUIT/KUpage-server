@@ -20,6 +20,13 @@ public class Member {
 
     private String name;
 
+    private String discordId;
+
+    private String discordLoginId;
+
+    private String profileImage;
+
+
     @Embedded
     private DiscordToken discordToken;
 

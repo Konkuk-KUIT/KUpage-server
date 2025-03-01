@@ -1,7 +1,8 @@
 package com.kuit.kupage.domain.member.service;
 
-import com.kuit.kupage.common.oauth.dto.discordInfo.DiscordInfoResponse;
+import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,10 @@ public class MemberService {
     }
 
     public Long lookupMemberId(DiscordInfoResponse userInfo) {
-        // TODO. 해당 사용자가 기존 회원인지 신규 회원인지를 user.id를 통해 확인
-        return null;
+        String discordId = userInfo.getUserResponse().getId();
+        return memberRepository.findByDiscordId(discordId)
+                .map(Member::getId)
+                .orElse(null);
     }
 
     public Long signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {

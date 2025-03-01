@@ -1,7 +1,7 @@
 package com.kuit.kupage.common.oauth.service;
 
 import com.kuit.kupage.common.auth.JwtTokenService;
-import com.kuit.kupage.common.oauth.dto.discordInfo.DiscordInfoResponse;
+import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
@@ -39,7 +39,7 @@ public class DiscordOAuthService {
     }
 
     public AuthTokenResponse requestToken(String code) {
-        log.info("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
+        log.debug("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
         DiscordTokenResponse response = requestAccessToken(code);
         DiscordInfoResponse userInfo = requestUserInfo(response.getAccessToken());
         Long memberId = memberService.lookupMemberId(userInfo);
@@ -47,10 +47,8 @@ public class DiscordOAuthService {
     }
 
     private DiscordTokenResponse requestAccessToken(String code) {
-        log.info("[requestAccessToken] access token 요청");
+        log.debug("[requestAccessToken] access token 요청");
         LinkedMultiValueMap<String, String> body = createBody(code);
-        log.info("[requestAccessToken] 요청 body = {}", body.toString());
-
         DiscordTokenResponse response = restClient.post()
                 .uri("/oauth2/token")
                 .headers(headers -> headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -58,7 +56,7 @@ public class DiscordOAuthService {
                 .retrieve()
                 .toEntity(DiscordTokenResponse.class)
                 .getBody();
-        log.info("[requestAccessToken] 토큰 응답 = {}", response);
+        log.debug("[requestAccessToken] 토큰 응답 = {}", response);
         return response;
     }
 
@@ -73,7 +71,7 @@ public class DiscordOAuthService {
     }
 
     private DiscordInfoResponse requestUserInfo(String accessToken) {
-        log.info("[requestUserInfo] 사용자 정보 요청시 필요한 access token = {}", accessToken);
+        log.debug("[requestUserInfo] 사용자 정보 요청시 필요한 access token = {}", accessToken);
         DiscordInfoResponse response = restClient.get()
                 .uri("/oauth2/@me")
                 .headers(headers -> {
@@ -82,7 +80,7 @@ public class DiscordOAuthService {
                 .retrieve()
                 .toEntity(DiscordInfoResponse.class)
                 .getBody();
-        log.info("[requestUserInfo] 토큰 응답 = {}", response);
+        log.debug("[requestUserInfo] 사용자 정보 응답 = {}", response);
         return response;
     }
 
@@ -90,10 +88,12 @@ public class DiscordOAuthService {
     private AuthTokenResponse processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         if (memberId != null){
             // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
+            log.debug("[processLoginOrSignup] 기존 회원 로그인 처리");
             memberService.updateOauthToken(response);
             return jwtTokenService.generateTokens(memberId);
         }
         // 신규 회원 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
+        log.debug("[processLoginOrSignup] 신규 회원 회원가입 처리");
         Long newMemberId = memberService.signup(response, userInfo);
         return jwtTokenService.generateTokens(newMemberId);
     }
