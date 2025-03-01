@@ -1,5 +1,7 @@
 package com.kuit.kupage.domain.member;
 
+import com.kuit.kupage.common.auth.AuthTokenResponse;
+import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,15 +34,17 @@ public class Member {
     @Embedded
     private DiscordToken discordToken;
 
-    public Member(DiscordTokenResponse response) {
-        this.discordToken = new DiscordToken(response);
+    public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
+
     }
 
-    public void updateOauthToken(String accessToken, String refreshToken, Long expiresIn) {
-        this.discordToken.update(accessToken, refreshToken, expiresIn);
+    public void updateOauthToken(DiscordTokenResponse response) {
+        this.discordToken.update(response.getAccessToken(),
+                response.getRefreshToken(),
+                response.getExpiresIn());
     }
 
-    public void updateAuthToken(String accessToken, String refreshToken) {
-        this.authToken.update(accessToken, refreshToken);
+    public void updateAuthToken(AuthTokenResponse authTokenResponse) {
+        this.authToken.update(authTokenResponse.getAccessToken(), authTokenResponse.getRefreshToken());
     }
 }

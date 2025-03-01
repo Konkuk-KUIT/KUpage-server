@@ -25,22 +25,28 @@ public class MemberService {
                 .orElse(null);
     }
 
+    // 기존 회원 : AuthToken 발급 & 홈으로 리다이렉트 (로그인 처리)
     public AuthTokenResponse updateToken(Long memberId, DiscordTokenResponse response) {
-        // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
         Member member = getMember(memberId);
-        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member.getId());
-        member.updateOauthToken(response.getAccessToken(), response.getRefreshToken(), response.getExpiresIn());
-        member.updateAuthToken(authTokenResponse.getAccessToken(), authTokenResponse.getRefreshToken());
-        return authTokenResponse;
+        member.updateOauthToken(response);
+        return issueAndUpdateAuthToken(member);
     }
 
+    // 신규 회원 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
     public AuthTokenResponse signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
-        // TODO. 신규회원 회원가입 처리
-        return null;
+        Member member = new Member(response, userInfo);
+        Member savedMember = memberRepository.save(member);
+        return issueAndUpdateAuthToken(savedMember);
     }
 
     private Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private AuthTokenResponse issueAndUpdateAuthToken(Member member) {
+        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member.getId());
+        member.updateAuthToken(authTokenResponse);
+        return authTokenResponse;
     }
 }
