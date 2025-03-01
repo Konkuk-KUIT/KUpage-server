@@ -6,11 +6,13 @@ import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
 @Entity
+@ToString
 @Table(name = "member")
 @NoArgsConstructor
 public class Member {
@@ -35,16 +37,34 @@ public class Member {
     private DiscordToken discordToken;
 
     public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
+        this.discordToken = new DiscordToken(response.getAccessToken(),
+                response.getRefreshToken(),
+                response.getExpiresIn());
+        this.name = userInfo.getUserResponse().getGlobalName();
+        this.discordId = userInfo.getUserResponse().getGlobalName();
+        this.discordLoginId = userInfo.getUserResponse().getUsername();
+        this.profileImage = createProfileImage(userInfo.getUserResponse());
+    }
 
+    private String createProfileImage(DiscordInfoResponse.UserResponse userInfo) {
+        String avatar = userInfo.getAvatar();
+        String userId = userInfo.getId();
+        if (avatar == null || avatar.isBlank()) {
+            Integer index = Integer.valueOf(userInfo.getId()) % 5;
+            return String.format("https://cdn.discordapp.com/embed/avatars/%d.png", index);
+
+        }
+        return String.format("https://cdn.discordapp.com/avatars/%s/%s.png", userId, avatar);
     }
 
     public void updateOauthToken(DiscordTokenResponse response) {
-        this.discordToken.update(response.getAccessToken(),
+        this.discordToken = new DiscordToken(response.getAccessToken(),
                 response.getRefreshToken(),
                 response.getExpiresIn());
     }
 
     public void updateAuthToken(AuthTokenResponse authTokenResponse) {
-        this.authToken.update(authTokenResponse.getAccessToken(), authTokenResponse.getRefreshToken());
+        this.authToken = new AuthToken(authTokenResponse.getAccessToken(),
+                authTokenResponse.getRefreshToken());
     }
 }
