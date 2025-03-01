@@ -1,7 +1,7 @@
 package com.kuit.kupage.common.oauth.service;
 
 import com.kuit.kupage.common.auth.JwtTokenService;
-import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
+import com.kuit.kupage.common.oauth.dto.discordInfo.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
@@ -43,7 +43,6 @@ public class DiscordOAuthService {
         DiscordTokenResponse response = requestAccessToken(code);
         DiscordInfoResponse userInfo = requestUserInfo(response.getAccessToken());
         Long memberId = memberService.lookupMemberId(userInfo);
-
         return processLoginOrSignup(memberId, response, userInfo);
     }
 
@@ -74,8 +73,17 @@ public class DiscordOAuthService {
     }
 
     private DiscordInfoResponse requestUserInfo(String accessToken) {
-        // TODO. access token을 가지고 디스코드 서버에 사용자 정보를 요청
-        return null;
+        log.info("[requestUserInfo] 사용자 정보 요청시 필요한 access token = {}", accessToken);
+        DiscordInfoResponse response = restClient.get()
+                .uri("/oauth2/@me")
+                .headers(headers -> {
+                    headers.setBearerAuth(accessToken);
+                })
+                .retrieve()
+                .toEntity(DiscordInfoResponse.class)
+                .getBody();
+        log.info("[requestUserInfo] 토큰 응답 = {}", response);
+        return response;
     }
 
 

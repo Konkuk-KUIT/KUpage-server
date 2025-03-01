@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.member.service;
 
-import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
+import com.kuit.kupage.common.oauth.dto.discordInfo.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
