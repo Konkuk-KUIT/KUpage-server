@@ -22,11 +22,6 @@ public class AuthToken {
     private String refreshToken;
 
     public AuthToken(String accessToken, String refreshToken){
-        AuthToken authToken = new AuthToken();
-        authToken.update(accessToken, refreshToken);
-    }
-
-    private void update(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

@@ -52,7 +52,6 @@ public class Member {
         if (avatar == null || avatar.isBlank()) {
             Integer index = Integer.valueOf(userInfo.getId()) % 5;
             return String.format("https://cdn.discordapp.com/embed/avatars/%d.png", index);
-
         }
         return String.format("https://cdn.discordapp.com/avatars/%s/%s.png", userId, avatar);
     }

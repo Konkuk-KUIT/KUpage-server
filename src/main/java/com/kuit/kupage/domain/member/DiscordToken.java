@@ -32,11 +32,6 @@ public class DiscordToken {
     }
 
     public DiscordToken(String accessToken, String refreshToken, Long expiresIn) {
-        DiscordToken discordToken = new DiscordToken();
-        discordToken.update(accessToken, refreshToken, expiresIn);
-    }
-
-    public void update(String accessToken, String refreshToken, Long expiresIn) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiresIn = expiresIn;

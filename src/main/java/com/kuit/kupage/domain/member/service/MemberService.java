@@ -35,10 +35,10 @@ public class MemberService {
     }
 
     public AuthTokenResponse signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
-        log.info("[signup] 신규 회원 회원가입 처리 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급");
+        log.debug("[signup] 신규 회원 회원가입 처리 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급");
         Member member = new Member(response, userInfo);
         Member savedMember = memberRepository.save(member);
-        log.info("[signup] 신규 회원 member = {}", savedMember);
+        log.debug("[signup] 신규 회원 member = {}", savedMember);
         return issueAndUpdateAuthToken(savedMember);
     }
 
@@ -49,7 +49,7 @@ public class MemberService {
 
     private AuthTokenResponse issueAndUpdateAuthToken(Member member) {
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member.getId());
-        log.info("[issueAndUpdateAuthToken] 발급받은 auth token = {}", authTokenResponse);
+        log.debug("[issueAndUpdateAuthToken] 발급받은 auth token = {}", authTokenResponse);
         member.updateAuthToken(authTokenResponse);
         return authTokenResponse;
     }
