@@ -1,4 +1,4 @@
-package com.kuit.kupage.common.oauth.dto;
+package com.kuit.kupage.common.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignupResponse {
+public class AuthTokenResponse {
     private String accessToken;
     private String refreshToken;
 }
