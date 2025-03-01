@@ -26,6 +26,8 @@ public class Member {
 
     private String profileImage;
 
+    @Embedded
+    private AuthToken authToken;
 
     @Embedded
     private DiscordToken discordToken;
@@ -36,5 +38,9 @@ public class Member {
 
     public void updateOauthToken(String accessToken, String refreshToken, Long expiresIn) {
         this.discordToken.update(accessToken, refreshToken, expiresIn);
+    }
+
+    public void updateAuthToken(String accessToken, String refreshToken) {
+        this.authToken.update(accessToken, refreshToken);
     }
 }

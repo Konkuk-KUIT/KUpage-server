@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.member.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kuit.kupage.common.auth.AuthTokenResponse;
+import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.member.Member;
@@ -14,13 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MemberService {
 
+    private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
-
-    public void updateOauthToken(Long memberId, DiscordTokenResponse response) {
-        // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
-        Member member = getMember(memberId);
-        member.updateOauthToken(response.getAccessToken(), response.getRefreshToken(), response.getExpiresIn());
-    }
 
     public Long lookupMemberId(DiscordInfoResponse userInfo) {
         String discordId = userInfo.getUserResponse().getId();
@@ -29,7 +25,16 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public Long signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
+    public AuthTokenResponse updateToken(Long memberId, DiscordTokenResponse response) {
+        // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
+        Member member = getMember(memberId);
+        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member.getId());
+        member.updateOauthToken(response.getAccessToken(), response.getRefreshToken(), response.getExpiresIn());
+        member.updateAuthToken(authTokenResponse.getAccessToken(), authTokenResponse.getRefreshToken());
+        return authTokenResponse;
+    }
+
+    public AuthTokenResponse signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         // TODO. 신규회원 회원가입 처리
         return null;
     }
