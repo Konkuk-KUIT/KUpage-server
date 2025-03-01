@@ -1,5 +1,6 @@
 package com.kuit.kupage.domain.member.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.member.Member;
@@ -15,8 +16,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public void updateOauthToken(DiscordTokenResponse response) {
-        // TODO. 디코에서 응답으로 보내준 access token, 만료 시간을 redis 또는 db에 저장
+    public void updateOauthToken(Long memberId, DiscordTokenResponse response) {
+        // 기존 회원 : AuthToken 발급&홈으로 리다이렉트 (로그인 처리)
+        Member member = getMember(memberId);
+        member.updateOauthToken(response.getAccessToken(), response.getRefreshToken(), response.getExpiresIn());
     }
 
     public Long lookupMemberId(DiscordInfoResponse userInfo) {
@@ -29,5 +32,10 @@ public class MemberService {
     public Long signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         // TODO. 신규회원 회원가입 처리
         return null;
+    }
+
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

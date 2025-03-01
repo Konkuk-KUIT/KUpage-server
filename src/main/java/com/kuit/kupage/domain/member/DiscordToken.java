@@ -20,4 +20,10 @@ public class DiscordToken {
         this.refreshToken = response.getRefreshToken();
         this.expiresIn = response.getExpiresIn();
     }
+
+    public void update(String accessToken, String refreshToken, Long expiresIn) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.expiresIn = expiresIn;
+    }
 }

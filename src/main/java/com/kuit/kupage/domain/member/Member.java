@@ -33,4 +33,8 @@ public class Member {
     public Member(DiscordTokenResponse response) {
         this.discordToken = new DiscordToken(response);
     }
+
+    public void updateOauthToken(String accessToken, String refreshToken, Long expiresIn) {
+        this.discordToken.update(accessToken, refreshToken, expiresIn);
+    }
 }
