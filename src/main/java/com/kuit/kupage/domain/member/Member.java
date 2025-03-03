@@ -1,8 +1,8 @@
 package com.kuit.kupage.domain.member;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
-import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
-import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
+import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,9 +37,9 @@ public class Member {
     private DiscordToken discordToken;
 
     public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
-        this.discordToken = new DiscordToken(response.getAccessToken(),
-                response.getRefreshToken(),
-                response.getExpiresIn());
+        this.discordToken = new DiscordToken(response.accessToken(),
+                response.refreshToken(),
+                response.expiresIn());
         this.name = userInfo.getUserResponse().getGlobalName();
         this.discordId = userInfo.getUserResponse().getGlobalName();
         this.discordLoginId = userInfo.getUserResponse().getUsername();
@@ -50,20 +50,20 @@ public class Member {
         String avatar = userInfo.getAvatar();
         String userId = userInfo.getId();
         if (avatar == null || avatar.isBlank()) {
-            Integer index = Integer.valueOf(userInfo.getId()) % 5;
+            Integer index = Integer.valueOf(userInfo.getId()) % 6;
             return String.format("https://cdn.discordapp.com/embed/avatars/%d.png", index);
         }
         return String.format("https://cdn.discordapp.com/avatars/%s/%s.png", userId, avatar);
     }
 
     public void updateOauthToken(DiscordTokenResponse response) {
-        this.discordToken = new DiscordToken(response.getAccessToken(),
-                response.getRefreshToken(),
-                response.getExpiresIn());
+        this.discordToken = new DiscordToken(response.accessToken(),
+                response.refreshToken(),
+                response.expiresIn());
     }
 
     public void updateAuthToken(AuthTokenResponse authTokenResponse) {
-        this.authToken = new AuthToken(authTokenResponse.getAccessToken(),
-                authTokenResponse.getRefreshToken());
+        this.authToken = new AuthToken(authTokenResponse.accessToken(),
+                authTokenResponse.refreshToken());
     }
 }

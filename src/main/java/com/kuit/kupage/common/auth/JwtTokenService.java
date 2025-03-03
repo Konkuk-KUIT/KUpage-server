@@ -1,6 +1,5 @@
 package com.kuit.kupage.common.auth;
 
-import com.kuit.kupage.domain.member.AuthToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

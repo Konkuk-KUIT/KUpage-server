@@ -1,7 +1,7 @@
-package com.kuit.kupage.common.oauth.controller;
+package com.kuit.kupage.domain.oauth.controller;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
-import com.kuit.kupage.common.oauth.service.DiscordOAuthService;
+import com.kuit.kupage.domain.oauth.service.DiscordOAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

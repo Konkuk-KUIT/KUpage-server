@@ -1,10 +1,9 @@
-package com.kuit.kupage.common.oauth.service;
+package com.kuit.kupage.domain.oauth.service;
 
-import com.kuit.kupage.common.auth.JwtTokenService;
-import com.kuit.kupage.common.oauth.dto.DiscordInfoResponse;
-import com.kuit.kupage.common.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
+import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -18,7 +17,6 @@ import org.springframework.web.client.RestClient;
 @Service
 public class DiscordOAuthService {
     private final RestClient restClient;
-    private final JwtTokenService jwtTokenService;
     private final MemberService memberService;
 
     @Value("${spring.security.oauth2.client.registration.discord.redirect-uri}")
@@ -30,18 +28,17 @@ public class DiscordOAuthService {
     @Value("${spring.security.oauth2.client.registration.discord.client-secret}")
     private String CLIENT_SECRET;
 
-    public DiscordOAuthService(RestClient.Builder builder, JwtTokenService jwtTokenService, MemberService memberService) {
+    public DiscordOAuthService(RestClient.Builder builder, MemberService memberService) {
         this.restClient = builder
                 .baseUrl("https://discord.com/api/v10")
                 .build();
-        this.jwtTokenService = jwtTokenService;
         this.memberService = memberService;
     }
 
     public AuthTokenResponse requestToken(String code) {
         log.debug("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
         DiscordTokenResponse response = requestAccessToken(code);
-        DiscordInfoResponse userInfo = requestUserInfo(response.getAccessToken());
+        DiscordInfoResponse userInfo = requestUserInfo(response.accessToken());
         Long memberId = memberService.lookupMemberId(userInfo);
         return processLoginOrSignup(memberId, response, userInfo);
     }
@@ -86,7 +83,7 @@ public class DiscordOAuthService {
 
 
     private AuthTokenResponse processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
-        if (memberId != null){
+        if (memberId != null) {
             log.debug("[processLoginOrSignup] 기존 회원 로그인 처리");
             return memberService.updateToken(memberId, response);
         }

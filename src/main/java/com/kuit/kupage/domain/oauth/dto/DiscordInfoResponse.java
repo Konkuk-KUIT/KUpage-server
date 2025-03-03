@@ -1,4 +1,4 @@
-package com.kuit.kupage.common.oauth.dto;
+package com.kuit.kupage.domain.oauth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

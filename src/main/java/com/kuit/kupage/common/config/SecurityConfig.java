@@ -23,8 +23,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .anyRequest().permitAll()
                 )
-//                .oauth2Login(oauth2Login -> oauth2Login
-//                        .successHandler)
                 .build();
     }
 }
