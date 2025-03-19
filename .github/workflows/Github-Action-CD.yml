@@ -2,7 +2,7 @@ name: CD with Docker to EC2
 
 on:
   push:
-    branches: [ "main", "ci-cd-추가" ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
