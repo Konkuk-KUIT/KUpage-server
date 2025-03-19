@@ -11,11 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Cache gradle
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
           distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+          cache-dependency-path: | # optional
+            ~/*.gradle*
+            ~/**/gradle-wrapper.properties
+      - run: ./gradlew build --no-daemon
 
       - name : make application.yml
         run: |
