@@ -23,7 +23,6 @@ jobs:
           cache-dependency-path: | # optional
             ~/*.gradle*
             ~/**/gradle-wrapper.properties
-      - run: ./gradlew build --no-daemon
 
       - name : make application.yml
         run: |
