@@ -28,6 +28,10 @@ public class DetailService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException("존재하지 않는 회원입니다."));
 
+        if (member.getDetail() == null) {
+            throw new MemberException("이미 회원가입 된 멤버입니다.");
+        }
+
         Detail savedDetail = detailRepository.save(Detail.of(signupRequest.getName(),
                 signupRequest.getStudentNumber(),
                 signupRequest.getDepartName(),
