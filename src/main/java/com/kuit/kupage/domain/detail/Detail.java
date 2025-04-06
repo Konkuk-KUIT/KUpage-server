@@ -17,12 +17,27 @@ public class Detail {
     private Long id;
 
     private String name;
-    private String studentNumber;
+    private Long studentNumber;
     private String departName;
-    private String grade;
+
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
     private String githubId;
     private String email;
     private String phoneNumber;
     private LocalDate birthday;
+
+    public static Detail of(String name, Long studentNumber, String departName, Grade grade, String githubId, String email, String phoneNumber, LocalDate birthday) {
+        Detail detail = new Detail();
+        detail.name = name;
+        detail.studentNumber = studentNumber;
+        detail.departName = departName;
+        detail.grade = grade;
+        detail.githubId = githubId;
+        detail.email = email;
+        detail.phoneNumber = phoneNumber;
+        detail.birthday = birthday;
+        return detail;
+    }
 
 }
