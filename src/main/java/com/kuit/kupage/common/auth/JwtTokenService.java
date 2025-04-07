@@ -1,5 +1,6 @@
 package com.kuit.kupage.common.auth;
 
+import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,6 +31,7 @@ public class JwtTokenService {
 
     private final static String ACCESS = "access";
     private final static String REFRESH = "refresh";
+    private final static String GUEST = "guest";
 
     public AuthTokenResponse generateTokens(Long memberId) {
         log.info("[generateTokens] 토큰을 발급할 회원 id = {}", memberId);
@@ -39,6 +41,14 @@ public class JwtTokenService {
         String refreshToken = generateToken(claims, refreshTokenExpiration, REFRESH);
         log.info("[generateTokens] 발급한 토큰 정보 access token = {}, refresh token = {}", accessToken, refreshToken);
         return new AuthTokenResponse(accessToken, refreshToken);
+    }
+
+    public GuestTokenResponse generateGuestToken(DiscordInfoResponse userInfo){
+        String discordId = userInfo.getUserResponse().getId();
+        final Claims claims = Jwts.claims();
+        claims.put("discordId", discordId);
+        String guestToken = generateToken(claims, accessTokenExpiration, GUEST);
+        return new GuestTokenResponse(guestToken);
     }
 
     private String generateToken(Claims claims, long expiration, String type) {

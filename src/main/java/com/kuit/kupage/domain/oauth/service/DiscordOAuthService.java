@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.oauth.service;
 
-import com.kuit.kupage.common.auth.AuthTokenResponse;
+import com.kuit.kupage.common.auth.JwtTokenService;
+import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestClient;
 public class DiscordOAuthService {
     private final RestClient restClient;
     private final MemberService memberService;
+    private final JwtTokenService jwtTokenService;
 
     @Value("${spring.security.oauth2.client.registration.discord.redirect-uri}")
     private String REDIRECT_URI;
@@ -28,14 +30,15 @@ public class DiscordOAuthService {
     @Value("${spring.security.oauth2.client.registration.discord.client-secret}")
     private String CLIENT_SECRET;
 
-    public DiscordOAuthService(RestClient.Builder builder, MemberService memberService) {
+    public DiscordOAuthService(RestClient.Builder builder, MemberService memberService, JwtTokenService jwtTokenService) {
         this.restClient = builder
                 .baseUrl("https://discord.com/api/v10")
                 .build();
         this.memberService = memberService;
+        this.jwtTokenService = jwtTokenService;
     }
 
-    public AuthTokenResponse requestToken(String code) {
+    public TokenResponse requestToken(String code) {
         log.debug("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
         DiscordTokenResponse response = requestAccessToken(code);
         DiscordInfoResponse userInfo = requestUserInfo(response.accessToken());
@@ -82,12 +85,12 @@ public class DiscordOAuthService {
     }
 
 
-    private AuthTokenResponse processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
+    private TokenResponse processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         if (memberId != null) {
             log.debug("[processLoginOrSignup] 기존 회원 로그인 처리");
             return memberService.updateToken(memberId, response);
         }
         log.debug("[processLoginOrSignup] 신규 회원 회원가입 처리");
-        return memberService.signup(response, userInfo);
+        return jwtTokenService.generateGuestToken(userInfo);
     }
 }
