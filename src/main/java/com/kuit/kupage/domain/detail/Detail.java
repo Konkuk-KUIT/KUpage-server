@@ -17,7 +17,7 @@ public class Detail {
     private Long id;
 
     private String name;
-    private Long studentNumber;
+    private String studentNumber;
     private String departName;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +27,7 @@ public class Detail {
     private String phoneNumber;
     private LocalDate birthday;
 
-    public static Detail of(String name, Long studentNumber, String departName, Grade grade, String githubId, String email, String phoneNumber, LocalDate birthday) {
+    public static Detail of(String name, String studentNumber, String departName, Grade grade, String githubId, String email, String phoneNumber, LocalDate birthday) {
         Detail detail = new Detail();
         detail.name = name;
         detail.studentNumber = studentNumber;

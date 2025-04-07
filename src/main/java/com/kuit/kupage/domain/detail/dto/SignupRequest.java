@@ -13,8 +13,8 @@ import java.time.LocalDate;
 public class SignupRequest {
     @Size(min = 2)
     private String name;
-    @NotNull
-    private Long studentNumber;
+    @NotBlank
+    private String studentNumber;
     @NotNull
     private Grade grade;
     @NotBlank
