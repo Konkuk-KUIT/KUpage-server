@@ -41,8 +41,8 @@ public class DiscordOAuthService {
     public TokenResponse requestToken(String code) {
         log.debug("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
         DiscordTokenResponse response = requestAccessToken(code);
-        DiscordInfoResponse userInfo = requestUserInfo(response.accessToken());
-        Long memberId = memberService.lookupMemberId(userInfo);
+        DiscordInfoResponse userInfo = requestUserInfo(response.accessToken());     // merge 후 HttpClientErrorException 예외처리 필요
+        Long memberId = memberService.getMemberIdByDiscordInfo(userInfo);
         return processLoginOrSignup(memberId, response, userInfo);
     }
 
