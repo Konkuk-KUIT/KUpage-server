@@ -20,7 +20,7 @@ public class MemberService {
     private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
 
-    public Long lookupMemberId(DiscordInfoResponse userInfo) {
+    public Long getMemberIdByDiscordInfo(DiscordInfoResponse userInfo) {
         String discordId = userInfo.getUserResponse().getId();
         return memberRepository.findByDiscordId(discordId)
                 .map(Member::getId)
