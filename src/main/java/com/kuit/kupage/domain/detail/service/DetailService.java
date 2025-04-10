@@ -41,7 +41,7 @@ public class DetailService {
                 signupRequest.phoneNumber(),
                 signupRequest.birthday()));
 
-        member.setAssociationDetail(savedDetail);
+        member.updateDetail(savedDetail);
 
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(memberId);
 

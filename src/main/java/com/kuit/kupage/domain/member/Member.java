@@ -72,7 +72,7 @@ public class Member {
                 authTokenResponse.refreshToken());
     }
 
-    public void setAssociationDetail(Detail detail) {
+    public void updateDetail(Detail detail) {
         this.detail = detail;
     }
 }
