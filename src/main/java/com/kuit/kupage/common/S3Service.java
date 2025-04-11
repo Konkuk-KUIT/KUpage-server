@@ -27,7 +27,7 @@ public class S3Service {
     }
 
     public String uploadFile(MultipartFile file) {
-        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
         String s3FileName = "file/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
         return uploadToS3(file, s3FileName);
     }
