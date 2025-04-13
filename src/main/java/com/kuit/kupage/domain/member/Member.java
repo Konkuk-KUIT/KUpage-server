@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.member;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
+import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
@@ -36,6 +37,10 @@ public class Member {
     @Embedded
     private DiscordToken discordToken;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "detail_id")
+    private Detail detail;
+
     public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         this.discordToken = new DiscordToken(response.accessToken(),
                 response.refreshToken(),
@@ -65,5 +70,9 @@ public class Member {
     public void updateAuthToken(AuthTokenResponse authTokenResponse) {
         this.authToken = new AuthToken(authTokenResponse.accessToken(),
                 authTokenResponse.refreshToken());
+    }
+
+    public void updateDetail(Detail detail) {
+        this.detail = detail;
     }
 }
