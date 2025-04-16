@@ -31,14 +31,15 @@ public class DetailService {
             throw new MemberException("이미 회원가입 된 멤버입니다.");
         }
 
-        Detail savedDetail = detailRepository.save(Detail.of(signupRequest.getName(),
-                signupRequest.getStudentNumber(),
-                signupRequest.getDepartName(),
-                signupRequest.getGrade(),
-                signupRequest.getGithubId(),
-                signupRequest.getEmail(),
-                signupRequest.getPhoneNumber(),
-                signupRequest.getBirthday()));
+        Detail savedDetail = detailRepository.save(Detail.of(
+                signupRequest.name(),
+                signupRequest.studentNumber(),
+                signupRequest.departName(),
+                signupRequest.grade(),
+                signupRequest.githubId(),
+                signupRequest.email(),
+                signupRequest.phoneNumber(),
+                signupRequest.birthday()));
 
         member.updateDetail(savedDetail);
 
