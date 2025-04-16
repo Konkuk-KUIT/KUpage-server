@@ -1,7 +1,7 @@
 package com.kuit.kupage.domain.detail.service;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
-import com.kuit.kupage.common.jwt.JwtTokenService;
+import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.detail.dto.SignupRequest;
 import com.kuit.kupage.domain.detail.repository.DetailRepository;
