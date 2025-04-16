@@ -1,14 +1,14 @@
 package com.kuit.kupage.domain.detail;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Detail {
 
@@ -17,7 +17,7 @@ public class Detail {
     private Long id;
 
     private String name;
-    private Long studentNumber;
+    private String studentNumber;
     private String departName;
 
     @Enumerated(EnumType.STRING)
@@ -27,16 +27,18 @@ public class Detail {
     private String phoneNumber;
     private LocalDate birthday;
 
-    public static Detail of(String name, Long studentNumber, String departName, Grade grade, String githubId, String email, String phoneNumber, LocalDate birthday) {
-        Detail detail = new Detail();
-        detail.name = name;
-        detail.studentNumber = studentNumber;
-        detail.departName = departName;
-        detail.grade = grade;
-        detail.githubId = githubId;
-        detail.email = email;
-        detail.phoneNumber = phoneNumber;
-        detail.birthday = birthday;
+    public static Detail of(String name, String studentNumber, String departName, Grade grade, String githubId, String email, String phoneNumber, LocalDate birthday) {
+        Detail detail = Detail.builder()
+                .name(name)
+                .studentNumber(studentNumber)
+                .departName(departName)
+                .grade(grade)
+                .githubId(githubId)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .birthday(birthday)
+                .build();
+
         return detail;
     }
 
