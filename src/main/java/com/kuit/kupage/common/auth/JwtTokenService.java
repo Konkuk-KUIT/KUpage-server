@@ -1,16 +1,22 @@
 package com.kuit.kupage.common.auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Slf4j
@@ -34,6 +40,7 @@ public class JwtTokenService {
     public AuthTokenResponse generateTokens(Long memberId) {
         log.info("[generateTokens] 토큰을 발급할 회원 id = {}", memberId);
         final Claims claims = Jwts.claims();
+        // todo sub로 바꾸기
         claims.put("memberId", memberId);
         String accessToken = generateToken(claims, accessTokenExpiration, ACCESS);
         String refreshToken = generateToken(claims, refreshTokenExpiration, REFRESH);
@@ -49,5 +56,27 @@ public class JwtTokenService {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public boolean validateToken(String token) {
+        Jws<Claims> claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token);
+
+        return claims.getBody().getExpiration().after(new Date());
+    }
+
+    public Authentication getAuthentication(String token) {
+
+        Claims body = Jwts.parser().parseClaimsJwt(token).getBody();
+        Long memberId = body.get("sub", Long.class);
+        String role = body.get("type", String.class);
+
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(AuthRole.valueOf(role).getRole());
+
+        AuthMember authMember = new AuthMember(memberId, authorities);
+
+        return new UsernamePasswordAuthenticationToken(authMember, "", authorities);
+
     }
 }
