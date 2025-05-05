@@ -56,12 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private void tokenValidateAndAuthorization(String token) {
 
-        if (token == null) {
-            setAuthentication(createGuestAuthentication());
-            return;
-        }
-
-        if (jwtTokenService.validateToken(token)) {
+        if (token != null & jwtTokenService.validateToken(token)) {
             setAuthentication(jwtTokenService.getAuthentication(token));
         }
 
