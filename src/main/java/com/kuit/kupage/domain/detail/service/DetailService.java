@@ -43,7 +43,7 @@ public class DetailService {
 
         member.updateDetail(savedDetail);
 
-        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(memberId);
+        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);
 
         return authTokenResponse;
     }
