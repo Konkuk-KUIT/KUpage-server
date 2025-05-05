@@ -5,6 +5,7 @@ import com.kuit.kupage.common.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,20 +31,30 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/oauth2/code/discord").permitAll())
+                        .requestMatchers("/oauth2/code/discord", "/", "/error",
+                        "/favicon.ico", "/v3/api-docs/**").permitAll())
 
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/signup")
                         .hasRole(GUEST.getValue()))
 
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest.
-                        requestMatchers("/")
+                        requestMatchers("/membertmp")
                         .hasRole(MEMBER.getValue()))
 
-                .authorizeHttpRequests(authorizeRequest -> authorizeRequest.anyRequest().hasRole(
-                        ADMIN.getValue()))
+                .authorizeHttpRequests(authorizeRequest -> authorizeRequest
+                        .requestMatchers("/admin/**")
+                        .hasRole(ADMIN.getValue()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
 
                 .build();
+    }
+
+    @Bean
+    public RoleHierarchyImpl roleHierarchy() {
+        return RoleHierarchyImpl.fromHierarchy("""
+    ROLE_ADMIN > ROLE_TUTOR
+    ROLE_TUTOR > ROLE_MEMBER
+    """);
     }
 }
