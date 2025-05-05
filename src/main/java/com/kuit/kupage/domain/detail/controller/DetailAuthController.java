@@ -20,7 +20,7 @@ public class DetailAuthController {
 
     private final DetailService detailService;
 
-    @PostMapping("signup")
+    @PostMapping("/signup")
     public ResponseEntity<AuthTokenResponse> signup(@Valid @RequestBody SignupRequest signupRequest,
                                                     @AuthenticationPrincipal AuthMember authMember) {
 
