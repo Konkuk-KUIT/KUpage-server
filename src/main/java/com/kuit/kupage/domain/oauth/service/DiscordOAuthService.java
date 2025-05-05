@@ -91,6 +91,7 @@ public class DiscordOAuthService {
             return memberService.updateToken(memberId, response);
         }
         log.debug("[processLoginOrSignup] 신규 회원 회원가입 처리");
-        return jwtTokenService.generateGuestToken(userInfo);
+        return memberService.signup(response, userInfo);
+//        return jwtTokenService.generateGuestToken(userInfo);
     }
 }
