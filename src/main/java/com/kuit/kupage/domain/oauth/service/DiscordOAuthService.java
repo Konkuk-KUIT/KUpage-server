@@ -39,7 +39,7 @@ public class DiscordOAuthService {
     }
 
     public TokenResponse requestToken(String code) {
-        log.debug("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
+        log.info("[requestToken] access token 요청을 보내기 위해 필요한 code = {}", code);
         DiscordTokenResponse response = requestAccessToken(code);
         DiscordInfoResponse userInfo = requestUserInfo(response.accessToken());     // merge 후 HttpClientErrorException 예외처리 필요
         Long memberId = memberService.getMemberIdByDiscordInfo(userInfo);
@@ -47,7 +47,7 @@ public class DiscordOAuthService {
     }
 
     private DiscordTokenResponse requestAccessToken(String code) {
-        log.debug("[requestAccessToken] access token 요청");
+        log.info("[requestAccessToken] access token 요청");
         LinkedMultiValueMap<String, String> body = createBody(code);
         DiscordTokenResponse response = restClient.post()
                 .uri("/oauth2/token")
@@ -56,7 +56,7 @@ public class DiscordOAuthService {
                 .retrieve()
                 .toEntity(DiscordTokenResponse.class)
                 .getBody();
-        log.debug("[requestAccessToken] 토큰 응답 = {}", response);
+        log.info("[requestAccessToken] 토큰 응답 = {}", response);
         return response;
     }
 
@@ -71,7 +71,7 @@ public class DiscordOAuthService {
     }
 
     private DiscordInfoResponse requestUserInfo(String accessToken) {
-        log.debug("[requestUserInfo] 사용자 정보 요청시 필요한 access token = {}", accessToken);
+        log.info("[requestUserInfo] 사용자 정보 요청시 필요한 access token = {}", accessToken);
         DiscordInfoResponse response = restClient.get()
                 .uri("/oauth2/@me")
                 .headers(headers -> {
@@ -80,7 +80,7 @@ public class DiscordOAuthService {
                 .retrieve()
                 .toEntity(DiscordInfoResponse.class)
                 .getBody();
-        log.debug("[requestUserInfo] 사용자 정보 응답 = {}", response);
+        log.info("[requestUserInfo] 사용자 정보 응답 = {}", response);
         return response;
     }
 
