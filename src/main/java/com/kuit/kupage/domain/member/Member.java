@@ -2,18 +2,20 @@ package com.kuit.kupage.domain.member;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.detail.Detail;
+import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Slf4j
 @Entity
-@ToString
 @Table(name = "member")
 @NoArgsConstructor
 public class Member {
@@ -40,6 +42,9 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "detail_id")
     private Detail detail;
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberRole> memberRoles = new ArrayList<>();
 
     public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         this.discordToken = new DiscordToken(response.accessToken(),
