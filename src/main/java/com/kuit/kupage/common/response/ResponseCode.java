@@ -15,6 +15,7 @@ public enum ResponseCode {
 
     // 1000 번대 : global 요청 성공/실패
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
+    ROLE_REQUIRE(false, 1001, "역할이 지정되지 않았습니다. 운영진에게 문의주세요."),
 
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),

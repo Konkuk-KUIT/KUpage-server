@@ -2,6 +2,7 @@ package com.kuit.kupage.common.config;
 
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.jwt.JwtAuthenticationFilter;
+import com.kuit.kupage.common.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**")
                         .hasRole(ADMIN.getValue()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
 
                 .build();
     }
