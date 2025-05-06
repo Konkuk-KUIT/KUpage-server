@@ -11,6 +11,6 @@ public class KupageControllerAdvice {
 
     @ExceptionHandler(KupageException.class)
     public ResponseEntity<Object> handleException(KupageException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.BAD_REQUEST);
     }
 }

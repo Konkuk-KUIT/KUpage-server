@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.detail.service;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.auth.JwtTokenService;
+import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.detail.dto.SignupRequest;
 import com.kuit.kupage.domain.detail.repository.DetailRepository;
@@ -11,6 +12,8 @@ import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.kuit.kupage.common.response.ResponseCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +28,10 @@ public class DetailService {
     public AuthTokenResponse signup(SignupRequest signupRequest, Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new MemberException(NONE_MEMBER));
 
         if (member.getDetail() != null) {
-            throw new MemberException("이미 회원가입 된 멤버입니다.");
+            throw new MemberException(ALREADY_MEMBER);
         }
 
         Detail savedDetail = detailRepository.save(Detail.of(

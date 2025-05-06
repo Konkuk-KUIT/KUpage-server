@@ -16,8 +16,10 @@ public enum ResponseCode {
     // 1000 번대 : global 요청 성공/실패
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
 
-    // 2000 번대 : oauth 관련 상태 코드
-    GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요.");
+    // 2000 번대 : auth 관련 상태 코드
+    GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
+    NONE_MEMBER(false, 2001, "존재하지 않는 회원입니다."),
+    ALREADY_MEMBER(false, 2002, "이미 회원가입 된 멤버입니다.");
 
     private boolean isSuccess;
     private int code;
