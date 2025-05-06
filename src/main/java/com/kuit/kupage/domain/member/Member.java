@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.member;
 
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.memberRole.MemberRole;
+import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
@@ -33,8 +34,8 @@ public class Member {
     private String profileImage;
 
     //todo 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
-//    @Embedded
-//    private AuthToken authToken;
+    @Embedded
+    private AuthToken authToken;
 
     @Embedded
     private DiscordToken discordToken;
@@ -72,10 +73,10 @@ public class Member {
                 response.expiresIn());
     }
 
-//    public void updateAuthToken(AuthTokenResponse authTokenResponse) {
-//        this.authToken = new AuthToken(authTokenResponse.accessToken(),
-//                authTokenResponse.refreshToken());
-//    }
+    public void updateAuthToken(AuthTokenResponse authTokenResponse) {
+        this.authToken = new AuthToken(authTokenResponse.accessToken(),
+                authTokenResponse.refreshToken());
+    }
 
     public void updateDetail(Detail detail) {
         this.detail = detail;
