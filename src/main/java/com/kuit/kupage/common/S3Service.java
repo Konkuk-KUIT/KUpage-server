@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.exception.KupageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
+
+import static com.kuit.kupage.common.response.ResponseCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +47,7 @@ public class S3Service {
                     .withCannedAcl(CannedAccessControlList.PublicRead);
             s3Client.putObject(s3Object);
         } catch (Exception e) {
-            throw new KupageException("파일 업로드 중 문제가 발생했습니다.");
+            throw new KupageException(AWS_S3_UPLOAD_ISSUE);
         }
 
         return cloudFrontUrl + "/" + s3FileName;
