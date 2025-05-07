@@ -65,13 +65,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void setAuthentication(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
-    private static Authentication createGuestAuthentication() {
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(AuthRole.GUEST.getRole());
-
-        //todo 이거 수정
-        return new UsernamePasswordAuthenticationToken(
-                new AuthMember(1L, authorities),
-                "", authorities);
-    }
 }
