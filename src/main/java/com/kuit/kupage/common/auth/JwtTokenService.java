@@ -107,10 +107,10 @@ public class JwtTokenService {
         if (roles.isEmpty()) {
             return AuthRole.DEFAULT;
         }
-        if (roles.stream().anyMatch(role -> role.getAuthRole().equals(AuthRole.ADMIN))) {
+        if (roles.stream().anyMatch(role -> role.getAuthRole().isAdmin())) {
             return AuthRole.ADMIN;
         }
-        if (roles.stream().anyMatch(role -> role.getAuthRole().equals(AuthRole.TUTOR))) {
+        if (roles.stream().anyMatch(role -> role.getAuthRole().isTutor())) {
             return AuthRole.TUTOR;
         }
         return AuthRole.MEMBER;

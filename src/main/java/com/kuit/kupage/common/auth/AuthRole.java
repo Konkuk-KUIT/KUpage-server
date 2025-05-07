@@ -19,4 +19,13 @@ public enum AuthRole {
     private final String PREFIX = "ROLE_";
     private final String value;
     private final String role;
+
+    public boolean isAdmin() {
+        return this == ADMIN;
+    }
+
+    public boolean isTutor() {
+        return this == TUTOR;
+    }
+
 }
