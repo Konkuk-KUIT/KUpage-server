@@ -30,7 +30,7 @@ import java.util.List;
 public class JwtTokenService {
 
     @Value("${secret.jwt.key}")
-    private String secretKey;
+    private byte[] secretKey;
 
     @Value("${secret.jwt.access.expiration}")
     private long accessTokenExpiration;
