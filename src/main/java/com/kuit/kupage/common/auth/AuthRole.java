@@ -16,7 +16,7 @@ public enum AuthRole {
         this.role = PREFIX + value;
     }
 
-    private final String PREFIX = "ROLE_";
+    private static final String PREFIX = "ROLE_";
     private final String value;
     private final String role;
 
