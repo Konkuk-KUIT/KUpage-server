@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.ResponseCode;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,6 +37,16 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
                 throw e;
             }
             setResponse(response, ResponseCode.ROLE_REQUIRE);
+        } catch (ExpiredJwtException e) {
+            setResponse(response, ResponseCode.EXPIRED_ACCESS_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            setResponse(response, ResponseCode.UNSUPPORTED_TOKEN_TYPE);
+        } catch (SignatureException e) {
+            setResponse(response, ResponseCode.INVALID_SIGNATURE_JWT);
+        } catch (MalformedJwtException e) {
+            setResponse(response, ResponseCode.MALFORMED_TOKEN_TYPE);
+        } catch (IllegalArgumentException e) {
+            setResponse(response, ResponseCode.INVALID_TOKEN_TYPE);
         }
     }
 

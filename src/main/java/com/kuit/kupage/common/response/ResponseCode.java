@@ -17,6 +17,11 @@ public enum ResponseCode {
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
     ROLE_REQUIRE(false, 1001, "역할이 지정되지 않았습니다. 운영진에게 문의주세요."),
     AWS_S3_UPLOAD_ISSUE(false, 1002, "파일 업로드 중 문제가 발생했습니다."),
+    EXPIRED_ACCESS_TOKEN(false, 1003, "이미 만료된 Access 토큰입니다."),
+    UNSUPPORTED_TOKEN_TYPE(false, 1004, "지원되지 않는 토큰 형식입니다."),
+    MALFORMED_TOKEN_TYPE(false, 1005, "인증 토큰이 올바르게 구성되지 않았습니다."),
+    INVALID_SIGNATURE_JWT(false, 1006, "인증 시그니처가 올바르지 않습니다"),
+    INVALID_TOKEN_TYPE(false, 1007, "잘못된 토큰입니다."),
 
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
