@@ -4,10 +4,7 @@ import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.role.Role;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,30 +74,35 @@ public class JwtTokenService {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public Authentication validateToken(String token) {
+        if (token == null) {
+            return null;
+        }
+
         Jws<Claims> claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token);
 
-        return claims.getBody().getExpiration().after(new Date());
+        Claims body = claims.getBody();
+
+        if (!body.getExpiration().after(new Date())) {
+            throw new ExpiredJwtException(claims.getHeader(), body, "만료된 토큰입니다.");
+        }
+
+        return getAuthentication(body);
     }
 
-    public Authentication getAuthentication(String token) {
-        String[] parts = token.split("\\.");
-        String jwtWithOutSignature = parts[0] + "." + parts[1] + ".";
+    // 토큰 검증 이후에 사용
+    private Authentication getAuthentication(Claims claims) {
 
-        Claims body = Jwts.parser()
-                .parseClaimsJwt(jwtWithOutSignature).getBody();
-
-        Long memberId = body.get("sub", Long.class);
-        String role = body.get("role", String.class);
+        Long memberId = claims.get("sub", Long.class);
+        String role = claims.get("role", String.class);
 
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(AuthRole.valueOf(role).getRole());
 
         AuthMember authMember = new AuthMember(memberId, authorities);
 
         return new UsernamePasswordAuthenticationToken(authMember, "", authorities);
-
     }
 
     private AuthRole getHighestPriorityAuthRole(List<Role> roles) {
