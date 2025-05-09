@@ -16,28 +16,33 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Slf4j
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class JwtTokenService {
 
-    @Value("${secret.jwt.key}")
-    private byte[] secretKey;
-
-    @Value("${secret.jwt.access.expiration}")
-    private long accessTokenExpiration;
-
-    @Value("${secret.jwt.refresh.expiration}")
-    private long refreshTokenExpiration;
+    private final byte[] secretKey;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
     private final static String ACCESS = "access";
     private final static String REFRESH = "refresh";
     private final static String GUEST = "guest";
+
+    public JwtTokenService(
+            @Value("${secret.jwt.key}") String secretKey,
+            @Value("${secret.jwt.access.expiration}") long accessTokenExpiration,
+            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration) {
+
+        this.secretKey = Base64.getDecoder().decode(secretKey);
+        this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
+    }
 
     public AuthTokenResponse generateTokens(Member member) {
         log.info("[generateTokens] 토큰을 발급할 회원 id = {}", member.getId());
