@@ -1,10 +1,10 @@
 package com.kuit.kupage.domain.article;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
-@Getter
-@Setter
-public class UploadArticleRequest {
-    private String name;
+public record UploadArticleRequest(
+        String title,
+        List<String> tags,
+        List<UploadBlockRequest> blocks
+) {
 }
