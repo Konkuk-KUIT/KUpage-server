@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.kuit.kupage.common.response.ResponseCode.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,15 +26,15 @@ public class DetailService {
     @Transactional
     public AuthTokenResponse signup(SignupRequest signupRequest, Long memberId) {
 
-        //todo 예외 처리 어캐할지?
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new MemberException(NONE_MEMBER));
 
         if (member.getDetail() != null) {
-            throw new MemberException("이미 회원가입 된 멤버입니다.");
+            throw new MemberException(ALREADY_MEMBER);
         }
 
-        Detail savedDetail = detailRepository.save(Detail.of(signupRequest.name(),
+        Detail savedDetail = detailRepository.save(Detail.of(
+                signupRequest.name(),
                 signupRequest.studentNumber(),
                 signupRequest.departName(),
                 signupRequest.grade(),
@@ -43,7 +45,7 @@ public class DetailService {
 
         member.updateDetail(savedDetail);
 
-        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(memberId);
+        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);
 
         return authTokenResponse;
     }

@@ -8,15 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Getter
-@AllArgsConstructor(access = PRIVATE)
+@AllArgsConstructor
 public class AuthMember implements UserDetails {
 
     private final Long id;
-    private final String username;
-    private final String password;
     private final List<GrantedAuthority> authorities;
 
     @Override
@@ -26,12 +22,12 @@ public class AuthMember implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return null;
     }
 
 }

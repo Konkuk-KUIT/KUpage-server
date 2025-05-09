@@ -16,4 +16,11 @@ public class BaseResponse<T> {
         this.message = responseCode.getMessage();
         this.result = result;
     }
+
+    public BaseResponse(ResponseCode responseCode) {
+        this.isSuccess = responseCode.isSuccess();
+        this.code = responseCode.getCode();
+        this.message = responseCode.getMessage();
+        this.result = null;
+    }
 }
