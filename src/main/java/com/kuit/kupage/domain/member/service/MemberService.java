@@ -43,7 +43,7 @@ public class MemberService {
         Member member = new Member(response, userInfo);
         Member savedMember = memberRepository.save(member);
         log.debug("[signup] 신규 회원 member = {}", savedMember);
-        return jwtTokenService.generateGuestToken(userInfo);
+        return jwtTokenService.generateGuestToken(savedMember);
     }
 
     private Member getMember(Long memberId) {

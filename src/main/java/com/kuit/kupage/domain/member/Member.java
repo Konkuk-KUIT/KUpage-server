@@ -61,7 +61,7 @@ public class Member {
         String avatar = userInfo.getAvatar();
         String userId = userInfo.getId();
         if (avatar == null || avatar.isBlank()) {
-            Integer index = Integer.valueOf(userInfo.getId()) % 6;
+            Long index = Long.parseLong(userInfo.getId()) % 6;
             return String.format("https://cdn.discordapp.com/embed/avatars/%d.png", index);
         }
         return String.format("https://cdn.discordapp.com/avatars/%s/%s.png", userId, avatar);
