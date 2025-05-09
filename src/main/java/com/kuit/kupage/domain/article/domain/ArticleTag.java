@@ -1,0 +1,17 @@
+package com.kuit.kupage.domain.article.domain;
+
+import jakarta.persistence.*;
+
+@Entity
+public class ArticleTag {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    private Article article;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
+}
