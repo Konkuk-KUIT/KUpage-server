@@ -61,10 +61,10 @@ public class JwtTokenService {
         return new AuthTokenResponse(accessToken, refreshToken);
     }
 
-    public GuestTokenResponse generateGuestToken(DiscordInfoResponse userInfo){
-        String discordId = userInfo.getUserResponse().getId();
+    public GuestTokenResponse generateGuestToken(Member member){
         final Claims claims = Jwts.claims();
-        claims.put("discordId", discordId);
+        claims.put("sub", member.getId());
+        claims.put("role", "GUEST");
         String guestToken = generateToken(claims, accessTokenExpiration, GUEST);
         return new GuestTokenResponse(guestToken);
     }
