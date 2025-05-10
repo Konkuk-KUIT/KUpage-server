@@ -2,12 +2,13 @@ package com.kuit.kupage.domain.article.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "block")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Block {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

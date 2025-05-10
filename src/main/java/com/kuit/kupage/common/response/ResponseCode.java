@@ -26,7 +26,10 @@ public enum ResponseCode {
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
     NONE_MEMBER(false, 2001, "존재하지 않는 회원입니다."),
-    ALREADY_MEMBER(false, 2002, "이미 회원가입 된 멤버입니다.");
+    ALREADY_MEMBER(false, 2002, "이미 회원가입 된 멤버입니다."),
+
+    // 4000 번대 : article 관련 코드
+    NOT_FOUND_ARTICLE(false, 4012, "해당 게시글이 존재하지 않습니다.");
 
     private boolean isSuccess;
     private int code;

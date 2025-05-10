@@ -6,6 +6,7 @@ import com.kuit.kupage.common.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.kuit.kupage.common.auth.AuthRole.*;
+
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -41,7 +43,10 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error",
-                        "/favicon.ico", "/v3/api-docs/**").permitAll())
+                                "/favicon.ico", "/v3/api-docs/**").permitAll())
+
+                .authorizeHttpRequests(authorizeRequest -> authorizeRequest
+                        .requestMatchers(HttpMethod.GET, "/articles").permitAll())
 
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/signup")
@@ -63,9 +68,9 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
         return RoleHierarchyImpl.fromHierarchy("""
-    ROLE_ADMIN > ROLE_TUTOR
-    ROLE_TUTOR > ROLE_MEMBER
-    """);
+                ROLE_ADMIN > ROLE_TUTOR
+                ROLE_TUTOR > ROLE_MEMBER
+                """);
     }
 
     @Bean
