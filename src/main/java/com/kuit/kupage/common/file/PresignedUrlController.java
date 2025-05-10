@@ -1,5 +1,6 @@
 package com.kuit.kupage.common.file;
 
+import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.exception.ArticleException;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +20,18 @@ public class PresignedUrlController {
     private final Integer MAX_FILE_SIZE = 20*1024*1024; //20MB
 
     @GetMapping("/pre-signed/article/file")
-    public PresignedUrlResponse getFilePresignedUrl(@RequestBody ArticlePreSignedFileUrlRequest request) {
+    public BaseResponse<PresignedUrlResponse> getFilePresignedUrl(@RequestBody ArticlePreSignedFileUrlRequest request) {
         if(request.contentLength() > MAX_FILE_SIZE) {
             throw new ArticleException(ResponseCode.TOO_BIG_FILE);
         }
 
         String preSignedUrl = presignedUrlService.getPreSignedUrl("file", request.contentType(), request.contentLength().toString(), request.contentName());
         String fileUrl = preSignedUrl.split("\\?")[0];
-        return new PresignedUrlResponse(preSignedUrl, fileUrl);
+        return new BaseResponse<>(ResponseCode.SUCCESS, new PresignedUrlResponse(preSignedUrl, fileUrl));
     }
 
     @GetMapping("/pre-signed/article/image")
-    public PresignedUrlResponse getImagePresignedUrl(@RequestBody ArticlePreSignedImageUrlRequest request) {
+    public BaseResponse<PresignedUrlResponse> getImagePresignedUrl(@RequestBody ArticlePreSignedImageUrlRequest request) {
         if(ALLOWED_IMAGE_TYPES.stream().noneMatch(t-> t.equals(request.contentType()))) {
             throw new ArticleException(ResponseCode.INVALID_IMAGE_TYPE);
         }
@@ -40,6 +41,6 @@ public class PresignedUrlController {
 
         String preSignedUrl = presignedUrlService.getPreSignedUrl("image",  request.contentType(), request.contentLength().toString(), request.contentName());
         String fileUrl = preSignedUrl.split("\\?")[0];
-        return new PresignedUrlResponse(preSignedUrl, fileUrl);
+        return new BaseResponse<>(ResponseCode.SUCCESS, new PresignedUrlResponse(preSignedUrl, fileUrl));
     }
 }
