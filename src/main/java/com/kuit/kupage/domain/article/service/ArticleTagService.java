@@ -18,7 +18,7 @@ public class ArticleTagService {
 
     @Transactional
     public List<ArticleTag> createArticleTags(Article article, List<Tag> tags) {
-        List<ArticleTag> articleTags = tags.stream().map(t -> new ArticleTag(null, article, t)).toList();
+        List<ArticleTag> articleTags = tags.stream().map(t -> ArticleTag.of(article, t)).toList();
         return articleTagRepository.saveAll(articleTags);
     }
 

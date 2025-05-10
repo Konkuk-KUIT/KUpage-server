@@ -16,6 +16,9 @@ public class TagService {
     @Transactional(readOnly = true)
     public List<Tag> findTags(List<String> names) {
         List<Tag> tags = tagRepository.findTagsByNameIn(names);
+        if (names.size() != tags.size()) {
+            throw new RuntimeException("태그 입력 오류");
+        }
         return tags;
     }
 }

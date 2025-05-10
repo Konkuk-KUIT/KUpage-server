@@ -19,9 +19,8 @@ public class BlockService {
     @Transactional
     public List<Block> createBlocks(Article article, List<UploadBlockRequest> requests) {
         List<Block> blocks = requests.stream().map( r ->
-                new Block(null, article, r.position(), r.type(), r.properties())
+                Block.of(article, r.position(), r.type(), r.properties())
         ).toList();
-
         return blockRepository.saveAll(blocks);
     }
 }

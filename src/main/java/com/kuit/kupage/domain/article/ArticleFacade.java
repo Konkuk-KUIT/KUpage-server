@@ -27,8 +27,6 @@ public class ArticleFacade {
     @Transactional
     public Article createArticle(UploadArticleRequest request, Long memberId) {
 
-        // files, imgs 사이즈와 개수에 대한 validation 필요
-
         Member member = memberService.getMember(memberId);
         List<Tag> tags = tagService.findTags(request.tags());
         Article article = articleService.createArticle(member, request.title());

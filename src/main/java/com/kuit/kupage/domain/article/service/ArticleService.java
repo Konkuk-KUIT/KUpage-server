@@ -15,7 +15,7 @@ public class ArticleService {
 
     @Transactional
     public Article createArticle(Member member, String title) {
-        Article article = new Article(null, member, title);
+        Article article = Article.of(member, title);
         return articleRepository.save(article);
     }
 
