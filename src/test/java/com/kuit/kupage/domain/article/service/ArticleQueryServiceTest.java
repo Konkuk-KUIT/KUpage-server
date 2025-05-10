@@ -33,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@Import(MockSecurityConfig.class)
 class ArticleQueryServiceTest {
 
     @MockitoBean
