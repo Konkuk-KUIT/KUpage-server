@@ -1,13 +1,10 @@
-package com.kuit.kupage.domain.article;
+package com.kuit.kupage.domain.article.service;
 
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.article.domain.Article;
 import com.kuit.kupage.domain.article.domain.BlockType;
 import com.kuit.kupage.domain.article.domain.Tag;
-import com.kuit.kupage.domain.article.service.ArticleService;
-import com.kuit.kupage.domain.article.service.ArticleTagService;
-import com.kuit.kupage.domain.article.service.BlockService;
-import com.kuit.kupage.domain.article.service.TagService;
+import com.kuit.kupage.domain.article.dto.UploadArticleRequest;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.exception.ArticleException;

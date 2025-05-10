@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.article;
+package com.kuit.kupage.domain.article.dto;
 
 import com.kuit.kupage.domain.article.domain.BlockType;
 import jakarta.validation.constraints.NotEmpty;

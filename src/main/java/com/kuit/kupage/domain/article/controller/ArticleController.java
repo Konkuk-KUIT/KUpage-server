@@ -1,8 +1,8 @@
 package com.kuit.kupage.domain.article.controller;
 
 import com.kuit.kupage.common.auth.AuthMember;
-import com.kuit.kupage.domain.article.ArticleFacade;
-import com.kuit.kupage.domain.article.UploadArticleRequest;
+import com.kuit.kupage.domain.article.service.ArticleFacade;
+import com.kuit.kupage.domain.article.dto.UploadArticleRequest;
 import com.kuit.kupage.domain.article.domain.Article;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

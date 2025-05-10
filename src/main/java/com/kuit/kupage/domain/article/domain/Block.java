@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.article.domain;
 
-import com.kuit.kupage.domain.article.BlockPropertyValidator;
+import com.kuit.kupage.domain.article.service.BlockPropertyValidator;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

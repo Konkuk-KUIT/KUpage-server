@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.article;
+package com.kuit.kupage.domain.article.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 

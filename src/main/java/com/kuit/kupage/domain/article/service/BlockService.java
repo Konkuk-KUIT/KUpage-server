@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.article.service;
 
-import com.kuit.kupage.domain.article.UploadBlockRequest;
+import com.kuit.kupage.domain.article.dto.UploadBlockRequest;
 import com.kuit.kupage.domain.article.domain.Article;
 import com.kuit.kupage.domain.article.domain.Block;
 import com.kuit.kupage.domain.article.repository.BlockJdbcRepository;

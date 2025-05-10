@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.article;
+package com.kuit.kupage.domain.article.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuit.kupage.common.response.ResponseCode;
