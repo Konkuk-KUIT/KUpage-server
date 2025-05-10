@@ -1,10 +1,9 @@
-package com.kuit.kupage.common;
+package com.kuit.kupage.common.file;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.exception.KupageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

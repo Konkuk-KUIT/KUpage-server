@@ -46,7 +46,8 @@ public class MemberService {
         return jwtTokenService.generateGuestToken(savedMember);
     }
 
-    private Member getMember(Long memberId) {
+    @Transactional(readOnly = true)
+    public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(IllegalArgumentException::new);
     }
