@@ -1,7 +1,9 @@
 package com.kuit.kupage.domain.article.service;
 
+import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.article.domain.Tag;
 import com.kuit.kupage.domain.article.repository.TagRepository;
+import com.kuit.kupage.exception.ArticleException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,7 @@ public class TagService {
     public List<Tag> findTags(List<String> names) {
         List<Tag> tags = tagRepository.findTagsByNameIn(names);
         if (names.size() != tags.size()) {
-            throw new RuntimeException("태그 입력 오류");
+            throw new ArticleException(ResponseCode.INVALID_TAGS);
         }
         return tags;
     }

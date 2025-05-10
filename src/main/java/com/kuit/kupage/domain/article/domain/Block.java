@@ -1,7 +1,8 @@
 package com.kuit.kupage.domain.article.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kuit.kupage.common.response.ResponseCode;
+import com.kuit.kupage.exception.ArticleException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,27 +36,24 @@ public class Block {
     public static Block of(Article article, Integer position, BlockType type, String properties) {
         Map<String, String> props = Map.of();
         try {
-             props = objectMapper.readValue(properties, Map.class);
-        } catch (JsonProcessingException e) {
-            System.out.println("error");
+            props = objectMapper.readValue(properties, Map.class);
+        } catch (Exception e) {
+            throw new ArticleException(ResponseCode.PARSING_ISSUE);
         }
 
         if(!StringUtils.hasText(props.get("title")))
-            throw new RuntimeException("제목 값 필요");
+            throw new ArticleException(ResponseCode.INVALID_TITLE_PROPERTY);
 
-        if(Stream.of(BlockType.IMAGE, BlockType.FILE, BlockType.URL).anyMatch(t -> t == type)) {
+        boolean typeHasUrl = Stream.of(BlockType.IMAGE, BlockType.FILE, BlockType.URL).anyMatch(t -> t == type);
+        if(typeHasUrl) {
             if(!StringUtils.hasText(props.get("url")))
-                throw new RuntimeException("url 값 필요");
+                throw new ArticleException(ResponseCode.INVALID_URL_PROPERTY);
         }
 
         if(type == BlockType.CODE) {
             if(!StringUtils.hasText(props.get("code_lang")))
-                throw new RuntimeException("url 값 필요");
+                throw new ArticleException(ResponseCode.INVALID_CODE_LANG_PROPERTY);
         }
-
-        System.out.println(props.get("title"));
-        System.out.println(props.get("code_lang"));
-        System.out.println(props.get("url"));
 
         return new Block(null, article, position, type, properties);
     }
