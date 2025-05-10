@@ -6,6 +6,7 @@ import com.kuit.kupage.exception.ArticleException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @Entity
+@Getter
 @Table(name = "block")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -27,6 +29,7 @@ public class Block {
     private Article article;
 
     private Integer position;
+    @Enumerated(value = EnumType.STRING)
     private BlockType type;
 
     private String properties; // JSON 직렬화 문자열

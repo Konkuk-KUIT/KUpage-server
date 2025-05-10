@@ -3,6 +3,7 @@ package com.kuit.kupage.domain.article.service;
 import com.kuit.kupage.domain.article.UploadBlockRequest;
 import com.kuit.kupage.domain.article.domain.Article;
 import com.kuit.kupage.domain.article.domain.Block;
+import com.kuit.kupage.domain.article.repository.BlockJdbcRepository;
 import com.kuit.kupage.domain.article.repository.BlockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,16 @@ import java.util.List;
 public class BlockService {
 
     private final BlockRepository blockRepository;
+    private final BlockJdbcRepository blockJdbcRepository;
 
     @Transactional
     public List<Block> createBlocks(Article article, List<UploadBlockRequest> requests) {
         List<Block> blocks = requests.stream().map( r ->
                 Block.of(article, r.position(), r.type(), r.properties())
         ).toList();
-        return blockRepository.saveAll(blocks);
+
+        blockJdbcRepository.saveAllBatch(blocks);
+        List<Integer> positions = blocks.stream().map(Block::getPosition).toList();
+        return blockRepository.findBlocksByArticleAndPositionIn(article, positions);
     }
 }
