@@ -61,7 +61,7 @@ class ArticleQueryControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result.page").value(page))
-                .andExpect(jsonPath("$.result.size").value(15))
+                .andExpect(jsonPath("$.result.size").value(16))
                 .andExpect(jsonPath("$.result.totalElements").value(2))
                 .andExpect(jsonPath("$.result.totalPages").value(1))
                 .andExpect(jsonPath("$.result.remainingPages").value(0))
