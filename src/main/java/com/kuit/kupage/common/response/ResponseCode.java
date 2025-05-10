@@ -31,19 +31,20 @@ public enum ResponseCode {
     // 4000 번대 : article 관련 코드
     INVALID_TITLE(false, 4000, "아티클의 제목의 형식을 확인해주세요."),
     INVALID_TAGS(false, 4001, "올바른 태그 목록을 입력하세요."),
+    INVALID_POSITIONS(false, 4002, "블럭의 position 형식을 다시 확인해주세요"),
 
-    INVALID_IMAGE_TYPE(false, 4002, "지원하지 않는 이미지 형식입니다."),
-    TOO_BIG_IMAGE(false, 4003, "이미지의 크기가 너무 큽니다."),
-    TOO_MANY_IMAGE(false, 4004, "이미지 블럭의 개수가 너무 많습니다."),
+    INVALID_IMAGE_TYPE(false, 4003, "지원하지 않는 이미지 형식입니다."),
+    TOO_BIG_IMAGE(false, 4004, "이미지의 크기가 너무 큽니다."),
+    TOO_MANY_IMAGE(false, 4005, "이미지 블럭의 개수가 너무 많습니다."),
 
-    TOO_BIG_FILE(false, 4005, "파일의 크기가 너무 큽니다."),
-    TOO_MANY_FILE(false, 4006, "파일 블럭의 개수가 너무 많습니다."),
+    TOO_BIG_FILE(false, 4006, "파일의 크기가 너무 큽니다."),
+    TOO_MANY_FILE(false, 4007, "파일 블럭의 개수가 너무 많습니다."),
 
-    PARSING_ISSUE(false, 4007, "블럭의 properties 형식을 확인해주세요."),
+    PARSING_ISSUE(false, 4008, "블럭의 properties 형식을 확인해주세요."),
 
-    INVALID_TITLE_PROPERTY(false, 4008, "블럭의 title property를 다시 확인해주세요."),
-    INVALID_URL_PROPERTY(false, 4009, "블럭의 url property를 다시 확인해주세요."),
-    INVALID_CODE_LANG_PROPERTY(false, 4010, "블럭의 code_lang property를 다시 확인해주세요");
+    INVALID_TITLE_PROPERTY(false, 4009, "블럭의 title property를 다시 확인해주세요."),
+    INVALID_URL_PROPERTY(false, 4010, "블럭의 url property를 다시 확인해주세요."),
+    INVALID_CODE_LANG_PROPERTY(false, 4011, "블럭의 code_lang property를 다시 확인해주세요");
 
     private boolean isSuccess;
     private int code;

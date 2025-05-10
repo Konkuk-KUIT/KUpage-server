@@ -5,6 +5,7 @@ import com.kuit.kupage.domain.article.domain.Article;
 import com.kuit.kupage.domain.article.domain.BlockType;
 import com.kuit.kupage.domain.article.domain.Tag;
 import com.kuit.kupage.domain.article.dto.UploadArticleRequest;
+import com.kuit.kupage.domain.article.dto.UploadBlockRequest;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.exception.ArticleException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +31,8 @@ public class ArticleFacade {
 
     @Transactional
     public Article createArticle(UploadArticleRequest request, Long memberId) {
-        validateImageFileBlockCount(request);
+        validateImageFileBlockCount(request.blocks());
+        validateBlockPosition(request.blocks());
 
         Member member = memberService.getMember(memberId);
         List<Tag> tags = tagService.findTags(request.tags());
@@ -40,15 +43,25 @@ public class ArticleFacade {
         return article;
     }
 
-    private static void validateImageFileBlockCount(UploadArticleRequest request) {
-        int imageCount = request.blocks().stream()
+    private void validateBlockPosition(List<UploadBlockRequest> blocks) {
+        int setSize = blocks.stream()
+                .map(UploadBlockRequest::position)
+                .collect(Collectors.toSet())
+                .size();
+        if(blocks.size() != setSize) {
+            throw new ArticleException(ResponseCode.INVALID_POSITIONS);
+        }
+    }
+
+    private static void validateImageFileBlockCount(List<UploadBlockRequest> blocks) {
+        int imageCount = blocks.stream()
                 .map(b -> b.type() == BlockType.IMAGE)
                 .toList()
                 .size();
         if(imageCount > IMAGE_BLOCK_MAX_COUNT)
             throw new ArticleException(ResponseCode.TOO_MANY_IMAGE);
 
-        int fileCount = request.blocks().stream()
+        int fileCount = blocks.stream()
                 .map(b -> b.type() == BlockType.FILE)
                 .toList()
                 .size();
