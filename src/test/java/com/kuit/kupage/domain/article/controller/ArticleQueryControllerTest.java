@@ -1,10 +1,14 @@
 package com.kuit.kupage.domain.article.controller;
 
+import com.kuit.kupage.domain.article.domain.BlockType;
+import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
 import com.kuit.kupage.domain.article.dto.ArticleResponse;
+import com.kuit.kupage.domain.article.dto.BlockResponse;
 import com.kuit.kupage.domain.article.dto.PagedResponse;
 import com.kuit.kupage.domain.article.service.ArticleQueryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
@@ -21,8 +25,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ArticleQueryController.class)
 class ArticleQueryControllerTest {
@@ -42,14 +45,16 @@ class ArticleQueryControllerTest {
         String tag = "backend";
         ArticleResponse a1 = new ArticleResponse(1L, 1L, "Author1", "Title1", LocalDateTime.of(2025, 5, 10, 14, 0));
         ArticleResponse a2 = new ArticleResponse(2L, 2L, "Author2", "Title2", LocalDateTime.of(2025, 5, 10, 13, 0));
-        PagedResponse<ArticleResponse> paged = PagedResponse.of(
-                List.of(a1, a2),
-                page,
-                16,
-                2,
-                1,
-                0
-        );
+        PagedResponse paged = PagedResponse
+                .builder()
+                .content(List.of(a1, a2))
+                .page(page)
+                .size(16)
+                .totalElements(2)
+                .totalPages(1)
+                .remainingPages(0)
+                .build();
+
         given(articleQueryService.listArticles(page, tag)).willReturn(paged);
 
         // when & then
@@ -69,6 +74,45 @@ class ArticleQueryControllerTest {
                 .andExpect(jsonPath("$.result.content[0].id").value(1))
                 .andExpect(jsonPath("$.result.content[0].title").value("Title1"));
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("아티클 상세 조회 - 성공")
+    void givenArticleId_ReturnsDetails() throws Exception {
+        // given
+        long articleId = 1L;
+        BlockResponse block = BlockResponse.of(1, BlockType.TEXT, "테스트");
+        ArticleDetailResponse detail = ArticleDetailResponse.builder()
+                .id(articleId)
+                .authorName("minu")
+                .title("Test Article")
+                .content(List.of(block))
+                .createdAt(LocalDateTime.of(2025, 5, 11, 0, 0))
+                .build();
+
+        given(articleQueryService.detailById(articleId))
+                .willReturn(detail);
+
+        // when & then
+        mockMvc.perform(get("/articles/{articleId}", articleId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                // BaseResponse standard fields
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andExpect(jsonPath("$.success").value(true))
+                // result payload fields
+                .andExpect(jsonPath("$.result.id").value(articleId))
+                .andExpect(jsonPath("$.result.authorName").value("minu"))
+                .andExpect(jsonPath("$.result.title").value("Test Article"))
+                .andExpect(jsonPath("$.result.content").isArray())
+                .andExpect(jsonPath("$.result.content[0].position").value(1))
+                .andExpect(jsonPath("$.result.content[0].type").value("TEXT"))
+                .andExpect(jsonPath("$.result.content[0].properties").value("테스트"))
+                .andExpect(jsonPath("$.result.createdAt").value("2025-05-11T00:00:00"));;
+    }
+
 
 
 }
