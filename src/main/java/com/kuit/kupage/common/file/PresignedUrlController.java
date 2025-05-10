@@ -11,13 +11,17 @@ public class PresignedUrlController {
 
     private final PresignedUrlService presignedUrlService;
 
-    @GetMapping("/file/pre-signed")
-    public String getFilePresignedUrl(@RequestBody PreSignedUrlRequest request) {
-        return presignedUrlService.getPreSignedUrl("file", request.contentName());
+    @GetMapping("/article/file/pre-signed")
+    public PresignedUrlResponse getFilePresignedUrl(@RequestBody ArticlePreSignedFileUrlRequest request) {
+        String preSignedUrl = presignedUrlService.getPreSignedUrl("file", request.contentType(), request.contentLength(), request.contentName());
+        String fileUrl = preSignedUrl.split("\\?")[0];
+        return new PresignedUrlResponse(preSignedUrl, fileUrl);
     }
 
-    @GetMapping("/image/pre-signed")
-    public String getImagePresignedUrl(@RequestBody PreSignedUrlRequest request) {
-        return presignedUrlService.getPreSignedUrl("image", request.contentName());
+    @GetMapping("/article/image/pre-signed")
+    public PresignedUrlResponse getImagePresignedUrl(@RequestBody ArticlePreSignedImageUrlRequest request) {
+        String preSignedUrl = presignedUrlService.getPreSignedUrl("image",  request.contentType(), request.contentLength(), request.contentName());
+        String fileUrl = preSignedUrl.split("\\?")[0];
+        return new PresignedUrlResponse(preSignedUrl, fileUrl);
     }
 }

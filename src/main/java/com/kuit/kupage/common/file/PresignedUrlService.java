@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,12 +29,12 @@ public class PresignedUrlService {
      * @param fileName 클라이언트가 전달한 파일명 파라미터
      * @return presigned url
      */
-    public String getPreSignedUrl(String prefix, String fileName) {
+    public String getPreSignedUrl(String prefix, String contentType, String contentLength, String fileName) {
         if (StringUtils.hasText(prefix)) {
             fileName = createPath(prefix, fileName);
         }
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, fileName);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, contentType, contentLength, fileName);
         URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
         return url.toString();
     }
@@ -45,7 +46,7 @@ public class PresignedUrlService {
      * @param fileName S3 업로드용 파일 이름
      * @return presigned url
      */
-    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String fileName) {
+    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String contentType, String contentLength, String fileName) {
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucket, fileName)
                         .withMethod(HttpMethod.PUT)
@@ -53,6 +54,8 @@ public class PresignedUrlService {
         generatePresignedUrlRequest.addRequestParameter(
                 Headers.S3_CANNED_ACL,
                 CannedAccessControlList.PublicRead.toString());
+        generatePresignedUrlRequest.putCustomRequestHeader(HTTP.CONTENT_TYPE, contentType);
+        generatePresignedUrlRequest.putCustomRequestHeader(HTTP.CONTENT_LEN, contentLength);
         return generatePresignedUrlRequest;
     }
 
