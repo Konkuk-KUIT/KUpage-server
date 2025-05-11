@@ -1,8 +1,10 @@
 package com.kuit.kupage.domain.article.service;
 
-import com.kuit.kupage.common.S3Service;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.config.S3Config;
+import com.kuit.kupage.common.file.PresignedUrlController;
+import com.kuit.kupage.common.file.PresignedUrlService;
+import com.kuit.kupage.common.file.S3Service;
 import com.kuit.kupage.domain.article.domain.*;
 import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
 import com.kuit.kupage.domain.article.dto.ArticleResponse;
@@ -40,6 +42,8 @@ class ArticleQueryServiceTest {
     @MockitoBean private JwtTokenService jwtTokenService;
     @MockitoBean private S3Config s3Config;
     @MockitoBean private DiscordOAuthService discordOAuthService;
+    @MockitoBean private PresignedUrlController presignedUrlController;
+    @MockitoBean private PresignedUrlService presignedUrlService;
 
     @Autowired private ArticleQueryService service;
     @Autowired private ArticleRepository articleRepository;

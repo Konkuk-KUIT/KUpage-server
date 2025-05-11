@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface BlockRepository extends JpaRepository<Block, Long> {
     List<Block> findBlocksByArticleAndPositionIn(Article article, List<Integer> positions);
+    List<Block> findAllByArticle_Id(Long articleId);
 }

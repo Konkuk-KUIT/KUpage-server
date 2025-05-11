@@ -44,7 +44,9 @@ public enum ResponseCode {
 
     INVALID_TITLE_PROPERTY(false, 4009, "블럭의 title property를 다시 확인해주세요."),
     INVALID_URL_PROPERTY(false, 4010, "블럭의 url property를 다시 확인해주세요."),
-    INVALID_CODE_LANG_PROPERTY(false, 4011, "블럭의 code_lang property를 다시 확인해주세요");
+    INVALID_CODE_LANG_PROPERTY(false, 4011, "블럭의 code_lang property를 다시 확인해주세요"),
+
+    NOT_FOUND_ARTICLE(false, 4012, "존재하지 않는 아티클입니다.");
 
     private boolean isSuccess;
     private int code;
