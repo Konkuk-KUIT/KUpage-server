@@ -16,11 +16,11 @@ public class PresignedUrlController {
 
     private final PresignedUrlService presignedUrlService;
     private final List<String> ALLOWED_IMAGE_TYPES = List.of("image/png", "image/jpeg", "image/gif");
-    private final Integer MAX_IMAGE_SIZE = 10*1024*1024; //10MB
-    private final Integer MAX_FILE_SIZE = 20*1024*1024; //20MB
+    private final static Integer MAX_IMAGE_SIZE = 10*1024*1024; //10MB
+    private final static Integer MAX_FILE_SIZE = 20*1024*1024; //20MB
 
-    @GetMapping("/pre-signed/article/file")
-    public BaseResponse<PresignedUrlResponse> getFilePresignedUrl(@RequestBody ArticlePreSignedFileUrlRequest request) {
+    @GetMapping("/pre-signed/articles/file")
+    public BaseResponse<PresignedUrlResponse> getFilePresignedUrl(@RequestBody PresignedUrlRequest request) {
         if(request.contentLength() > MAX_FILE_SIZE) {
             throw new ArticleException(ResponseCode.TOO_BIG_FILE);
         }
@@ -30,8 +30,8 @@ public class PresignedUrlController {
         return new BaseResponse<>(ResponseCode.SUCCESS, new PresignedUrlResponse(preSignedUrl, fileUrl));
     }
 
-    @GetMapping("/pre-signed/article/image")
-    public BaseResponse<PresignedUrlResponse> getImagePresignedUrl(@RequestBody ArticlePreSignedImageUrlRequest request) {
+    @GetMapping("/pre-signed/articles/image")
+    public BaseResponse<PresignedUrlResponse> getImagePresignedUrl(@RequestBody PresignedUrlRequest request) {
         if(ALLOWED_IMAGE_TYPES.stream().noneMatch(t-> t.equals(request.contentType()))) {
             throw new ArticleException(ResponseCode.INVALID_IMAGE_TYPE);
         }

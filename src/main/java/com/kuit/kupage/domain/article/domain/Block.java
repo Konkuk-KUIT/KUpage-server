@@ -2,13 +2,11 @@ package com.kuit.kupage.domain.article.domain;
 
 import com.kuit.kupage.domain.article.service.BlockPropertyValidator;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
 @Table(name = "block")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -31,7 +29,13 @@ public class Block {
 
     public static Block of(Article article, Integer position, BlockType type, String properties) {
         BlockPropertyValidator.validateBlockProperties(type, properties);
-        return new Block(null, article, position, type, properties);
+        return Block.builder()
+                .id(null)
+                .article(article)
+                .position(position)
+                .type(type)
+                .properties(properties)
+                .build();
     }
 
 }

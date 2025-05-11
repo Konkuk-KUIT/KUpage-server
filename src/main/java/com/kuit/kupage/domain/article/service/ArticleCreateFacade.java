@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleFacade {
+public class ArticleCreateFacade {
 
     private final MemberService memberService;
     private final TagService tagService;
@@ -31,8 +31,9 @@ public class ArticleFacade {
 
     @Transactional
     public Article createArticle(UploadArticleRequest request, Long memberId) {
-        validateImageFileBlockCount(request.blocks());
         validateBlockPosition(request.blocks());
+        validateFileBlockCount(request.blocks());
+        validateImageBlockCount(request.blocks());
 
         Member member = memberService.getMember(memberId);
         List<Tag> tags = tagService.findTags(request.tags());
@@ -53,19 +54,21 @@ public class ArticleFacade {
         }
     }
 
-    private static void validateImageFileBlockCount(List<UploadBlockRequest> blocks) {
-        int imageCount = blocks.stream()
-                .map(b -> b.type() == BlockType.IMAGE)
-                .toList()
-                .size();
-        if(imageCount > IMAGE_BLOCK_MAX_COUNT)
-            throw new ArticleException(ResponseCode.TOO_MANY_IMAGE);
-
+    private void validateFileBlockCount(List<UploadBlockRequest> blocks) {
         int fileCount = blocks.stream()
                 .map(b -> b.type() == BlockType.FILE)
                 .toList()
                 .size();
         if(fileCount > FILE_BLOCK_MAX_COUNT)
             throw new ArticleException(ResponseCode.TOO_MANY_FILE);
+    }
+
+    private void validateImageBlockCount(List<UploadBlockRequest> blocks) {
+        int imageCount = blocks.stream()
+                .map(b -> b.type() == BlockType.IMAGE)
+                .toList()
+                .size();
+        if(imageCount > IMAGE_BLOCK_MAX_COUNT)
+            throw new ArticleException(ResponseCode.TOO_MANY_IMAGE);
     }
 }

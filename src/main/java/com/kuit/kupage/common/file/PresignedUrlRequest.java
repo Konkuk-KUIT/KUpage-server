@@ -1,6 +1,6 @@
 package com.kuit.kupage.common.file;
 
-public record ArticlePreSignedImageUrlRequest(
+public record PresignedUrlRequest(
         String contentType,
         Integer contentLength,
         String contentName
