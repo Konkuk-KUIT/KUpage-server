@@ -6,8 +6,7 @@ import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -18,6 +17,8 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member {
 
     @Id

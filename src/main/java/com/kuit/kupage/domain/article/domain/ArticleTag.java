@@ -1,5 +1,6 @@
 package com.kuit.kupage.domain.article.domain;
 
+import com.kuit.kupage.common.type.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,9 +9,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ArticleTag {
+public class ArticleTag extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_tag_id")
     private Long id;
