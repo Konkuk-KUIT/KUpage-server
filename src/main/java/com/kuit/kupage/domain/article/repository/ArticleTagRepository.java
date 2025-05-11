@@ -1,12 +1,12 @@
 package com.kuit.kupage.domain.article.repository;
 
+import com.kuit.kupage.domain.article.domain.Article;
 import com.kuit.kupage.domain.article.domain.ArticleTag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.kuit.kupage.domain.article.domain.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ArticleTagRepository extends JpaRepository<ArticleTag, Long> {
-    @EntityGraph(attributePaths = {"tag", "article"})
-    Page<ArticleTag> findByTag_Name(String tagName, Pageable pageable);
+    List<ArticleTag> findArticleTagsByArticleAndTagIn(Article article, List<Tag> tags);
 }
