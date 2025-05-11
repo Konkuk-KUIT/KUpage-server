@@ -3,10 +3,12 @@ package com.kuit.kupage.domain.member.service;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
-import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
-import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
+import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
+import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,9 +48,10 @@ public class MemberService {
         return jwtTokenService.generateGuestToken(savedMember);
     }
 
-    private Member getMember(Long memberId) {
+    @Transactional(readOnly = true)
+    public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new MemberException(ResponseCode.NONE_MEMBER));
     }
 
     //todo 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
