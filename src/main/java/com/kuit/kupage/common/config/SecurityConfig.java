@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest.
                         requestMatchers(HttpMethod.POST, "/articles")
                         .hasRole(MEMBER.getValue()).
-                        requestMatchers("/pre-signed/article/*")
+                        requestMatchers("/pre-signed/articles/*")
                         .hasRole(MEMBER.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
