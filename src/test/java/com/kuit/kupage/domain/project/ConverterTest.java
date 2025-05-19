@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Commit;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class ConverterTest {
 
     @Test
     @DisplayName("Converter 학습 테스트")
-    @Commit
+//    @Commit
     void test() {
         // given
         Project project = new Project(
