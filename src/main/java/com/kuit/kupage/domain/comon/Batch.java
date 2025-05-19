@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.role;
+package com.kuit.kupage.domain.comon;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
