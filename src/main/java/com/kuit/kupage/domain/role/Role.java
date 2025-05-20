@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.role;
 
-import com.kuit.kupage.domain.comon.Batch;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.common.auth.AuthRole;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.project;
 
-import com.kuit.kupage.domain.comon.Batch;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.project.entity.AppField;
 import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.project.entity.Project;
@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
@@ -40,10 +42,16 @@ public class ConverterTest {
         // when
         em.persist(project);
         em.flush();
+        em.clear();
 
         Project findProject = em.find(Project.class, 1L);
-        System.out.println(findProject.getAppFields());
-        System.out.println(findProject.getTechStacks());
+        assertThat(findProject.getAppFields().size()).isEqualTo(2);
+        assertThat(findProject.getAppFields().get(0)).isEqualTo(AppField.마케팅);
+        assertThat(findProject.getAppFields().get(1)).isEqualTo(AppField.게임);
+
+        assertThat(findProject.getTechStacks().size()).isEqualTo(2);
+        assertThat(findProject.getTechStacks().get(0)).isEqualTo("IntelliJ");
+        assertThat(findProject.getTechStacks().get(1)).isEqualTo("React");
 
         // then
     }

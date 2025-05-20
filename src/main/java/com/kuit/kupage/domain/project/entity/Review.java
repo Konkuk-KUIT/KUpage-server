@@ -8,7 +8,8 @@ public class Review {
     @Column(name = "review_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
     private Project project;
 
     private String memberDesc;
