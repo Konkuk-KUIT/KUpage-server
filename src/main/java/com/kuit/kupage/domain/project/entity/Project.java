@@ -22,6 +22,8 @@ public class Project {
 
     private String name;
 
+    private String summary;
+
     private String detail_url;
 
     private Batch batch;
@@ -33,6 +35,8 @@ public class Project {
 
     @Convert(converter = StringListStringConverter.class)
     private List<String> techStacks;
+
+    private String mainImagePath;
 
     private String detail_file_url;
 
