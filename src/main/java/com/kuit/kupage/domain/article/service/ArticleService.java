@@ -14,8 +14,8 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     @Transactional
-    public Article createArticle(Member member, String title) {
-        Article article = Article.of(member, title);
+    public Article createArticle(Member member, String title, String thumbnailImagePath) {
+        Article article = Article.of(member, title, thumbnailImagePath);
         return articleRepository.save(article);
     }
 

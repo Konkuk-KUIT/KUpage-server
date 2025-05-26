@@ -79,7 +79,7 @@ class ArticleQueryServiceTest {
 
         // 아티클 20개 생성 및 태그 & 블록 할당
         for (int i = 1; i <= 20; i++) {
-            Article article = articleRepository.save(new Article(null, savedMember, "Article" + i));
+            Article article = articleRepository.save(new Article(null, savedMember, "Article" + i, ""));
             ArticleTag at = articleTagRepository.save(new ArticleTag(null, article, tags.get(i % tags.size())));
             // 첫 번째 아티클에만 블록 생성
             if (i == 1) {

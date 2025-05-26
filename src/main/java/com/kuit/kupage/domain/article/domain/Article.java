@@ -25,10 +25,12 @@ public class Article extends BaseEntity {
 
     private String title;
 
+    private String thumbnailImagePath;
+
     private static final Integer MAX_TITLE_LENGTH = 50;
-    public static Article of(Member member, String title) {
+    public static Article of(Member member, String title, String thumbnailImagePath) {
         if(title.length() > MAX_TITLE_LENGTH)
             throw new ArticleException(ResponseCode.INVALID_TITLE);
-        return new Article(null, member, title);
+        return new Article(null, member, title, thumbnailImagePath);
     }
 }
