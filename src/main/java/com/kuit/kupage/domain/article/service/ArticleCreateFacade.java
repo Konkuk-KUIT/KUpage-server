@@ -37,7 +37,7 @@ public class ArticleCreateFacade {
 
         Member member = memberService.getMember(memberId);
         List<Tag> tags = tagService.findTags(request.tags());
-        Article article = articleService.createArticle(member, request.title());
+        Article article = articleService.createArticle(member, request.title(), request.thumbnailImagePath());
         articleTagService.createArticleTags(article, tags);
         blockService.createBlocks(article, request.blocks());
 
