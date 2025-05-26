@@ -1,20 +1,15 @@
 package com.kuit.kupage.domain.article.controller;
 
+import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.article.domain.BlockType;
 import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
 import com.kuit.kupage.domain.article.dto.ArticleResponse;
 import com.kuit.kupage.domain.article.dto.BlockResponse;
-import com.kuit.kupage.domain.article.dto.PagedResponse;
 import com.kuit.kupage.domain.article.service.ArticleQueryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -23,8 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ArticleQueryController.class)
@@ -45,15 +41,9 @@ class ArticleQueryControllerTest {
         String tag = "backend";
         ArticleResponse a1 = new ArticleResponse(1L, 1L, "Author1", "Title1", LocalDateTime.of(2025, 5, 10, 14, 0));
         ArticleResponse a2 = new ArticleResponse(2L, 2L, "Author2", "Title2", LocalDateTime.of(2025, 5, 10, 13, 0));
-        PagedResponse paged = PagedResponse
-                .builder()
-                .content(List.of(a1, a2))
-                .page(page)
-                .size(16)
-                .totalElements(2)
-                .totalPages(1)
-                .remainingPages(0)
-                .build();
+
+        List<ArticleResponse> contents = List.of(a1, a2);
+        PagedResponse<ArticleResponse> paged = PagedResponse.of(contents, page, 16, 2, 1);
 
         given(articleQueryService.listArticles(page, tag)).willReturn(paged);
 
