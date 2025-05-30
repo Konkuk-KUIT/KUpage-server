@@ -1,11 +1,11 @@
 package com.kuit.kupage.domain.article.service;
 
+import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.article.domain.Article;
 import com.kuit.kupage.domain.article.domain.ArticleTag;
 import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
 import com.kuit.kupage.domain.article.dto.ArticleResponse;
 import com.kuit.kupage.domain.article.dto.BlockResponse;
-import com.kuit.kupage.domain.article.dto.PagedResponse;
 import com.kuit.kupage.domain.article.repository.ArticleRepository;
 import com.kuit.kupage.domain.article.repository.ArticleTagRepository;
 import com.kuit.kupage.domain.article.repository.BlockRepository;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.kuit.kupage.common.response.ResponseCode.NOT_FOUND_ARTICLE;
 
@@ -34,7 +33,7 @@ public class ArticleQueryService {
 
     private static final int PAGE_SIZE = 16;
 
-    public PagedResponse listArticles(final int page, final String tag) {
+    public PagedResponse<ArticleResponse> listArticles(final int page, final String tag) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdAt").descending());
 
         Page<Article> paged = findArticlesByTagIfPresent(tag, pageable);
@@ -43,15 +42,7 @@ public class ArticleQueryService {
                 .map(ArticleResponse::from)
                 .toList();
 
-        return PagedResponse
-                .builder()
-                .content(content)
-                .page(paged.getNumber())
-                .size(paged.getSize())
-                .totalElements(paged.getTotalElements())
-                .totalPages(paged.getTotalPages())
-                .remainingPages(paged.getTotalPages() - paged.getNumber() - 1)
-                .build();
+        return PagedResponse.of(content, paged);
     }
 
     public ArticleDetailResponse detailById(final Long articleId) {

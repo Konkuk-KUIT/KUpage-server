@@ -48,6 +48,9 @@ public enum ResponseCode {
 
     NOT_FOUND_ARTICLE(false, 4012, "존재하지 않는 아티클입니다.");
 
+    // 5000 번대 : project 관련 코드
+
+
     private boolean isSuccess;
     private int code;
     private String message;
