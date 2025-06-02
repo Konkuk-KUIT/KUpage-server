@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/articles").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/signup")

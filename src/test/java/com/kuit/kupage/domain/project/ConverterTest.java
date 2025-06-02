@@ -30,11 +30,14 @@ public class ConverterTest {
         Project project = new Project(
                 null,
                 "프로젝트1",
+                "summary",
                 "detail url",
                 Batch.FIFTH,
                 AppType.Android,
                 List.of(AppField.마케팅, AppField.게임),
                 List.of("IntelliJ", "React"),
+                "mainImagePath",
+                "description",
                 "detail_file_url",
                 "service_links"
         );
