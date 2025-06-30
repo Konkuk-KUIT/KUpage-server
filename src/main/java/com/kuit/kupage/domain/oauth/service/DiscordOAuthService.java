@@ -1,13 +1,11 @@
 package com.kuit.kupage.domain.oauth.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
-import com.kuit.kupage.domain.role.dto.DiscordMember;
+import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 
-import java.net.URL;
 import java.util.List;
 
 @Slf4j
@@ -121,20 +118,20 @@ public class DiscordOAuthService {
         }
     }
 
-    public List<DiscordMember> fetchGuildMembers() {
+    public List<DiscordMemberResponse> fetchGuildMembers() {
         try {
-            List<DiscordMember> body = restClient.get()
+            List<DiscordMemberResponse> body = restClient.get()
                     .uri("/guilds/" + GUILD_ID + "/members?limit=1000")
                     .headers(headers -> headers.set("Authorization", "Bot " + BOT_TOKEN))
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {
                     });
-            for (DiscordMember discordMember : body) {
-                log.debug("유저: {}#{} | 역할 수: {}",
-                        discordMember.getUser().getUsername(),
-                        discordMember.getUser().getDiscriminator(),
-                        discordMember.getRoles().size());
-            }
+//            for (DiscordMemberResponse discordMemberResponse : body) {
+//                log.debug("유저: {}#{} | 역할 수: {}",
+//                        discordMemberResponse.getUser().getUsername(),
+//                        discordMemberResponse.getUser().getDiscriminator(),
+//                        discordMemberResponse.getRoles().size());
+//            }
             return body;
         } catch (Exception e) {
             throw new RuntimeException("디스코드 멤버 조회 실패", e);
