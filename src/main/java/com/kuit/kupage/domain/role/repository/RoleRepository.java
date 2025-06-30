@@ -11,6 +11,6 @@ import java.util.List;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Query("SELECT r FROM Role r WHERE r.discordRoleId IN :ids")
-    List<Role> findAllByDiscordRoleId(List<Long> ids);
+    List<Role> findAllByDiscordRoleId(List<String> ids);
 
 }

@@ -14,7 +14,6 @@ public class DiscordMemberResponse {
     public static class DiscordUser {
         private String id;                  // Discord 사용자 고유 ID (정수형 문자열)
         private String username;            // Discord 사용자 이름 (예: "rbqks529")
-        private String discriminator;       // 태그 뒤 숫자 discriminator, Discord에서 고유 구분자 (2024년 이후 대부분 '0')
         private String avatar;              // 사용자 프로필 이미지 해시 (CDN URL과 결합해 이미지 조회 가능)
         private boolean bot;                // 봇에 의해 관리되는 계정 여부 (true = Discord 봇)
     }

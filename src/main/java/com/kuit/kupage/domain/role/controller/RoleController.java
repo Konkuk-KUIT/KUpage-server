@@ -24,14 +24,15 @@ public class RoleController {
 
     @GetMapping
     public BaseResponse<?> getRole() {
+        // KUIT 서버의 모든 ROLE 조회, 업데이트
         List<DiscordRoleResponse> roleResponses = discordOAuthService.fetchGuildRoles();
         int updateCnt = roleService.batchUpdate(roleResponses);
         log.info("[getRole] 새롭게 생성 및 저장된 Role 개수 = {}", updateCnt);
 
-        // TODO 2. member의 ROLE 조회 -> DB 데이터와 달라진 점 있으면 변경하기
+        // 각 member의 ROLE 조회, 업데이트
         List<DiscordMemberResponse> discordMemberResponses = discordOAuthService.fetchGuildMembers();
-        CsvExporter.exportMembersToCsv(discordMemberResponses);
-
+        int updatedMemberCnt = roleService.syncMemberRoles(discordMemberResponses);
+        log.info("[getRole] role이 업데이트 된 회원 수 = {}", updatedMemberCnt);
 //        return new BaseResponse<>(ResponseCode.SUCCESS);
          return new BaseResponse<>(discordMemberResponses);
     }

@@ -31,7 +31,6 @@ public class Role {
     private String part;                // 서버, 안드...
     private String discordRoleId;       // 디스코드에 등록된 role의 id
 
-
     public AuthRole getAuthRole() {
         return RoleMapper.getRole(name.name());
     }

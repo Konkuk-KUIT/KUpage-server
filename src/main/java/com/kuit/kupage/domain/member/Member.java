@@ -5,6 +5,7 @@ import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.domain.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -81,5 +82,16 @@ public class Member {
 
     public void updateDetail(Detail detail) {
         this.detail = detail;
+    }
+
+    public void replaceRoles(List<Role> newRoles) {
+        // 1. 기존 MemberRole 모두 제거
+        this.memberRoles.clear();
+
+        // 2. 새 Role들로 MemberRole 생성 및 추가
+        for (Role role : newRoles) {
+            MemberRole memberRole = MemberRole.of(this, role);
+            this.memberRoles.add(memberRole);
+        }
     }
 }

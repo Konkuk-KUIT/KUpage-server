@@ -44,10 +44,9 @@ public class CsvExporter {
                 String nick = escape(member.getNick());
                 String avatar = member.getUser().getAvatar() != null ? user.getAvatar() : "";
 
-                writer.printf("%s,%s,%s,%s,%s,%s,%s,%b%n",
+                writer.printf("%s,%s,%s,%s,%s,%s,%b%n",
                         user.getId(),
                         escape(user.getUsername()),
-                        user.getDiscriminator(),
                         avatar,
                         nick,
                         escape(rolesJoined),
