@@ -16,4 +16,16 @@ public enum Batch {
 
     private final String description;
 
+
+    public static Batch parseBatch(String batchStr) {
+        return switch (batchStr.toLowerCase()) {
+            case "1st" -> Batch.FIRST;
+            case "2nd" -> Batch.SECOND;
+            case "3rd" -> Batch.THIRD;
+            case "4th" -> Batch.FOURTH;
+            case "5th" -> Batch.FIFTH;
+            case "6th" -> Batch.SIXTH;
+            default -> throw new IllegalArgumentException("알 수 없는 기수: " + batchStr);
+        };
+    }
 }
