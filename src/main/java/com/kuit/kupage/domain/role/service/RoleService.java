@@ -51,22 +51,30 @@ public class RoleService {
                         Function.identity()
                 ));
 
-        // 2. 각 멤버를 순회하며 DB와 Discord 데이터 동기화
+        // 2. Discord 멤버 ID를 한 번에 모아 조회
+        List<String> discordIds = discordMemberResponses.stream()
+                .map(r -> r.getUser().getId())
+                .distinct()
+                .toList();
+        Map<String, Member> memberByDiscordId = memberRepository.findAllByDiscordIdIn(discordIds).stream()
+                .collect(Collectors.toMap(Member::getDiscordId, Function.identity()));
+
+
+        // 3. 각 멤버를 순회하며 DB와 Discord 데이터 동기화
         int updatedMemberNum = 0;
         for (DiscordMemberResponse memberResponse : discordMemberResponses) {
             log.debug("[syncMemberRoles] 사용자 discordId = {}, username = {}",
                     memberResponse.getUser().getId(), memberResponse.getUser().getUsername());
 
-            // 2-1. Discord 사용자 ID로 DB에서 Member 조회
-            Optional<Member> optionalMember = memberRepository.findByDiscordId(memberResponse.getUser().getId());
-            if (optionalMember.isEmpty()) {
+            // 3-1. Discord 사용자 ID로 DB에서 Member 조회
+            Member member = memberByDiscordId.get(memberResponse.getUser().getId());
+            if (member == null) {
                 log.error("[syncMemberRoles] KUIT discord 서버에 가입하지 않은 사용자입니다. discordId = {}, username = {}",
                         memberResponse.getUser().getId(), memberResponse.getUser().getUsername());
                 continue;
             }
-            Member member = optionalMember.get();
 
-            // 2-2. 기존 역할과 새 역할이 다를 경우에만 Member 엔티티의 memberRoles 업데이트 수행
+            // 3-2. 기존 역할과 새 역할이 다를 경우에만 Member 엔티티의 memberRoles 업데이트 수행
             List<Role> newRoles = memberResponse.getRoles().stream()
                     .map(rolesByDiscordId::get)
                     .filter(Objects::nonNull)
