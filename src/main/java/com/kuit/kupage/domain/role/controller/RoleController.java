@@ -8,7 +8,7 @@ import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
 import com.kuit.kupage.domain.role.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +22,7 @@ public class RoleController {
     private final DiscordOAuthService discordOAuthService;
     private final RoleService roleService;
 
-    @GetMapping
+    @PostMapping("/sync")
     public BaseResponse<?> getRole() {
         // KUIT 서버의 모든 ROLE 조회, 업데이트
         List<DiscordRoleResponse> roleResponses = discordOAuthService.fetchGuildRoles();
