@@ -25,7 +25,7 @@ public class RoleService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
-    public int batchUpdate(List<DiscordRoleResponse> roleResponses) {
+    public int batchInsert(List<DiscordRoleResponse> roleResponses) {
         List<String> ids = roleResponses.stream()
                 .map(DiscordRoleResponse::getId)
                 .toList();
@@ -33,20 +33,8 @@ public class RoleService {
                 .map(Role::getDiscordRoleId)
                 .collect(Collectors.toSet());
 
-        List<Role> newRoles = roleResponses.stream()
-                .filter(roleDto -> !existingIds.contains(roleDto.getId())) // 없는 ID만 필터링
-                .map(roleDto -> {
-                    try {
-                        return Role.fromString(roleDto);
-                    } catch (IllegalArgumentException e) {
-                        log.error("[batchUpdate] 역할 이름을 Role로 바꾸는 중 오류 발생 : {}", roleDto.getName());
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .toList();
+        List<Role> newRoles = getNewRoles(roleResponses, existingIds);
         List<Role> saved = roleRepository.saveAll(newRoles);
-        log.info("[batchUpdate] 새로 저장된 role들 : {}", saved);
         return saved.size();
     }
 
@@ -63,12 +51,13 @@ public class RoleService {
                         Function.identity()
                 ));
 
-
-        // 2. 각 멤버를 순회하며 다음의 로직 수행
+        // 2. 각 멤버를 순회하며 DB와 Discord 데이터 동기화
+        int updatedMemberNum = 0;
         for (DiscordMemberResponse memberResponse : discordMemberResponses) {
             log.debug("[syncMemberRoles] 사용자 discordId = {}, username = {}",
                     memberResponse.getUser().getId(), memberResponse.getUser().getUsername());
 
+            // 2-1. Discord 사용자 ID로 DB에서 Member 조회
             Optional<Member> optionalMember = memberRepository.findByDiscordId(memberResponse.getUser().getId());
             if (optionalMember.isEmpty()) {
                 log.error("[syncMemberRoles] KUIT discord 서버에 가입하지 않은 사용자입니다. discordId = {}, username = {}",
@@ -76,16 +65,35 @@ public class RoleService {
                 continue;
             }
             Member member = optionalMember.get();
+
+            // 2-2. 기존 역할과 새 역할이 다를 경우에만 Member 엔티티의 memberRoles 업데이트 수행
             List<Role> newRoles = memberResponse.getRoles().stream()
                     .map(rolesByDiscordId::get)
                     .filter(Objects::nonNull)
                     .toList();
+
             List<MemberRole> oldRoles = member.getMemberRoles();
             if (hasRolesChanged(oldRoles, newRoles)){
                 member.replaceRoles(newRoles);
             }
+            updatedMemberNum += 1;
         }
-        return 0;
+        return updatedMemberNum;
+    }
+
+    private List<Role> getNewRoles(List<DiscordRoleResponse> roleResponses, Set<String> existingIds) {
+        return roleResponses.stream()
+                .filter(roleDto -> !existingIds.contains(roleDto.getId())) // 없는 ID만 필터링
+                .map(roleDto -> {
+                    try {
+                        return new Role(roleDto);
+                    } catch (IllegalArgumentException e) {
+                        log.error("[batchUpdate] 역할 이름을 Role로 바꾸는 중 오류 발생 : {}", roleDto.getName());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     private boolean hasRolesChanged(List<MemberRole> oldRoles, List<Role> newRoles) {

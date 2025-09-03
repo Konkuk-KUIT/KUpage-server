@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Transactional
@@ -108,11 +109,17 @@ public class DiscordOAuthService {
 
     public List<DiscordRoleResponse> fetchGuildRoles() {
         try {
-            return restClient.get()
+            List<DiscordRoleResponse> allRoleResponses = restClient.get()
                     .uri("/guilds/" + GUILD_ID + "/roles")
                     .headers(headers -> headers.set("Authorization", "Bot " + BOT_TOKEN))
                     .retrieve()
-                    .body(new ParameterizedTypeReference<>() {});
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // 봇을 제외하고 반환
+            return Objects.requireNonNull(allRoleResponses).stream()
+                    .filter(roleResponse -> !roleResponse.isManaged())
+                    .toList();
         } catch (Exception e) {
             throw new RuntimeException("디스코드 역할 조회 실패", e);
         }
