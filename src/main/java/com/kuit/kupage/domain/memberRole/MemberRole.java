@@ -23,4 +23,11 @@ public class MemberRole {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    public static MemberRole of(Member member, Role role) {
+        MemberRole memberRole = new MemberRole();
+        memberRole.member = member;
+        memberRole.role = role;
+        return memberRole;
+    }
 }
