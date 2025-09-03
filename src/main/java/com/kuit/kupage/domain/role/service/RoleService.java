@@ -81,7 +81,7 @@ public class RoleService {
                     .toList();
 
             List<MemberRole> oldRoles = member.getMemberRoles();
-            if (hasRolesChanged(oldRoles, newRoles)){
+            if (hasRolesChanged(oldRoles, newRoles)) {
                 member.replaceRoles(newRoles);
             }
             updatedMemberNum += 1;

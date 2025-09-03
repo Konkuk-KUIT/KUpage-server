@@ -23,16 +23,16 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping("/sync")
-    public BaseResponse<?> getRole() {
+    public BaseResponse<?> syncRoles() {
         // KUIT 서버의 모든 ROLE 조회, 업데이트
         List<DiscordRoleResponse> roleResponses = discordOAuthService.fetchGuildRoles();
         int updateCnt = roleService.batchInsert(roleResponses);
-        log.debug("[getRole] 새롭게 생성 및 저장된 Role 개수 = {}", updateCnt);
+        log.debug("[syncRoles] 새롭게 생성 및 저장된 Role 개수 = {}", updateCnt);
 
         // 각 member의 ROLE 조회, 업데이트
         List<DiscordMemberResponse> discordMemberResponses = discordOAuthService.fetchGuildMembers();
         int updatedMemberCnt = roleService.syncMemberRoles(discordMemberResponses);
-        log.debug("[getRole] role이 업데이트 된 회원 수 = {}", updatedMemberCnt);
+        log.debug("[syncRoles] role이 업데이트 된 회원 수 = {}", updatedMemberCnt);
         return new BaseResponse<>(ResponseCode.SUCCESS);
     }
 

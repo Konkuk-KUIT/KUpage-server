@@ -7,6 +7,7 @@ import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
+import com.kuit.kupage.exception.KupageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,10 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.kuit.kupage.common.response.ResponseCode.*;
 
 @Slf4j
 @Transactional
@@ -104,7 +108,6 @@ public class DiscordOAuthService {
         }
         log.debug("[processLoginOrSignup] 신규 회원 회원가입 처리");
         return memberService.signup(response, userInfo);
-//        return jwtTokenService.generateGuestToken(userInfo);
     }
 
     public List<DiscordRoleResponse> fetchGuildRoles() {
@@ -120,8 +123,12 @@ public class DiscordOAuthService {
             return Objects.requireNonNull(allRoleResponses).stream()
                     .filter(roleResponse -> !roleResponse.isManaged())
                     .toList();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
+        } catch (HttpClientErrorException.Forbidden e) {
+            throw new KupageException(DISCORD_BOT_FORBIDDEN);
         } catch (Exception e) {
-            throw new RuntimeException("디스코드 역할 조회 실패", e);
+            throw new KupageException(DISCORD_ROLE_FETCH_FAIL);
         }
     }
 
@@ -133,15 +140,13 @@ public class DiscordOAuthService {
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {
                     });
-//            for (DiscordMemberResponse discordMemberResponse : body) {
-//                log.debug("유저: {}#{} | 역할 수: {}",
-//                        discordMemberResponse.getUser().getUsername(),
-//                        discordMemberResponse.getUser().getDiscriminator(),
-//                        discordMemberResponse.getRoles().size());
-//            }
             return body;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
+        } catch (HttpClientErrorException.Forbidden e) {
+            throw new KupageException(DISCORD_BOT_FORBIDDEN);
         } catch (Exception e) {
-            throw new RuntimeException("디스코드 멤버 조회 실패", e);
+            throw new KupageException(DISCORD_MEMBER_FETCH_FAIL);
         }
     }
 }

@@ -33,8 +33,10 @@ public class Member {
 
     private String name;
 
+    @Column(name = "discord_id", unique = true, nullable = false)
     private String discordId;
 
+    @Column(name = "discord_login_id", unique = true, nullable = false)
     private String discordLoginId;
 
     private String profileImage;
