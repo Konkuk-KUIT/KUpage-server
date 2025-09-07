@@ -2,9 +2,10 @@ package com.kuit.kupage.domain.project.controller;
 
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.PagedResponse;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.project.dto.ProjectListResponse;
-import com.kuit.kupage.domain.project.service.ProjectService;
 import com.kuit.kupage.domain.project.entity.Project;
+import com.kuit.kupage.domain.project.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
@@ -30,9 +31,9 @@ public class ProjectQueryController {
 
     @Operation(summary = "프로젝트 목록 조회", description = "프로젝트 목록을 기수별로 조회합니다")
     @GetMapping("/projects")
-    public BaseResponse<PagedResponse<ProjectListResponse>> getProjects(@RequestParam("batch") ProjectQueryBatch batch, @RequestParam(defaultValue = "0") int page) {
+    public BaseResponse<PagedResponse<ProjectListResponse>> getProjects(@RequestParam("batch") Batch batch, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, PROJECT_COUNT_PER_PAGE, Sort.by("createdAt").descending());
-        Page<Project> projects = projectService.searchProjectsByBatch(pageable, batch.toString());
+        Page<Project> projects = projectService.searchProjectsByBatch(pageable, batch);
         List<ProjectListResponse> responses = projects.stream()
                 .map(p -> new ProjectListResponse(
                         p.getName(),

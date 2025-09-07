@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
     private final ProjectRepository projectRepository;
 
-    public Page<Project> searchProjectsByBatch(Pageable pageable, String batch) {
-        if(batch.equals("ALL")) {
+    public Page<Project> searchProjectsByBatch(Pageable pageable, Batch batch) {
+        if(batch.equals(Batch.ALL)) {
             return projectRepository.findAll(pageable);
         }
 
-        return projectRepository.findAllByBatch(pageable, Batch.valueOf(batch));
+        return projectRepository.findAllByBatch(pageable, batch);
     }
 }
