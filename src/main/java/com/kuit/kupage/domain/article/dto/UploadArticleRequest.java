@@ -7,6 +7,7 @@ import java.util.List;
 public record UploadArticleRequest(
         @NotBlank
         String title,
+        String thumbnailImagePath,
         List<String> tags,
         List<UploadBlockRequest> blocks
 ) {
