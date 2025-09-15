@@ -5,11 +5,11 @@ import com.kuit.kupage.common.config.S3Config;
 import com.kuit.kupage.common.file.PresignedUrlController;
 import com.kuit.kupage.common.file.PresignedUrlService;
 import com.kuit.kupage.common.file.S3Service;
+import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.article.domain.*;
 import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
 import com.kuit.kupage.domain.article.dto.ArticleResponse;
 import com.kuit.kupage.domain.article.dto.BlockResponse;
-import com.kuit.kupage.domain.article.dto.PagedResponse;
 import com.kuit.kupage.domain.article.repository.ArticleRepository;
 import com.kuit.kupage.domain.article.repository.ArticleTagRepository;
 import com.kuit.kupage.domain.article.repository.BlockRepository;
@@ -79,7 +79,7 @@ class ArticleQueryServiceTest {
 
         // 아티클 20개 생성 및 태그 & 블록 할당
         for (int i = 1; i <= 20; i++) {
-            Article article = articleRepository.save(new Article(null, savedMember, "Article" + i));
+            Article article = articleRepository.save(new Article(null, savedMember, "Article" + i, ""));
             ArticleTag at = articleTagRepository.save(new ArticleTag(null, article, tags.get(i % tags.size())));
             // 첫 번째 아티클에만 블록 생성
             if (i == 1) {
@@ -93,7 +93,7 @@ class ArticleQueryServiceTest {
     @Test
     @DisplayName("전체 조회 시 20개 반환되고 페이징을 검증하고, 제목/닉네임도 올바른지 확인한다.")
     void whenNoTag_thenReturn20Articles() {
-        PagedResponse resp = service.listArticles(0, null);
+        PagedResponse<ArticleResponse> resp = service.listArticles(0, null);
 
         // 페이징 검증
         assertThat(resp.content()).hasSize(16);
@@ -115,7 +115,7 @@ class ArticleQueryServiceTest {
     @Test
     @DisplayName("태그 backend 조회 시 10개 반환되고, 제목/닉네임도 검증한다.")
     void whenTagBackend_thenReturn10Articles() {
-        PagedResponse resp = service.listArticles(0, "backend");
+        PagedResponse<ArticleResponse> resp = service.listArticles(0, "backend");
 
         assertThat(resp.content()).hasSize(10);
         assertThat(resp.totalElements()).isEqualTo(10);

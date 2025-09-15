@@ -51,6 +51,9 @@ public enum ResponseCode {
     // 5000 : project 관련
     NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다.");
 
+    // 5000 번대 : project 관련 코드
+
+
     private boolean isSuccess;
     private int code;
     private String message;
