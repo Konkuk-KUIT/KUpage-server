@@ -1,5 +1,6 @@
 package com.kuit.kupage.domain.project.controller;
 
+
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.common.Batch;
@@ -12,26 +13,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import com.kuit.kupage.domain.project.dto.ProjectResponse;
+import com.kuit.kupage.domain.project.service.ProjectQueryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "프로젝트 조회 Controller", description = "프로젝트 조회 관련 Controller 입니다.")
 public class ProjectQueryController {
 
-    private final ProjectService projectService;
     private final int PROJECT_COUNT_PER_PAGE = 9;
 
-    public ProjectQueryController(ProjectService projectService) {
-        this.projectService = projectService;
+    private final ProjectQueryService projectQueryService;
+    private final ProjectService projectService;
+
+    @GetMapping("/projects/{projectId}")
+    public BaseResponse<ProjectResponse> getProject(@PathVariable(name = "projectId") Long projectId) {
+        return new BaseResponse<>(projectQueryService.getProject(projectId));
     }
 
     @Operation(summary = "프로젝트 목록 조회", description = "프로젝트 목록을 기수별로 조회합니다")
     @GetMapping("/projects")
-    public BaseResponse<PagedResponse<ProjectListResponse>> getProjects(@RequestParam("batch") Batch batch, @RequestParam(defaultValue = "0") int page) {
+    public BaseResponse<PagedResponse<ProjectListResponse>> getProjects(@RequestParam("batch") Batch batch,
+                                                                        @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, PROJECT_COUNT_PER_PAGE, Sort.by("createdAt").descending());
         Page<Project> projects = projectService.searchProjectsByBatch(pageable, batch);
         List<ProjectListResponse> responses = projects.stream()
@@ -46,3 +56,4 @@ public class ProjectQueryController {
         return new BaseResponse<>(PagedResponse.of(responses, projects));
     }
 }
+

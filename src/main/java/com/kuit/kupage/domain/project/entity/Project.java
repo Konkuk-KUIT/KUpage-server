@@ -38,6 +38,9 @@ public class Project {
 
     private String mainImagePath;
 
+    // notion url
+    private String description;
+
     private String detail_file_url;
 
     private String service_links;
