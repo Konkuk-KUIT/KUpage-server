@@ -5,13 +5,23 @@ import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
+import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
+import com.kuit.kupage.exception.KupageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+
+import java.util.List;
+import java.util.Objects;
+
+import static com.kuit.kupage.common.response.ResponseCode.*;
 
 @Slf4j
 @Transactional
@@ -29,6 +39,12 @@ public class DiscordOAuthService {
 
     @Value("${spring.security.oauth2.client.registration.discord.client-secret}")
     private String CLIENT_SECRET;
+
+    @Value("${discord.guild-id}")
+    private String GUILD_ID;
+
+    @Value("${discord.bot-token}")
+    private String BOT_TOKEN;
 
     public DiscordOAuthService(RestClient.Builder builder, MemberService memberService, JwtTokenService jwtTokenService) {
         this.restClient = builder
@@ -92,6 +108,45 @@ public class DiscordOAuthService {
         }
         log.debug("[processLoginOrSignup] 신규 회원 회원가입 처리");
         return memberService.signup(response, userInfo);
-//        return jwtTokenService.generateGuestToken(userInfo);
+    }
+
+    public List<DiscordRoleResponse> fetchGuildRoles() {
+        try {
+            List<DiscordRoleResponse> allRoleResponses = restClient.get()
+                    .uri("/guilds/" + GUILD_ID + "/roles")
+                    .headers(headers -> headers.set("Authorization", "Bot " + BOT_TOKEN))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // 봇을 제외하고 반환
+            return Objects.requireNonNull(allRoleResponses).stream()
+                    .filter(roleResponse -> !roleResponse.isManaged())
+                    .toList();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
+        } catch (HttpClientErrorException.Forbidden e) {
+            throw new KupageException(DISCORD_BOT_FORBIDDEN);
+        } catch (Exception e) {
+            throw new KupageException(DISCORD_ROLE_FETCH_FAIL);
+        }
+    }
+
+    public List<DiscordMemberResponse> fetchGuildMembers() {
+        try {
+            List<DiscordMemberResponse> body = restClient.get()
+                    .uri("/guilds/" + GUILD_ID + "/members?limit=1000")
+                    .headers(headers -> headers.set("Authorization", "Bot " + BOT_TOKEN))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+            return body;
+        } catch (HttpClientErrorException.Unauthorized e) {
+            throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
+        } catch (HttpClientErrorException.Forbidden e) {
+            throw new KupageException(DISCORD_BOT_FORBIDDEN);
+        } catch (Exception e) {
+            throw new KupageException(DISCORD_MEMBER_FETCH_FAIL);
+        }
     }
 }

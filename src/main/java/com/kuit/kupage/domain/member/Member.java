@@ -5,12 +5,17 @@ import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.domain.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Slf4j
@@ -28,8 +33,10 @@ public class Member {
 
     private String name;
 
+    @Column(name = "discord_id", unique = true, nullable = false)
     private String discordId;
 
+    @Column(name = "discord_login_id", unique = true, nullable = false)
     private String discordLoginId;
 
     private String profileImage;
@@ -45,7 +52,7 @@ public class Member {
     @JoinColumn(name = "detail_id")
     private Detail detail;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberRole> memberRoles = new ArrayList<>();
 
     public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
@@ -81,5 +88,30 @@ public class Member {
 
     public void updateDetail(Detail detail) {
         this.detail = detail;
+    }
+
+    public void replaceRoles(List<Role> newRoles) {
+        // 1. 새로 들어온 roleId 집합
+        Set<Long> newRoleIds = newRoles.stream()
+                .map(Role::getId)
+                .collect(Collectors.toSet());
+
+        // 2. 기존에서 제거가 필요한 MemberRole만 제거
+        memberRoles.removeIf(mr -> mr.getRole() == null ||
+                mr.getRole().getId() == null ||
+                !newRoleIds.contains(mr.getRole().getId()));
+
+        // 3. 현재 보유한 roleId 집합 재계산
+        Set<Long> haveRoleIds = memberRoles.stream()
+                .map(MemberRole::getRole).filter(Objects::nonNull)
+                .map(Role::getId).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 4. 없는 것만 추가
+        newRoles.stream()
+                .filter(Objects::nonNull)
+                .filter(role -> role.getId() != null && !haveRoleIds.contains(role.getId()))
+                .map(role -> MemberRole.of(this, role))
+                .forEach(memberRoles::add);
     }
 }

@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .hasRole(MEMBER.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/admin/**")
+                        .requestMatchers("/admin/**", "/role/sync")
                         .hasRole(ADMIN.getValue())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)

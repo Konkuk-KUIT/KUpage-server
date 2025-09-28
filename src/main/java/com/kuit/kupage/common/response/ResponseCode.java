@@ -28,6 +28,13 @@ public enum ResponseCode {
     NONE_MEMBER(false, 2001, "존재하지 않는 회원입니다."),
     ALREADY_MEMBER(false, 2002, "이미 회원가입 된 멤버입니다."),
 
+    // 3000 번대 : discord 외부 API 관련 코드
+    DISCORD_ROLE_FETCH_FAIL(false, 3000, "디스코드 역할 조회 실패"),
+    DISCORD_MEMBER_FETCH_FAIL(false, 3001, "디스코드 멤버 조회 실패"),
+    DISCORD_BOT_INVALID_TOKEN(false, 3002, "Discord Bot 토큰이 유효하지 않습니다."),
+    DISCORD_BOT_FORBIDDEN(false, 3003, "Discord Bot이 역할 조회 권한이 없습니다."),
+    DISCORD_ROLE_CONVERT_FAIL(false, 3005, "역할 이름을 Role로 변경하는 중 오류 발생"),
+
     // 4000 번대 : article 관련 코드
     INVALID_TITLE(false, 4000, "아티클의 제목의 형식을 확인해주세요."),
     INVALID_TAGS(false, 4001, "올바른 태그 목록을 입력하세요."),
