@@ -13,8 +13,8 @@ public enum Batch {
     FOURTH("4th"),
     FIFTH("5th"),
     SIXTH("6th"),
+    ALL("all"),
     UNKNOWN("기수를 알 수 없습니다.");
-
 
     private final String description;
 

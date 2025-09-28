@@ -66,7 +66,7 @@ public class RoleService {
             log.debug("[syncMemberRoles] 사용자 discordId = {}, username = {}",
                     memberResponse.getUser().getId(), memberResponse.getUser().getUsername());
 
-            // 3-1. Discord 사용자 ID로 DB에서 Member 조회
+            // 3-1. Discord 사용자 ID로 Member 조회
             Member member = memberByDiscordId.get(memberResponse.getUser().getId());
             if (member == null) {
                 log.error("[syncMemberRoles] KUIT discord 서버에 가입하지 않은 사용자입니다. discordId = {}, username = {}",
@@ -83,8 +83,8 @@ public class RoleService {
             List<MemberRole> oldRoles = member.getMemberRoles();
             if (hasRolesChanged(oldRoles, newRoles)) {
                 member.replaceRoles(newRoles);
+                updatedMemberNum += 1;
             }
-            updatedMemberNum += 1;
         }
         return updatedMemberNum;
     }
