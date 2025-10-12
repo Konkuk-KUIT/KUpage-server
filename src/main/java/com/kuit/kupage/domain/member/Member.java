@@ -1,8 +1,8 @@
 package com.kuit.kupage.domain.member;
 
+import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.memberRole.MemberRole;
-import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.role.Role;
@@ -11,7 +11,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
