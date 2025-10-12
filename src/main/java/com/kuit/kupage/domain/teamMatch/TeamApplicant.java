@@ -1,6 +1,8 @@
 package com.kuit.kupage.domain.teamMatch;
 
 import com.kuit.kupage.common.type.BaseEntity;
+import com.kuit.kupage.domain.member.Member;
+import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,9 +27,6 @@ public class TeamApplicant extends BaseEntity {
     @Embedded
     private Part appliedPart;
 
-    @Lob
-    private String motivation;
-
     @Column(length = 500)
     private String portfolioUrl;
 
@@ -36,4 +35,23 @@ public class TeamApplicant extends BaseEntity {
 
     @Lob
     private String additionalAnswer2;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    public TeamApplicant(TeamMatchRequest request, Member member, Team team) {
+        this.name = request.name();
+        this.studentId = request.studentId();
+        this.appliedPart = request.appliedPart();
+        this.portfolioUrl = request.portfolioUrl();
+        this.additionalAnswer1 = request.additionalAnswer1();
+        this.additionalAnswer2 = request.additionalAnswer2();
+        this.member = member;
+        this.team = team;
+    }
 }

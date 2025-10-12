@@ -36,6 +36,12 @@ public class S3Service {
         return uploadToS3(file, s3FileName);
     }
 
+    public String uploadPortfolio(MultipartFile file) {
+        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
+        String s3FileName = "portfolio/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
+        return uploadToS3(file, s3FileName);
+    }
+
     private String uploadToS3(MultipartFile file, String s3FileName) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(file.getContentType());

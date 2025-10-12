@@ -53,12 +53,13 @@ public enum ResponseCode {
     INVALID_URL_PROPERTY(false, 4010, "블럭의 url property를 다시 확인해주세요."),
     INVALID_CODE_LANG_PROPERTY(false, 4011, "블럭의 code_lang property를 다시 확인해주세요"),
 
-    NOT_FOUND_ARTICLE(false, 4012, "존재하지 않는 아티클입니다."),
+    NONE_ARTICLE(false, 4012, "존재하지 않는 아티클입니다."),
 
     // 5000 : project 관련
-    NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다.");
+    NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다."),
 
-    // 5000 번대 : project 관련 코드
+    // 6000 번대 : team-match 관련
+    NONE_TEAM(false, 5000, "존재하지 않는 프로젝트입니다.");
 
 
     private boolean isSuccess;
