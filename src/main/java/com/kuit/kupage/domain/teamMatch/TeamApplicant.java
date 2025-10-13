@@ -24,7 +24,8 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 20)
     private String studentId;
 
-    @Embedded
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Part appliedPart;
 
     @Column(length = 500)

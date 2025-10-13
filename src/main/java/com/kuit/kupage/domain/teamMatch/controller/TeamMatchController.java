@@ -34,11 +34,11 @@ public class TeamMatchController {
     @PostMapping("/portfolios")
     public BaseResponse<PortfolioUploadResponse> uploadPortfolios(@RequestParam("file") MultipartFile file) {
 
-        log.info("[uploadPortfolios] 파일 업로드 요청");
-        log.info(" - 파일 이름: {}", file.getOriginalFilename());
-        log.info(" - 파일 타입: {}", file.getContentType());
-        log.info(" - 파일 크기: {} bytes", file.getSize());
-        log.info(" - 비어있음 여부: {}", file.isEmpty());
+        log.debug("[uploadPortfolios] 파일 업로드 요청");
+        log.debug(" - 파일 이름: {}", file.getOriginalFilename());
+        log.debug(" - 파일 타입: {}", file.getContentType());
+        log.debug(" - 파일 크기: {} bytes", file.getSize());
+        log.debug(" - 비어있음 여부: {}", file.isEmpty());
 
         PortfolioUploadResponse response = teamMatchService.uploadPortfolio(file);
         return new BaseResponse<>(response);
