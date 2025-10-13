@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class TeamMatchController {
     private final TeamMatchService teamMatchService;
 
-    @PostMapping("/team/{teamId}/match")
+    @PostMapping("/teams/{teamId}/match")
     public BaseResponse<?> apply(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable(name = "teamId") Long teamId,

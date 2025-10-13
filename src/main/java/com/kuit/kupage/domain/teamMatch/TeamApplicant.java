@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "team")
+@Table(name = "team_applicant")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamApplicant extends BaseEntity {

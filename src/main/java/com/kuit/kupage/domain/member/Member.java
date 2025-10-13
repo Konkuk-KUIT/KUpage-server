@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.member;
 
 import com.kuit.kupage.common.auth.AuthTokenResponse;
+import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

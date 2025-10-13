@@ -11,6 +11,7 @@ public record TeamMatchRequest(
         @Size(max = 50, message = "이름은 최대 50자까지 입력 가능합니다.")
         String name,
 
+        @NotNull(message = "학번은 필수 입력 항목입니다.")
         @Size(max = 20, message = "학번은 최대 20자까지 입력 가능합니다.")
         String studentId,
 

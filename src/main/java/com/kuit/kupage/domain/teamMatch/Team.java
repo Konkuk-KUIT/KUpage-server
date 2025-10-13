@@ -38,6 +38,5 @@ public class Team extends BaseEntity {
     private String additionalAnswer1;
 
     @Lob
-
     private String additionalAnswer2;
 }
