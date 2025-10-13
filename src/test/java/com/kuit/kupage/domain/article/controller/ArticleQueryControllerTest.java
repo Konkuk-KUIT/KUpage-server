@@ -23,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @WebMvcTest(ArticleQueryController.class)
 class ArticleQueryControllerTest {
 
@@ -100,9 +101,8 @@ class ArticleQueryControllerTest {
                 .andExpect(jsonPath("$.result.content[0].position").value(1))
                 .andExpect(jsonPath("$.result.content[0].type").value("TEXT"))
                 .andExpect(jsonPath("$.result.content[0].properties").value("테스트"))
-                .andExpect(jsonPath("$.result.createdAt").value("2025-05-11T00:00:00"));;
+                .andExpect(jsonPath("$.result.createdAt").value("2025-05-11T00:00:00"));
     }
-
 
 
 }

@@ -1,5 +1,6 @@
 package com.kuit.kupage.domain.project.entity;
 
+import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.project.entity.converter.AppFieldListStringConverter;
 import com.kuit.kupage.domain.project.entity.converter.StringListStringConverter;
 import com.kuit.kupage.domain.common.Batch;
@@ -15,7 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Project {
+public class Project extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
     private Long id;

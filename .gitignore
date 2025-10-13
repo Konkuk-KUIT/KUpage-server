@@ -38,3 +38,4 @@ out/
 
 ### VS Code ###
 .vscode/
+src/main/java/com/kuit/kupage/common/auth/LocalAuthTokenController.java
