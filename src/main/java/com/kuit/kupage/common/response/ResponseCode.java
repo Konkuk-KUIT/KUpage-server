@@ -22,6 +22,7 @@ public enum ResponseCode {
     MALFORMED_TOKEN_TYPE(false, 1005, "인증 토큰이 올바르게 구성되지 않았습니다."),
     INVALID_SIGNATURE_JWT(false, 1006, "인증 시그니처가 올바르지 않습니다"),
     INVALID_TOKEN_TYPE(false, 1007, "잘못된 토큰입니다."),
+    BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
 
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),

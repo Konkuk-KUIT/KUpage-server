@@ -1,16 +1,21 @@
 package com.kuit.kupage.common.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.exception.KupageException;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.kuit.kupage.common.response.ResponseCode.BAD_REQUEST;
 
 @Hidden
 @RestControllerAdvice
@@ -31,5 +36,20 @@ public class KupageControllerAdvice {
             return ResponseEntity.badRequest().body(body);
         }
         throw ex;
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<BaseResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new LinkedHashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            String fieldName = error.getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+
+        BaseResponse<Map<String, String>> response = new BaseResponse<>(BAD_REQUEST, errors);
+        return ResponseEntity.badRequest().body(response);
     }
 }
