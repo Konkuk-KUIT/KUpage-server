@@ -60,7 +60,7 @@ public enum ResponseCode {
     NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다."),
 
     // 6000 번대 : team-match 관련
-    NONE_TEAM(false, 5000, "존재하지 않는 프로젝트입니다.");
+    NONE_TEAM(false, 6000, "존재하지 않는 팀입니다.");
 
 
     private boolean isSuccess;

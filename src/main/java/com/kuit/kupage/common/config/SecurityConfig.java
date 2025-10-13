@@ -42,14 +42,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/articles", "/projects/**", "/auth-token/member/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/signup")
                         .hasRole(GUEST.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest.
-                        requestMatchers(HttpMethod.POST, "/articles", "/teams/**", "/portfolios")
+                        requestMatchers(HttpMethod.POST, "/articles", "/portfolios")
+                        .hasRole(MEMBER.getValue()).
+                        requestMatchers(HttpMethod.POST, "/teams/*/match")
                         .hasRole(MEMBER.getValue()).
                         requestMatchers("/pre-signed/articles/*")
                         .hasRole(MEMBER.getValue())

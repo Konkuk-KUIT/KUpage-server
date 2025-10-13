@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.kuit.kupage.common.response.ResponseCode.*;
@@ -37,7 +38,8 @@ public class S3Service {
     }
 
     public String uploadPortfolio(MultipartFile file) {
-        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
+        String extension = Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf(".")+1);
         String s3FileName = "portfolio/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
         return uploadToS3(file, s3FileName);
     }

@@ -1,6 +1,5 @@
 package com.kuit.kupage.domain.article.controller;
 
-import com.kuit.kupage.common.config.NoJpaAuditingConfig;
 import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.article.domain.BlockType;
 import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -104,7 +102,6 @@ class ArticleQueryControllerTest {
                 .andExpect(jsonPath("$.result.content[0].type").value("TEXT"))
                 .andExpect(jsonPath("$.result.content[0].properties").value("테스트"))
                 .andExpect(jsonPath("$.result.createdAt").value("2025-05-11T00:00:00"));
-        ;
     }
 
 
