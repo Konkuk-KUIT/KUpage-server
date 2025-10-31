@@ -22,6 +22,7 @@ public enum ResponseCode {
     MALFORMED_TOKEN_TYPE(false, 1005, "인증 토큰이 올바르게 구성되지 않았습니다."),
     INVALID_SIGNATURE_JWT(false, 1006, "인증 시그니처가 올바르지 않습니다"),
     INVALID_TOKEN_TYPE(false, 1007, "잘못된 토큰입니다."),
+    BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
 
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
@@ -53,12 +54,13 @@ public enum ResponseCode {
     INVALID_URL_PROPERTY(false, 4010, "블럭의 url property를 다시 확인해주세요."),
     INVALID_CODE_LANG_PROPERTY(false, 4011, "블럭의 code_lang property를 다시 확인해주세요"),
 
-    NOT_FOUND_ARTICLE(false, 4012, "존재하지 않는 아티클입니다."),
+    NONE_ARTICLE(false, 4012, "존재하지 않는 아티클입니다."),
 
     // 5000 : project 관련
-    NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다.");
+    NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다."),
 
-    // 5000 번대 : project 관련 코드
+    // 6000 번대 : team-match 관련
+    NONE_TEAM(false, 6000, "존재하지 않는 팀입니다.");
 
 
     private boolean isSuccess;

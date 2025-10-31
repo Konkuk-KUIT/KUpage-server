@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static com.kuit.kupage.common.response.ResponseCode.NOT_FOUND_ARTICLE;
+import static com.kuit.kupage.common.response.ResponseCode.NONE_ARTICLE;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +47,7 @@ public class ArticleQueryService {
 
     public ArticleDetailResponse detailById(final Long articleId) {
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new ArticleException(NOT_FOUND_ARTICLE));
+                .orElseThrow(() -> new ArticleException(NONE_ARTICLE));
 
         List<BlockResponse> blockResponses = blockRepository
                 .findAllByArticle_Id(articleId)

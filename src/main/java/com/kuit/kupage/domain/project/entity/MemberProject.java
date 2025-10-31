@@ -1,12 +1,13 @@
 package com.kuit.kupage.domain.project.entity;
 
+import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 @Getter
-public class MemberProject {
+public class MemberProject extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_project_id")
     private Long id;

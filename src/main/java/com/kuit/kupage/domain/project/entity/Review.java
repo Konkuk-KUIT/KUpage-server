@@ -1,11 +1,12 @@
 package com.kuit.kupage.domain.project.entity;
 
+import com.kuit.kupage.common.type.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 @Getter
-public class Review {
+public class Review extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
     private Long id;

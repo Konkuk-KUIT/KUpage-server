@@ -1,5 +1,6 @@
 package com.kuit.kupage.domain.article.domain;
 
+import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.article.service.BlockPropertyValidator;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @Table(name = "block")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Block {
+public class Block extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "block_id")
