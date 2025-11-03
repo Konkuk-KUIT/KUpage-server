@@ -4,7 +4,6 @@ import com.kuit.kupage.common.auth.AuthMember;
 import com.kuit.kupage.common.auth.AuthRole;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.domain.member.service.MemberService;
-import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.dto.*;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;

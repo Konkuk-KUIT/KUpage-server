@@ -45,13 +45,6 @@ public class TeamMatchControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("팀매칭 현황")
-    public void applicationStatus() throws Exception {
-        AuthMember authMember = new AuthMember(1L, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
-
-    }
-
-    @Test
     @DisplayName("팀 매치 지원 요청이 성공적으로 처리되는지 테스트")
     public void apply() throws Exception {
         // given
