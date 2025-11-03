@@ -1,5 +1,6 @@
 package com.kuit.kupage.domain.teamMatch.repository;
 
+import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.teamMatch.Team;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,13 +25,12 @@ class TeamRepositoryTest {
         Team team = new Team(
                 null,
                 "글로방",
-                "외국인 대상 부동산 매칭 서비스",
-                "지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공",
+                AppType.Web,
                 "다국어 지원, 실시간 매물 등록, 중개인 매칭 기능",
-                "https://cdn.kupage.com/team1-thumbnail.jpg",
-                "안녕하세요, 저희는 외국인 거주 문제를 해결하고자 합니다.",
-                "프로젝트 진행 시 가장 어려운 점은?",
-                "지역별 법률 차이로 인한 중개 절차 복잡성이었습니다."
+                "https://s3.kupage.com/team1-thumbnail.jpg",
+                "https://s3.kupage.com/team1-intro.pdf",
+                "지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공",
+                "부동산 도메인에 관심이 많은 개발자분과 함께 하고 싶습니다!"
         );
 
         Team saved = teamRepository.save(team);
@@ -40,8 +40,8 @@ class TeamRepositoryTest {
 
         Team foundTeam = found.get();
         assertEquals("글로방", foundTeam.getServiceName());
-        assertEquals("외국인 대상 부동산 매칭 서비스", foundTeam.getTopicSummary());
-        assertEquals("https://cdn.kupage.com/team1-thumbnail.jpg", foundTeam.getThumbnailUrl());
+        assertEquals("다국어 지원, 실시간 매물 등록, 중개인 매칭 기능", foundTeam.getTopicSummary());
+        assertEquals("https://s3.kupage.com/team1-thumbnail.jpg", foundTeam.getImageUrl());
     }
 
     @Test
@@ -51,13 +51,12 @@ class TeamRepositoryTest {
         Team team = new Team(
                 null,
                 "글로방",
-                "외국인 대상 부동산 매칭 서비스",
-                "지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공",
+                AppType.Web,
                 "다국어 지원, 실시간 매물 등록, 중개인 매칭 기능",
-                "https://cdn.kupage.com/team1-thumbnail.jpg",
-                "안녕하세요, 저희는 외국인 거주 문제를 해결하고자 합니다.",
-                "프로젝트 진행 시 가장 어려운 점은?",
-                "지역별 법률 차이로 인한 중개 절차 복잡성이었습니다."
+                "https://s3.kupage.com/team1-thumbnail.jpg",
+                "https://s3.kupage.com/team1-intro.pdf",
+                "지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공",
+                "부동산 도메인에 관심이 많은 개발자분과 함께 하고 싶습니다!"
         );
 
         teamRepository.save(team);

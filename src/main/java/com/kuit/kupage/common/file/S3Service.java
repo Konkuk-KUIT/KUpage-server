@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.kuit.kupage.common.response.ResponseCode.*;
+import static com.kuit.kupage.common.response.ResponseCode.AWS_S3_UPLOAD_ISSUE;
 
 @Service
 @RequiredArgsConstructor
@@ -26,21 +26,16 @@ public class S3Service {
     private String cloudFrontUrl;
 
     public String uploadImage(MultipartFile file) {
-        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
+        String extension = Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf(".") + 1);
         String s3FileName = "image/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
         return uploadToS3(file, s3FileName);
     }
 
     public String uploadFile(MultipartFile file) {
-        String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1);
-        String s3FileName = "file/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
-        return uploadToS3(file, s3FileName);
-    }
-
-    public String uploadPortfolio(MultipartFile file) {
         String extension = Objects.requireNonNull(file.getOriginalFilename())
-                .substring(file.getOriginalFilename().lastIndexOf(".")+1);
-        String s3FileName = "portfolio/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
+                .substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+        String s3FileName = "file/" + UUID.randomUUID().toString().substring(0, 10) + "." + extension;
         return uploadToS3(file, s3FileName);
     }
 

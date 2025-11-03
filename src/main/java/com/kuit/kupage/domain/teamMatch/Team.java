@@ -1,6 +1,8 @@
 package com.kuit.kupage.domain.teamMatch;
 
 import com.kuit.kupage.common.type.BaseEntity;
+import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.teamMatch.dto.IdeaRegisterRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,23 +24,32 @@ public class Team extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String serviceName;
 
-    private String topicSummary;
-
-    @Lob
-    private String mvpFeatures;
-
-    @Lob
-    private String expectedRequirements;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AppType appType;
 
     @Column(length = 500)
-    private String thumbnailUrl;
+    private String topicSummary;
 
-    @Lob
-    private String pmGreeting;
+    @Column(length = 500)
+    private String imageUrl;
 
-    @Lob
-    private String additionalAnswer1;
+    @Column(length = 500)
+    private String serviceIntroFile;
 
-    @Lob
-    private String additionalAnswer2;
+    @Column(length = 1000)
+    private String featureRequirements;
+
+    @Column(length = 1000)
+    private String preferredDeveloper;
+
+    public Team(IdeaRegisterRequest request) {
+        this.serviceName = request.serviceName();
+        this.appType = request.appType();
+        this.topicSummary = request.topicSummary();
+        this.imageUrl = request.imageUrl();
+        this.serviceIntroFile = request.serviceIntroFile();
+        this.featureRequirements = request.featureRequirements();
+        this.preferredDeveloper = request.preferredDeveloper();
+    }
 }
