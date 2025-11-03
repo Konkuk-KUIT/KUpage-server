@@ -2,6 +2,7 @@ package com.kuit.kupage.common.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.kuit.kupage.common.response.BaseResponse;
+import com.kuit.kupage.exception.AuthException;
 import com.kuit.kupage.exception.KupageException;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
@@ -51,5 +52,10 @@ public class KupageControllerAdvice {
 
         BaseResponse<Map<String, String>> response = new BaseResponse<>(BAD_REQUEST, errors);
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<Object> authException(AuthException e) {
+        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.FORBIDDEN);
     }
 }
