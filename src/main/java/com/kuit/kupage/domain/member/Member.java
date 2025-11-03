@@ -4,6 +4,7 @@ import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.memberRole.MemberRole;
+import com.kuit.kupage.domain.memberTeam.MemberTeam;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.role.Role;
@@ -54,6 +55,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberRole> memberRoles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberTeam> memberTeams = new ArrayList<>();
 
     public Member(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         this.discordToken = new DiscordToken(response.accessToken(),

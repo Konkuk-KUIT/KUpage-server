@@ -1,11 +1,16 @@
 package com.kuit.kupage.domain.teamMatch;
 
 import com.kuit.kupage.common.type.BaseEntity;
+import com.kuit.kupage.domain.common.Batch;
+import com.kuit.kupage.domain.memberTeam.MemberTeam;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "team")
@@ -41,4 +46,23 @@ public class Team extends BaseEntity {
 
     @Lob
     private String additionalAnswer2;
+
+    private Long ownerId; // memberId
+
+    private String ownerName; // memberName
+
+    @Enumerated(EnumType.STRING)
+    private Part part;
+
+    @Enumerated(EnumType.STRING)
+    private Batch batch;
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberTeam> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamApplicant> teamApplicants = new ArrayList<>();
+
+
+
 }
