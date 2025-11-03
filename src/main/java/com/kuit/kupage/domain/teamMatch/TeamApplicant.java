@@ -18,24 +18,15 @@ public class TeamApplicant extends BaseEntity {
     @Column(name = "team_applicant_id")
     private Long id;
 
-    @Column(length = 50, nullable = false)
-    private String name;
-
-    @Column(length = 20)
-    private String studentId;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Part appliedPart;
 
+    @Column(length = 1000)
+    private String motivation;
+
     @Column(length = 500)
     private String portfolioUrl;
-
-    @Lob
-    private String additionalAnswer1;
-
-    @Lob
-    private String additionalAnswer2;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -46,12 +37,9 @@ public class TeamApplicant extends BaseEntity {
     private Team team;
 
     public TeamApplicant(TeamMatchRequest request, Member member, Team team) {
-        this.name = request.name();
-        this.studentId = request.studentId();
         this.appliedPart = request.appliedPart();
+        this.motivation = request.motivation();
         this.portfolioUrl = request.portfolioUrl();
-        this.additionalAnswer1 = request.additionalAnswer1();
-        this.additionalAnswer2 = request.additionalAnswer2();
         this.member = member;
         this.team = team;
     }

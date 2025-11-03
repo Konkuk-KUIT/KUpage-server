@@ -66,13 +66,9 @@ class TeamMatchServiceTest {
     void apply_success() {
         // given
         TeamMatchRequest request = new TeamMatchRequest(
-                "김지훈",
-                "20201234",
                 Part.SPRING,
                 "백엔드 개발자로서 팀에 기여하고 싶습니다.",
-                "https://portfolio.com/jihun",
-                "협업은 커뮤니케이션이 중요하다고 생각합니다.",
-                "이번 프로젝트를 통해 코드 리뷰를 배우고 싶습니다."
+                "https://portfolio.com/jihun"
         );
 
         given(memberService.getMember(1L)).willReturn(mockMember);

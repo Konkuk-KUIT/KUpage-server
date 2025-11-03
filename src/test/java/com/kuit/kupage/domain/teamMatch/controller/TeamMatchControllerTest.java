@@ -52,13 +52,9 @@ public class TeamMatchControllerTest {
         when(teamMatchService.apply(anyLong(), anyLong(), any(TeamMatchRequest.class))).thenReturn(mockResponse);
 
         TeamMatchRequest request = new TeamMatchRequest(
-                "이서연",
-                "20204567",
                 Part.ANDROID,
                 "팀의 안드로이드 앱 개발을 담당하고 싶습니다.",
-                "https://portfolio.example.com/seoyeon",
-                "사용자 경험을 개선하는 인터페이스 설계에 관심이 있습니다.",
-                "이번 프로젝트를 통해 UI/UX와 네이티브 앱 성능 최적화 경험을 쌓고 싶습니다."
+                "https://portfolio.example.com/seoyeon"
         );
 
         AuthMember authMember = new AuthMember(1L, List.of(new SimpleGrantedAuthority("ROLE_MEMBER")));

@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class TeamMatchController {
 
-    private static final long MAX_FILE_SIZE = 20 * 1024 * 1024;         // 20MB
+    private static final long MAX_FILE_SIZE = 50 * 1024 * 1024;         // 50MB
 
     private final TeamMatchService teamMatchService;
 
@@ -31,7 +31,7 @@ public class TeamMatchController {
             @PathVariable(name = "teamId") Long teamId,
             @Validated @RequestBody TeamMatchRequest request) {
         Long memberId = authMember.getId();
-        log.info("[apply] memberId = {}, teamId = {}, 팀매칭 지원 request = {}", memberId, teamId, request.toString());
+        log.debug("[apply] memberId = {}, teamId = {}, 팀매칭 지원 request = {}", memberId, teamId, request.toString());
         TeamMatchResponse response = teamMatchService.apply(memberId, teamId, request);
         return new BaseResponse<>(response);
     }
