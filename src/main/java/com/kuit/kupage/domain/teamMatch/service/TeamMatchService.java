@@ -55,8 +55,6 @@ public class TeamMatchService {
     public TeamApplicantResponse getTeamApplicant(Long memberId, Long teamId, boolean isAdmin) {
         Team team = getOwnTeam(memberId, teamId, isAdmin);
 
-        Member member = memberService.getMember(memberId);
-
         //팀 : 제목, 사람, 역할, 안드인지웹인지, 설명(소제목, 설명)
         String serviceName = team.getServiceName();
         String nameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
@@ -70,12 +68,16 @@ public class TeamMatchService {
 
         Map<Part, List<ApplicantInfo>> collected = collectPart(applicantInfos);
 
-        return new TeamApplicantResponse(serviceName, nameAndPart, part, topicSummary, mvpFeatures, new ApplicantMap(collected));
+        return new TeamApplicantResponse(teamId, serviceName, nameAndPart, part, topicSummary, mvpFeatures, new ApplicantMap(collected));
 
     }
 
     public List<TeamApplicantOverviewDto> getAllCurrentBatchTeamApplicants() {
         List<Team> teams = teamRepository.findAllByBatch(constantProperties.getCurrentBatch());
+
+        if (teams.isEmpty()) {
+            throw new TeamException(NONE_TEAM);
+        }
 
         return teams.stream().map(this::parseTeamApplicantOverviewDto).toList();
 
@@ -89,6 +91,7 @@ public class TeamMatchService {
     }
 
     private TeamApplicantOverviewDto parseTeamApplicantOverviewDto(Team team) {
+        Long teamId = team.getId();
         String serviceName = team.getServiceName();
         String topicSummary = team.getTopicSummary();
         // 오너를 아예 멤버:팀으로 나눌지?
@@ -104,7 +107,7 @@ public class TeamMatchService {
         int serverApplicantNum = partListMap.getOrDefault(Part.SPRING, List.of()).size();
         int designApplicantNum = partListMap.getOrDefault(Part.DESIGN, List.of()).size();
 
-        return new TeamApplicantOverviewDto(serviceName, ownerNameAndPart, part, topicSummary, androidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
+        return new TeamApplicantOverviewDto(teamId, serviceName, ownerNameAndPart, part, topicSummary, androidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {
