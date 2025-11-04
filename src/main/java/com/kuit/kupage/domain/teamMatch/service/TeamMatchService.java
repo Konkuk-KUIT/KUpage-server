@@ -73,7 +73,7 @@ public class TeamMatchService {
     }
 
     public List<TeamApplicantOverviewDto> getAllCurrentBatchTeamApplicants() {
-        List<Team> teams = teamRepository.findAllByBatch(constantProperties.getCurrentBatch());
+        List<Team> teams = teamRepository.findAllWithTeamApplicantAndMemberByBatch(constantProperties.getCurrentBatch());
 
         if (teams.isEmpty()) {
             throw new TeamException(NONE_TEAM);
@@ -137,7 +137,7 @@ public class TeamMatchService {
     }
 
     private Team getOwnTeam(Long memberId, Long teamId, boolean isAdmin) {
-        Team team = teamRepository.findById(teamId)
+        Team team = teamRepository.findAllWithTeamApplicantAndMemberById(teamId)
                 .orElseThrow(() -> new KupageException(NONE_TEAM));
 
         if (!isAdmin) {

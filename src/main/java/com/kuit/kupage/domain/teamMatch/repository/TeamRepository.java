@@ -13,6 +13,12 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     List<Team> findAllByBatch(Batch batch);
 
+    @Query("SELECT DISTINCT t FROM Team t LEFT JOIN FETCH t.teamApplicants ta LEFT JOIN FETCH ta.member WHERE t.batch =:batch")
+    List<Team> findAllWithTeamApplicantAndMemberByBatch(@Param("batch") Batch batch);
+
+    @Query("SELECT DISTINCT t FROM Team t LEFT JOIN FETCH t.teamApplicants ta LEFT JOIN FETCH ta.member WHERE t.id =:teamId")
+    Optional<Team> findAllWithTeamApplicantAndMemberById(@Param("teamId") Long teamId);
+
     @Query("select t From Team t where t.ownerId =:ownerId and t.batch =:batch")
     Optional<Team> findByOwnerIdAndBatch(@Param("ownerId")Long ownerId, @Param("batch") Batch batch);
 }

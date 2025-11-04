@@ -12,6 +12,6 @@ public interface MemberRoleRepository extends JpaRepository<MemberRole, Long> {
 
     Boolean existsByMember_IdAndRole_Batch(Long memberId, Batch batch);
 
-    @Query("select mr from MemberRole mr where mr.member.id =:memberId")
-    List<MemberRole> findByMemberId(@Param("memberId") Long memberId);
+    @Query("select mr from MemberRole mr join fetch mr.role where mr.member.id =:memberId")
+    List<MemberRole> findWithRoleByMemberId(@Param("memberId") Long memberId);
 }
