@@ -59,7 +59,7 @@ public class TeamMatchService {
 
         //팀 : 제목, 사람, 역할, 안드인지웹인지, 설명(소제목, 설명)
         String serviceName = team.getServiceName();
-        String nameAndPart = member.getName() + " - " + team.getBatch().name() + " " + Part.PM.name();
+        String nameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
         Part part = team.getPart();
         String topicSummary = team.getTopicSummary();
         String mvpFeatures = team.getMvpFeatures();
