@@ -22,9 +22,9 @@ import static com.kuit.kupage.common.response.ResponseCode.BAD_REQUEST;
 @RestControllerAdvice
 public class KupageControllerAdvice {
 
-    @ExceptionHandler(KupageException.class)
-    public ResponseEntity<Object> handleException(KupageException e) {
-        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<Object> authException(AuthException e) {
+        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -38,7 +38,6 @@ public class KupageControllerAdvice {
         }
         throw ex;
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
@@ -54,8 +53,8 @@ public class KupageControllerAdvice {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<Object> authException(AuthException e) {
-        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.FORBIDDEN);
+    @ExceptionHandler(KupageException.class)
+    public ResponseEntity<Object> handleException(KupageException e) {
+        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.BAD_REQUEST);
     }
 }
