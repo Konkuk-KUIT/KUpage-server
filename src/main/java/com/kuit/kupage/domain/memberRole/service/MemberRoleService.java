@@ -17,7 +17,6 @@ public class MemberRoleService {
 
     private final MemberRoleRepository memberRoleRepository;
 
-    @Transactional
     public List<MemberRole> getMemberRolesByMemberId(Long memberId) {
        return memberRoleRepository.findByMemberId(memberId);
     }
