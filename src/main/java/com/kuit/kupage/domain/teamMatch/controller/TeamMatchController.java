@@ -1,17 +1,12 @@
 package com.kuit.kupage.domain.teamMatch.controller;
 
 import com.kuit.kupage.common.auth.AuthMember;
-import com.kuit.kupage.common.auth.AuthRole;
 import com.kuit.kupage.common.response.BaseResponse;
-import com.kuit.kupage.domain.member.service.MemberService;
-import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.dto.*;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
-import com.kuit.kupage.exception.AuthException;
 import com.kuit.kupage.exception.KupageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.kuit.kupage.common.response.ResponseCode.*;
+import static com.kuit.kupage.common.response.ResponseCode.BAD_REQUEST;
+import static com.kuit.kupage.common.response.ResponseCode.TOO_BIG_FILE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,25 +24,14 @@ import static com.kuit.kupage.common.response.ResponseCode.*;
 public class TeamMatchController {
 
     private static final long MAX_FILE_SIZE = 20 * 1024 * 1024;         // 20MB
-
-    private final MemberService memberService;
-    private final MemberRoleService memberRoleService;
     private final TeamMatchService teamMatchService;
 
     @GetMapping("/teams/applications")
     public BaseResponse<?> applicationStatus(@AuthenticationPrincipal AuthMember authMember) {
 
-        Long memberId = authMember.getId();
-        isCurrentMember(memberId);
-
-        if (isAdmin(authMember)) {
+        if (authMember.isAdmin()) {
             List<TeamApplicantOverviewDto> allCurrentBatchTeamApplicants = teamMatchService.getAllCurrentBatchTeamApplicants();
             return new BaseResponse<>(allCurrentBatchTeamApplicants);
-        }
-
-
-        if (!isPm(authMember)) {
-            throw new AuthException(FORBIDDEN);
         }
 
         return new BaseResponse<>(teamMatchService.getCurrentBatchTeamApplicants(authMember.getId()));
@@ -59,26 +44,18 @@ public class TeamMatchController {
             @PathVariable("teamId") Long teamId) {
 
         Long memberId = authMember.getId();
-
-        boolean isAdmin = isAdmin(authMember);
-        boolean isPm = isPm(authMember);
-
-        if (!(isAdmin || isPm)) {
-            throw new AuthException(FORBIDDEN);
-        }
+        boolean isAdmin = authMember.isAdmin();
 
         return new BaseResponse<>(teamMatchService.getTeamApplicant(memberId, teamId, isAdmin));
     }
 
     @PostMapping("/teams/{teamId}/match")
-    public BaseResponse<?> apply(
+    public BaseResponse<TeamMatchResponse> apply(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable(name = "teamId") Long teamId,
             @Validated @RequestBody TeamMatchRequest request) {
 
         Long memberId = authMember.getId();
-
-        isCurrentMember(memberId);
 
         log.info("[apply] memberId = {}, teamId = {}, 팀매칭 지원 request = {}", memberId, teamId, request.toString());
         TeamMatchResponse response = teamMatchService.apply(memberId, teamId, request);
@@ -107,20 +84,4 @@ public class TeamMatchController {
         return new BaseResponse<>(response);
     }
 
-    private void isCurrentMember(Long memberId) {
-        if (!memberService.isCurrentBatch(memberId)) {
-            throw new AuthException(NOT_CURRENT_BATCH_MEMBER);
-        }
-    }
-
-    private boolean isPm(AuthMember authMember) {
-        return memberRoleService.getMemberRolesByMemberId(authMember.getId()).stream()
-                .anyMatch(mr -> mr.getRole().getName().contains("PM"));
-    }
-
-    private boolean isAdmin(AuthMember authMember) {
-        return authMember.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(authority -> authority.equals(AuthRole.ADMIN.getRole()));
-    }
 }
