@@ -4,6 +4,7 @@ import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.file.S3Service;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
@@ -58,7 +59,7 @@ public class TeamMatchService {
         //팀 : 제목, 사람, 역할, 안드인지웹인지, 설명(소제목, 설명)
         String serviceName = team.getServiceName();
         String nameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
-        Part part = team.getPart();
+        AppType appType = team.getAppType();
         String topicSummary = team.getTopicSummary();
         String mvpFeatures = team.getMvpFeatures();
 
@@ -68,7 +69,7 @@ public class TeamMatchService {
 
         Map<Part, List<ApplicantInfo>> collected = collectPart(applicantInfos);
 
-        return new TeamApplicantResponse(teamId, serviceName, nameAndPart, part, topicSummary, mvpFeatures, new ApplicantMap(collected));
+        return new TeamApplicantResponse(teamId, serviceName, nameAndPart, appType, topicSummary, mvpFeatures, new ApplicantMap(collected));
 
     }
 
@@ -96,7 +97,7 @@ public class TeamMatchService {
         String topicSummary = team.getTopicSummary();
         // 오너를 아예 멤버:팀으로 나눌지?
         String ownerNameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
-        Part part = team.getPart();
+        AppType appType = team.getAppType();
 
         List<ApplicantInfo> applicantInfos = parseApplicantInfo(team);
         Map<Part, List<ApplicantInfo>> partListMap = collectPart(applicantInfos);
@@ -107,7 +108,7 @@ public class TeamMatchService {
         int serverApplicantNum = partListMap.getOrDefault(Part.SPRING, List.of()).size();
         int designApplicantNum = partListMap.getOrDefault(Part.DESIGN, List.of()).size();
 
-        return new TeamApplicantOverviewDto(teamId, serviceName, ownerNameAndPart, part, topicSummary, androidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
+        return new TeamApplicantOverviewDto(teamId, serviceName, ownerNameAndPart, appType, topicSummary, androidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {

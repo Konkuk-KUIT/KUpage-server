@@ -3,6 +3,7 @@ package com.kuit.kupage.domain.teamMatch;
 import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.memberTeam.MemberTeam;
+import com.kuit.kupage.domain.project.entity.AppType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class Team extends BaseEntity {
     private String ownerName; // memberName
 
     @Enumerated(EnumType.STRING)
-    private Part part;
+    private AppType appType;
 
     @Enumerated(EnumType.STRING)
     private Batch batch;

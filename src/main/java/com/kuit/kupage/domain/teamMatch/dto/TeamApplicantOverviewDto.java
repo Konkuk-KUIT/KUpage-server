@@ -1,12 +1,12 @@
 package com.kuit.kupage.domain.teamMatch.dto;
 
-import com.kuit.kupage.domain.teamMatch.Part;
+import com.kuit.kupage.domain.project.entity.AppType;
 
 public record TeamApplicantOverviewDto(
         Long teamId,
         String serviceName,
         String nameAndPart,
-        Part part,
+        AppType appType,
         String topicSummary,
         int androidApplicantNum,
         int iosApplicantNum,
