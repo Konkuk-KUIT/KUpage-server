@@ -53,7 +53,8 @@ public class SecurityConfig {
                         .hasRole(MEMBER.getValue()).
                         requestMatchers(HttpMethod.POST, "/teams/*/match")
                         .hasRole(MEMBER.getValue()).
-                        requestMatchers("/pre-signed/articles/*")
+                        requestMatchers("/pre-signed/articles/*", "/teams/applications",
+                                "/teams/{teamId}/applications")
                         .hasRole(MEMBER.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest

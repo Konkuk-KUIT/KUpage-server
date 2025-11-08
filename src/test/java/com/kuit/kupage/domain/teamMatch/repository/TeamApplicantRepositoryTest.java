@@ -1,6 +1,8 @@
 package com.kuit.kupage.domain.teamMatch.repository;
 
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
+import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
@@ -53,7 +55,14 @@ class TeamApplicantRepositoryTest {
                 "https://cdn.kupage.com/team1-thumbnail.jpg",
                 "안녕하세요, 저희는 외국인 거주 문제를 해결하고자 합니다.",
                 "프로젝트 진행 시 가장 어려운 점은?",
-                "지역별 법률 차이로 인한 중개 절차 복잡성이었습니다."
+                "지역별 법률 차이로 인한 중개 절차 복잡성이었습니다.",
+                1L,
+                "이서연",
+                AppType.Web,
+                Batch.SIXTH,
+                null,
+                null
+
         );
     }
 
