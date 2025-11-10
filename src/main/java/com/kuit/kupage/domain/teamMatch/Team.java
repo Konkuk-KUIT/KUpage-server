@@ -61,7 +61,10 @@ public class Team extends BaseEntity {
     private List<TeamApplicant> teamApplicants = new ArrayList<>();
 
 
-    public Team(IdeaRegisterRequest request) {
+    public Team(Long ownerId, String ownerName, Batch currentBatch, IdeaRegisterRequest request) {
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
+        this.batch = currentBatch;
         this.serviceName = request.serviceName();
         this.appType = request.appType();
         this.topicSummary = request.topicSummary();

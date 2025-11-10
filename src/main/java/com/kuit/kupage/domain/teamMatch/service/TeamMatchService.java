@@ -35,7 +35,6 @@ public class TeamMatchService {
     private final MemberService memberService;
     private final TeamRepository teamRepository;
     private final TeamApplicantRepository teamApplicantRepository;
-    private final S3Service s3Service;
     private final ConstantProperties constantProperties;
 
 
@@ -106,15 +105,14 @@ public class TeamMatchService {
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {
-        Map<Part, List<ApplicantInfo>> collected = applicantInfos.stream()
+        return applicantInfos.stream()
                 .collect(Collectors.groupingBy(ApplicantInfo::part));
-        return collected;
     }
 
     private List<ApplicantInfo> parseApplicantInfo(Team team) {
         List<TeamApplicant> teamApplicants = team.getTeamApplicants();
 
-        List<ApplicantInfo> applicantInfos = teamApplicants.stream()
+        return teamApplicants.stream()
                 .map(ta -> {
                     Member applicantMember = ta.getMember();
                     String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().name() + " " + ta.getAppliedPart();
@@ -125,8 +123,6 @@ public class TeamMatchService {
 
                     return new ApplicantInfo(applicantMemberNameAndPart, appliedPart, applicantDetail);
                 }).toList();
-
-        return applicantInfos;
     }
 
     private Team getOwnTeam(Long memberId, Long teamId, boolean isAdmin) {
@@ -152,10 +148,8 @@ public class TeamMatchService {
     }
 
     public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request) {
-
-        // TODO. member가 PM 또는 운영진인지 인가
-
-        Team team = new Team(request);
+        Member owner = memberService.getMember(memberId);
+        Team team = new Team(owner.getId(), owner.getName(), constantProperties.getCurrentBatch(), request);
         Team saved = teamRepository.save(team);
         return new IdeaRegisterResponse(saved.getId());
     }
