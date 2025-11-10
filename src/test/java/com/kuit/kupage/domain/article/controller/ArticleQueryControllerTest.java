@@ -1,5 +1,7 @@
 package com.kuit.kupage.domain.article.controller;
 
+import com.kuit.kupage.common.auth.interceptor.AuthPmInterceptor;
+import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
 import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.article.domain.BlockType;
 import com.kuit.kupage.domain.article.dto.ArticleDetailResponse;
@@ -32,6 +34,11 @@ class ArticleQueryControllerTest {
 
     @MockitoBean
     private ArticleQueryService articleQueryService;
+    @MockitoBean
+    private AuthPmInterceptor authPmInterceptor;
+    @MockitoBean
+    private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
+
 
     @Test
     @DisplayName("페이지당 16개, 태그 필터 조회 성공")

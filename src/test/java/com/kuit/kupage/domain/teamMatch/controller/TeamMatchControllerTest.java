@@ -2,11 +2,15 @@ package com.kuit.kupage.domain.teamMatch.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuit.kupage.common.auth.AuthMember;
+import com.kuit.kupage.common.auth.interceptor.AuthPmInterceptor;
+import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
+import com.kuit.kupage.common.config.InterceptorConfig;
 import com.kuit.kupage.common.config.SecurityTestConfig;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchResponse;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TeamMatchController.class)
-@Import(SecurityTestConfig.class)
+@Import({SecurityTestConfig.class, InterceptorConfig.class})
 public class TeamMatchControllerTest {
 
     @Autowired
@@ -37,9 +41,28 @@ public class TeamMatchControllerTest {
 
     @MockitoBean
     private TeamMatchService teamMatchService;
+    @MockitoBean
+    private AuthPmInterceptor authPmInterceptor;
+    @MockitoBean
+    private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        // 1. AuthPmInterceptor의 preHandle이 항상 true를 반환하도록 설정
+        //    (즉, 인증/인가 단계를 통과하도록 함)
+        when(authPmInterceptor.preHandle(
+                any(), any(), any()
+        )).thenReturn(true);
+
+        // 2. CheckCurrentBatchInterceptor의 preHandle도 항상 true를 반환하도록 설정
+        //    (즉, 현재 기수 체크 단계를 통과하도록 함)
+        when(checkCurrentBatchInterceptor.preHandle(
+                any(), any(), any()
+        )).thenReturn(true);
+    }
 
     @Test
     @DisplayName("팀 매치 지원 요청이 성공적으로 처리되는지 테스트")

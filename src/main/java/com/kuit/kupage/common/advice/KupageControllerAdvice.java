@@ -2,6 +2,7 @@ package com.kuit.kupage.common.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.kuit.kupage.common.response.BaseResponse;
+import com.kuit.kupage.exception.AuthException;
 import com.kuit.kupage.exception.KupageException;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ import static com.kuit.kupage.common.response.ResponseCode.BAD_REQUEST;
 @RestControllerAdvice
 public class KupageControllerAdvice {
 
-    @ExceptionHandler(KupageException.class)
-    public ResponseEntity<Object> handleException(KupageException e) {
-        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<Object> authException(AuthException e) {
+        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -38,7 +39,6 @@ public class KupageControllerAdvice {
         throw ex;
     }
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new LinkedHashMap<>();
@@ -51,5 +51,10 @@ public class KupageControllerAdvice {
 
         BaseResponse<Map<String, String>> response = new BaseResponse<>(BAD_REQUEST, errors);
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(KupageException.class)
+    public ResponseEntity<Object> handleException(KupageException e) {
+        return new ResponseEntity<>(e.getResponseCode(), HttpStatus.BAD_REQUEST);
     }
 }

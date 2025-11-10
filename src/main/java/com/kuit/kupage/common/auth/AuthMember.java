@@ -30,4 +30,10 @@ public class AuthMember implements UserDetails {
         return null;
     }
 
+    public boolean isAdmin() {
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.equals(AuthRole.ADMIN.getRole()));
+    }
+
 }

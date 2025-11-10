@@ -3,9 +3,11 @@ package com.kuit.kupage.domain.member.service;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
+import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
+import com.kuit.kupage.domain.memberRole.repository.MemberRoleRepository;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.exception.MemberException;
@@ -22,6 +24,8 @@ public class MemberService {
 
     private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
+    private final MemberRoleRepository memberRoleRepository;
+    private final ConstantProperties constantProperties;
 
     public Long getMemberIdByDiscordInfo(DiscordInfoResponse userInfo) {
         String discordId = userInfo.getUserResponse().getId();
@@ -52,6 +56,11 @@ public class MemberService {
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(ResponseCode.NONE_MEMBER));
+    }
+
+    public boolean isCurrentBatch(Long memberId) {
+
+        return memberRoleRepository.existsByMember_IdAndRole_Batch(memberId, constantProperties.getCurrentBatch());
     }
 
     //todo 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
