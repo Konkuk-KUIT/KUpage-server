@@ -36,7 +36,7 @@ public class Team extends BaseEntity {
     private String topicSummary;
 
     @Column(length = 500)
-    private String thumbnailUrl;
+    private String imageUrl;
 
     @Column(length = 500)
     private String serviceIntroFile;
@@ -68,7 +68,7 @@ public class Team extends BaseEntity {
         this.serviceName = request.serviceName();
         this.appType = request.appType();
         this.topicSummary = request.topicSummary();
-        this.thumbnailUrl = request.imageUrl();
+        this.imageUrl = request.imageUrl();
         this.serviceIntroFile = request.serviceIntroFile();
         this.featureRequirements = request.featureRequirements();
         this.preferredDeveloper = request.preferredDeveloper();
