@@ -12,21 +12,22 @@ VALUES ('김지훈', 'discord_1001', 'jihoon#1234', 'https://cdn.discordapp.com/
        ('윤아람', 'discord_1010', 'aram#8642', 'https://cdn.discordapp.com/embed/avatars/4.png', NOW(), NOW());
 
 INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, modified_at)
-VALUES (1,NULL, '부원', NULL, 0, NOW(), NOW()),
-       (2, NULL, '운영진', NULL, 0, NOW(), NOW()),
-       (3, NULL, '튜터', NULL, 0, NOW(), NOW());
+VALUES (1,'SIXTH', '부원', NULL, 0, NOW(), NOW()),
+       (2, 'FIFTH', '운영진', NULL, 0, NOW(), NOW()),
+       (3, 'SIXTH', 'PM', NULL, 0, NOW(), NOW()),
+       (4, 'SIXTH', '튜터', NULL, 0, NOW(), NOW());
 
 INSERT INTO member_role (member_id, role_id)
 VALUES (1, 1),
        (2, 2),
        (3, 3),
-       (4, 1),
-       (5, 2),
-       (6, 3),
-       (7, 1),
-       (8, 2),
-       (9, 3),
-       (10, 3);
+       (4, 4),
+       (5, 1),
+       (6, 2),
+       (7, 3),
+       (8, 4),
+       (9, 1),
+       (10, 2);
 
 
 INSERT INTO team
@@ -34,14 +35,14 @@ INSERT INTO team
  SERVICE_NAME, SERVICE_INTRO_FILE, THUMBNAIL_URL,
  TOPIC_SUMMARY, FEATURE_REQUIREMENTS, PREFERRED_DEVELOPER,
  OWNER_NAME, APP_TYPE, BATCH)
-VALUES (NOW(), NOW(), 1,
+VALUES (NOW(), NOW(), 3,
         '글로방',
         'https://cdn.kupage.com/team1-intro.pdf',
         'https://cdn.kupage.com/team1-thumbnail.jpg',
         '외국인 대상 부동산 매칭 서비스',
         '지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공',
         '이런 개발자분이 오시면 좋겠습니다!',
-        '김지훈',
+        '박민수',
         'Android',
         'SIXTH'),
 

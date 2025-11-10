@@ -15,7 +15,7 @@ public record IdeaRegisterRequest(
         String topicSummary,
 
         @Size(max = 500)
-        String thumbnailUrl,
+        String imageUrl,
 
         @Size(max = 500)
         String serviceIntroFile,

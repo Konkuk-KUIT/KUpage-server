@@ -68,7 +68,7 @@ public class Team extends BaseEntity {
         this.serviceName = request.serviceName();
         this.appType = request.appType();
         this.topicSummary = request.topicSummary();
-        this.thumbnailUrl = request.thumbnailUrl();
+        this.thumbnailUrl = request.imageUrl();
         this.serviceIntroFile = request.serviceIntroFile();
         this.featureRequirements = request.featureRequirements();
         this.preferredDeveloper = request.preferredDeveloper();
