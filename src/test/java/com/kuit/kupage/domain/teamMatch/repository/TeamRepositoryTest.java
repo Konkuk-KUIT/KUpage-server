@@ -47,7 +47,7 @@ class TeamRepositoryTest {
         Team foundTeam = found.get();
         assertEquals("글로방", foundTeam.getServiceName());
         assertEquals("외국인 대상 부동산 매칭 서비스", foundTeam.getTopicSummary());
-        assertEquals("https://cdn.kupage.com/team1-thumbnail.jpg", foundTeam.getThumbnailUrl());
+        assertEquals("https://cdn.kupage.com/team1-thumbnail.jpg", foundTeam.getImageUrl());
     }
 
     @Test
