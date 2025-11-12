@@ -1,0 +1,16 @@
+services:
+  blue:
+    container_name: blue
+    image: konkukkuit/kuitee
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+
+  green:
+    container_name: green
+    image : konkukkuit/kuitee
+    env_file:
+      - .env
+    ports:
+      - "8081:8080"

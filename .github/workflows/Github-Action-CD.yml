@@ -2,7 +2,8 @@ name: CD with Docker to EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "*" ]
+
 
 jobs:
   deploy:
@@ -16,18 +17,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-          # cache: 'gradle'
-          # cache-dependency-path: | # optional
-            # ~/*.gradle*
-            # ~/**/gradle-wrapper.properties
-
-      - name : make application.yml
-        run: |
-          mkdir -p ./src/main/resources/
-          touch ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
-          cat ./src/main/resources/application.yml
-
+          cache: 'gradle'
+          cache-dependency-path: | # optional
+            ~/*.gradle*
+            ~/**/gradle-wrapper.properties
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
@@ -59,4 +52,25 @@ jobs:
           key: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            echo "📄 Writing /home/ubuntu/.env"
+            sudo bash -c 'cat > /home/ubuntu/.env << EOF
+            DISCORD_CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID }}
+            DISCORD_CLIENT_SECRET=${{ secrets.DISCORD_CLIENT_SECRET }}
+            DISCORD_REDIRECT_URI=${{ secrets.DISCORD_REDIRECT_URI }}
+
+            DISCORD_GUILD_ID=${{ secrets.DISCORD_GUILD_ID }}
+            DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+
+            AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+            CLOUDFRONT_DEPLOY_URL=${{ secrets.CLOUDFRONT_DEPLOY_URL }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+
+            PROD_DB_URL=${{ secrets.PROD_DB_URL }}
+            PROD_DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}
+            PROD_DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
+            EOF'
+            
             sudo /home/ubuntu/deploy.sh

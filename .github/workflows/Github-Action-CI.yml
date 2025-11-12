@@ -24,15 +24,6 @@ jobs:
             ~/*.gradle*
             ~/**/gradle-wrapper.properties
 
-      - name : make application.yml
-        run: |
-          mkdir -p ./src/main/resources/
-          touch ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
-          cat ./src/main/resources/application.yml
-
-      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
