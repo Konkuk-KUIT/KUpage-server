@@ -42,7 +42,7 @@ public class Member extends BaseEntity {
 
     private String profileImage;
 
-    //todo 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
+    // TODO. 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
     @Embedded
     private AuthToken authToken;
 

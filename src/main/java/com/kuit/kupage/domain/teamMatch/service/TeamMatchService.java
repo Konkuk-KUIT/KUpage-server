@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.file.S3Service;
+import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.project.entity.AppType;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,6 @@ public class TeamMatchService {
     private final MemberService memberService;
     private final TeamRepository teamRepository;
     private final TeamApplicantRepository teamApplicantRepository;
-    private final S3Service s3Service;
     private final ConstantProperties constantProperties;
 
 
@@ -47,12 +46,6 @@ public class TeamMatchService {
         return new TeamMatchResponse(saved.getId());
     }
 
-    public PortfolioUploadResponse uploadPortfolio(MultipartFile file) {
-        String uploadPortfolio = s3Service.uploadPortfolio(file);
-        log.info("[uploadPortfolio] 업로드 된 포트폴리오 url = {}", uploadPortfolio);
-        return new PortfolioUploadResponse(uploadPortfolio);
-    }
-
     public TeamApplicantResponse getTeamApplicant(Long memberId, Long teamId, boolean isAdmin) {
         Team team = getOwnTeam(memberId, teamId, isAdmin);
 
@@ -61,7 +54,7 @@ public class TeamMatchService {
         String nameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
         AppType appType = team.getAppType();
         String topicSummary = team.getTopicSummary();
-        String mvpFeatures = team.getMvpFeatures();
+        String mvpFeatures = team.getFeatureRequirements();
 
         // 각파트별 누가 지원했는지 : 이름, 현재역할, 파트
         // 지원 상세 : 포폴, 지원동기
@@ -112,29 +105,24 @@ public class TeamMatchService {
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {
-        Map<Part, List<ApplicantInfo>> collected = applicantInfos.stream()
+        return applicantInfos.stream()
                 .collect(Collectors.groupingBy(ApplicantInfo::part));
-        return collected;
     }
 
     private List<ApplicantInfo> parseApplicantInfo(Team team) {
         List<TeamApplicant> teamApplicants = team.getTeamApplicants();
 
-        List<ApplicantInfo> applicantInfos = teamApplicants.stream()
+        return teamApplicants.stream()
                 .map(ta -> {
                     Member applicantMember = ta.getMember();
                     String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().name() + " " + ta.getAppliedPart();
                     Part appliedPart = ta.getAppliedPart();
 
                     String portfolioUrl = ta.getPortfolioUrl();
-                    String additionalAnswer1 = ta.getAdditionalAnswer1();
-                    String additionalAnswer2 = ta.getAdditionalAnswer2();
-                    ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl, additionalAnswer1, additionalAnswer2);
+                    ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
 
                     return new ApplicantInfo(applicantMemberNameAndPart, appliedPart, applicantDetail);
                 }).toList();
-
-        return applicantInfos;
     }
 
     private Team getOwnTeam(Long memberId, Long teamId, boolean isAdmin) {
@@ -156,6 +144,13 @@ public class TeamMatchService {
 
     private Team getTeam(Long teamId) {
         return teamRepository.findById(teamId)
-                .orElseThrow(() -> new KupageException(NONE_TEAM));
+                .orElseThrow(() -> new KupageException(ResponseCode.NONE_TEAM));
+    }
+
+    public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request) {
+        Member owner = memberService.getMember(memberId);
+        Team team = new Team(owner.getId(), owner.getName(), constantProperties.getCurrentBatch(), request);
+        Team saved = teamRepository.save(team);
+        return new IdeaRegisterResponse(saved.getId());
     }
 }

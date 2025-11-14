@@ -4,6 +4,7 @@ import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.memberTeam.MemberTeam;
 import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.teamMatch.dto.IdeaRegisterRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,32 +29,27 @@ public class Team extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String serviceName;
 
-    private String topicSummary;
-
-    @Lob
-    private String mvpFeatures;
-
-    @Lob
-    private String expectedRequirements;
+    @Enumerated(EnumType.STRING)
+    private AppType appType;
 
     @Column(length = 500)
-    private String thumbnailUrl;
+    private String topicSummary;
 
-    @Lob
-    private String pmGreeting;
+    @Column(length = 500)
+    private String imageUrl;
 
-    @Lob
-    private String additionalAnswer1;
+    @Column(length = 500)
+    private String serviceIntroFile;
 
-    @Lob
-    private String additionalAnswer2;
+    @Column(length = 1000)
+    private String featureRequirements;
+
+    @Column(length = 1000)
+    private String preferredDeveloper;
 
     private Long ownerId; // memberId
 
     private String ownerName; // memberName
-
-    @Enumerated(EnumType.STRING)
-    private AppType appType;
 
     @Enumerated(EnumType.STRING)
     private Batch batch;
@@ -65,5 +61,16 @@ public class Team extends BaseEntity {
     private List<TeamApplicant> teamApplicants = new ArrayList<>();
 
 
-
+    public Team(Long ownerId, String ownerName, Batch currentBatch, IdeaRegisterRequest request) {
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
+        this.batch = currentBatch;
+        this.serviceName = request.serviceName();
+        this.appType = request.appType();
+        this.topicSummary = request.topicSummary();
+        this.imageUrl = request.imageUrl();
+        this.serviceIntroFile = request.serviceIntroFile();
+        this.featureRequirements = request.featureRequirements();
+        this.preferredDeveloper = request.preferredDeveloper();
+    }
 }

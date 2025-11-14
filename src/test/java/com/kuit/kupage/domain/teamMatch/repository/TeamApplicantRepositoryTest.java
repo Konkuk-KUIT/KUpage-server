@@ -30,13 +30,9 @@ class TeamApplicantRepositoryTest {
     @BeforeEach
     void setUp() {
         baseRequest = new TeamMatchRequest(
-                "이서연",
-                "20201234",
                 Part.WEB,
                 "지원동기 예시",
-                "https://portfolio.com/jihun",
-                "협업에서 중요한 것은 커뮤니케이션",
-                "코드 리뷰를 통해 배우고 싶습니다.");
+                "https://portfolio.com/jihun");
 
 
         baseMember = Member.builder()
@@ -49,20 +45,17 @@ class TeamApplicantRepositoryTest {
         baseTeam = new Team(
                 null,
                 "글로방",
+                AppType.Web,
                 "외국인 대상 부동산 매칭 서비스",
-                "지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공",
-                "다국어 지원, 실시간 매물 등록, 중개인 매칭 기능",
                 "https://cdn.kupage.com/team1-thumbnail.jpg",
-                "안녕하세요, 저희는 외국인 거주 문제를 해결하고자 합니다.",
-                "프로젝트 진행 시 가장 어려운 점은?",
-                "지역별 법률 차이로 인한 중개 절차 복잡성이었습니다.",
+                "https://s3.kupage.com/team1-intro.pdf",
+                "지도 기반의 실시간 매물 탐색, 채팅 문의, 언어별 번역 기능 제공",
+                "부동산 도메인에 관심이 많은 개발자분과 함께 하고 싶습니다!",
                 1L,
                 "이서연",
-                AppType.Web,
                 Batch.SIXTH,
                 null,
                 null
-
         );
     }
 
@@ -79,7 +72,7 @@ class TeamApplicantRepositoryTest {
 
         // then
         assertThat(found).isPresent();
-        assertThat(found.get().getName()).isEqualTo("이서연");
+        assertThat(found.get().getMember().getName()).isEqualTo("이서연");
         assertThat(found.get().getAppliedPart()).isEqualTo(Part.WEB);
     }
 
