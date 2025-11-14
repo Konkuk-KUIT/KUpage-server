@@ -12,10 +12,10 @@ VALUES ('김지훈', 'discord_1001', 'jihoon#1234', 'https://cdn.discordapp.com/
        ('윤아람', 'discord_1010', 'aram#8642', 'https://cdn.discordapp.com/embed/avatars/4.png', NOW(), NOW());
 
 INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, modified_at)
-VALUES (1,'SIXTH', '부원', NULL, 0, NOW(), NOW()),
-       (2, 'FIFTH', '운영진', NULL, 0, NOW(), NOW()),
-       (3, 'SIXTH', 'PM', NULL, 0, NOW(), NOW()),
-       (4, 'SIXTH', '튜터', NULL, 0, NOW(), NOW());
+VALUES (1,'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
+       (2, 'FIFTH', '5th 운영진', NULL, 0, NOW(), NOW()),
+       (3, 'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
+       (4, 'SIXTH', '6th Server 튜터', NULL, 0, NOW(), NOW());
 
 INSERT INTO member_role (member_id, role_id)
 VALUES (1, 1),
