@@ -13,8 +13,8 @@ VALUES ('김지훈', 'discord_1001', 'jihoon#1234', 'https://cdn.discordapp.com/
 
 INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, modified_at)
 VALUES (1,'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
-       (2, NULL, '운영진', NULL, 0, NOW(), NOW()),
-       (3, NULL, '튜터', NULL, 0, NOW(), NOW());
+       (2, NULL, '6th 운영진', NULL, 0, NOW(), NOW()),
+       (3, NULL, '5th Web 튜터', NULL, 0, NOW(), NOW());
 
 INSERT INTO member_role (member_id, role_id)
 VALUES (1, 1),
