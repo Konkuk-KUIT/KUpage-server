@@ -55,7 +55,7 @@ public class TeamMatchService {
 
         //팀 : 제목, 사람, 역할, 안드인지웹인지, 설명(소제목, 설명)
         String serviceName = team.getServiceName();
-        String nameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
+        String nameAndPart = team.getOwnerName() + " - " + team.getBatch().getDescription() + " " + Part.PM.name();
         AppType appType = team.getAppType();
         String topicSummary = team.getTopicSummary();
         String mvpFeatures = team.getFeatureRequirements();
@@ -96,7 +96,7 @@ public class TeamMatchService {
         String serviceName = team.getServiceName();
         String topicSummary = team.getTopicSummary();
         // 오너를 아예 멤버:팀으로 나눌지?
-        String ownerNameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
+        String ownerNameAndPart = team.getOwnerName() + " - " + team.getBatch().getDescription() + " " + Part.PM.name();
         AppType appType = team.getAppType();
 
         return new TeamOverviewDto(teamId, serviceName, topicSummary, ownerNameAndPart, appType);
@@ -108,7 +108,7 @@ public class TeamMatchService {
         String serviceName = team.getServiceName();
         String topicSummary = team.getTopicSummary();
         // 오너를 아예 멤버:팀으로 나눌지?
-        String ownerNameAndPart = team.getOwnerName() + " - " + team.getBatch().name() + " " + Part.PM.name();
+        String ownerNameAndPart = team.getOwnerName() + " - " + team.getBatch().getDescription() + " " + Part.PM.name();
         AppType appType = team.getAppType();
 
         List<ApplicantInfo> applicantInfos = parseApplicantInfo(team);
@@ -134,14 +134,14 @@ public class TeamMatchService {
         List<ApplicantInfo> applicantInfos = teamApplicants.stream()
                 .map(ta -> {
                     Member applicantMember = ta.getMember();
-                    String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().name() + " " + ta.getAppliedPart();
+                    String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().getDescription() + " " + ta.getAppliedPart();
                     Part appliedPart = ta.getAppliedPart();
 
                     String portfolioUrl = ta.getPortfolioUrl();
                     String formattedTimetable = ApplyTimeConverter.formatTimetable(ta.getCreatedAt());
-                    ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl, additionalAnswer1, additionalAnswer2);
+                    ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
 
-                    return new ApplicantInfo(applicantMemberNameAndPart, appliedPart, applicantDetail);
+                    return new ApplicantInfo(applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
                 }).toList();
 
         return applicantInfos;

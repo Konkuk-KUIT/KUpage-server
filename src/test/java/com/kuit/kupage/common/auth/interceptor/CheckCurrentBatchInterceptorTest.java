@@ -1,7 +1,8 @@
 package com.kuit.kupage.common.auth.interceptor;
 
 import com.kuit.kupage.common.auth.AuthMember;
-import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.common.constant.ConstantProperties;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
 class CheckCurrentBatchInterceptorTest {
 
     @Mock
-    private MemberService memberService;
+    private MemberRoleService memberRoleService;
 
     @Mock
     private HttpServletRequest request;
@@ -35,11 +36,13 @@ class CheckCurrentBatchInterceptorTest {
     @Mock
     private AuthMember authMember;
 
+    @Mock
+    private ConstantProperties constantProperties;
     private CheckCurrentBatchInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
-        interceptor = new CheckCurrentBatchInterceptor(memberService);
+        interceptor = new CheckCurrentBatchInterceptor(memberRoleService, constantProperties);
 
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -58,7 +61,7 @@ class CheckCurrentBatchInterceptorTest {
     @Test
     void return_true_when_current_batch_and_not_set_403() throws Exception {
         // given
-        when(memberService.isCurrentBatch(1L)).thenReturn(true);
+        when(memberRoleService.isCurrentBatch(1L)).thenReturn(true);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // when
@@ -74,7 +77,7 @@ class CheckCurrentBatchInterceptorTest {
     @Test
     void return_false_when_not_current_batch_and_respond_403_with_json() throws Exception {
         // given
-        when(memberService.isCurrentBatch(1L)).thenReturn(false);
+        when(memberRoleService.isCurrentBatch(1L)).thenReturn(false);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // when

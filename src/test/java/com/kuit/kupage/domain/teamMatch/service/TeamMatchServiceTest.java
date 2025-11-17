@@ -4,7 +4,6 @@ import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.file.S3Service;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
-import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.teamMatch.Part;
@@ -70,7 +69,7 @@ class TeamMatchServiceTest {
     void apply_success() {
         // given
         TeamMatchRequest request = new TeamMatchRequest(
-                Part.SPRING,
+                Part.Server,
                 "백엔드 개발자로서 팀에 기여하고 싶습니다.",
                 "https://portfolio.com/jihun"
         );
@@ -175,7 +174,7 @@ class TeamMatchServiceTest {
                 .willReturn(Optional.empty());
 
         // when / then
-        assertThatThrownBy(() -> teamMatchService.getCurrentBatchTeamApplicants(memberId))
+        assertThatThrownBy(() -> teamMatchService.getCurrentBatchOwnTeam(memberId))
                 .isInstanceOf(TeamException.class)
                 .hasMessageContaining(ResponseCode.NONE_OWN_TEAM.getMessage());
 

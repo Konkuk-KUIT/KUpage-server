@@ -29,8 +29,6 @@ public class CheckCurrentBatchInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("AuthPmInterceptor 진입");
-
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
