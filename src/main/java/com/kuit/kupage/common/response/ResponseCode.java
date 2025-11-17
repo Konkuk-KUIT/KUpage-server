@@ -63,7 +63,8 @@ public enum ResponseCode {
 
     // 6000 번대 : team-match 관련
     NONE_TEAM(false, 6000, "존재하지 않는 팀입니다."), 
-    NONE_OWN_TEAM(false, 6001, "소유하는 팀이 존재하지 않습니다.");
+    NONE_OWN_TEAM(false, 6001, "소유하는 팀이 존재하지 않습니다."),
+    NONE_APPLIED_TEAM(false, 6002, "지원한 팀이 존재하지 않습니다.");
 
     private boolean isSuccess;
     private int code;

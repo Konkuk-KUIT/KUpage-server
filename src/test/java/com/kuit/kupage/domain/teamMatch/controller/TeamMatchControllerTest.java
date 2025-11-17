@@ -2,8 +2,9 @@ package com.kuit.kupage.domain.teamMatch.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuit.kupage.common.auth.AuthMember;
-import com.kuit.kupage.common.auth.interceptor.AuthPmInterceptor;
+import com.kuit.kupage.common.auth.interceptor.AuthAllowedPartInterceptor;
 import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
+import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
 import com.kuit.kupage.common.config.InterceptorConfig;
 import com.kuit.kupage.common.config.SecurityTestConfig;
 import com.kuit.kupage.domain.teamMatch.Part;
@@ -41,12 +42,16 @@ public class TeamMatchControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockitoBean
     private TeamMatchService teamMatchService;
     @MockitoBean
-    private AuthPmInterceptor authPmInterceptor;
+    private AuthAllowedPartInterceptor authAllowedPartInterceptor;
+    @MockitoBean
+    private InjectionRoleInterceptor injectionRoleInterceptor;
     @MockitoBean
     private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -54,7 +59,7 @@ public class TeamMatchControllerTest {
     void setUp() throws Exception {
         // 1. AuthPmInterceptor의 preHandle이 항상 true를 반환하도록 설정
         //    (즉, 인증/인가 단계를 통과하도록 함)
-        when(authPmInterceptor.preHandle(
+        when(authAllowedPartInterceptor.preHandle(
                 any(), any(), any()
         )).thenReturn(true);
 

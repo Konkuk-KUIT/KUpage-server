@@ -142,9 +142,70 @@ VALUES (NOW(), NOW(), 3,
         '멘토링 세션 예약, 화상 채팅 API, 학습 진도 관리 기능',
         '이런 개발자분이 오시면 좋겠습니다!',
         '이서연',
-        'Web',
-        'SIXTH');
+        'Android',
+        'SIXTH',
+        NOW(), NOW());
 
+INSERT INTO team_applicant (
+    team_applicant_id,
+    name,
+    student_id,
+    applied_part,
+    portfolio_url,
+    additional_answer1,
+    additional_answer2,
+    member_id,
+    team_id,
+    created_at,
+    modified_at
+) VALUES
+      (1, '이서연', '20210001', 'Android',
+       'https://github.com/jwkim/Android-portfolio',
+       'Android Studio로 앱을 개발한 경험이 있습니다.',
+       'KUIT에서 모바일 개발을 심화하고 싶습니다.',
+       2, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (2, '박민수', '20210002', 'Android',
+       'https://github.com/hwlee/Android-toy',
+       'Kotlin과 Firebase를 활용한 프로젝트 경험이 있습니다.',
+       '실무 수준의 앱 아키텍처를 배우고 싶습니다.',
+       3, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (3, '최유진', '20210003', 'iOS',
+       'https://github.com/sylee/ios-portfolio',
+       'UIKit, SwiftUI 모두 사용해봤습니다.',
+       '디자인 감각을 살린 iOS 앱을 만들고 싶습니다.',
+       4, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (4, '정하늘', '20210005', 'Web',
+       'https://github.com/mspark/web-portfolio',
+       'React와 Next.js 기반 프로젝트 경험이 있습니다.',
+       '서버 연동 및 성능 최적화를 배우고 싶습니다.',
+       5, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (5, '오세훈', '20210006', 'Web',
+       'https://github.com/yjjeong/web-demo',
+       'TypeScript와 Zustand를 이용한 상태 관리 경험이 있습니다.',
+       '프론트엔드 구조 설계에 관심이 있습니다.',
+       6, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (6, '한수민', '20210007', 'Server',
+       'https://github.com/haeun/server-portfolio',
+       'Spring Boot, JPA 기반 REST API 개발 경험이 있습니다.',
+       '효율적인 데이터 모델링을 배우고 싶습니다.',
+       7, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (7, '류지호', '20210009', 'Design',
+       'https://behance.net/mjchoi-design',
+       'Figma와 Adobe XD를 활용한 UI/UX 디자인 경험이 있습니다.',
+       '사용자 중심의 디자인을 실천하고 싶습니다.',
+       8, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (8, '서민재', '20210010', 'Design',
+       'https://dribbble.com/sbhan',
+       '브랜딩과 인터랙션 디자인 프로젝트를 진행했습니다.',
+       '디자인 시스템을 구축하는 경험을 하고 싶습니다.',
+       9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
 
 SELECT * FROM MEMBER;
 

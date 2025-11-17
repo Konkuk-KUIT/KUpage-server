@@ -1,11 +1,11 @@
 package com.kuit.kupage.domain.teamMatch;
 
 public enum Part {
-    SPRING,
-    WEB,
-    ANDROID,
-    IOS,
+    Server,
+    Web,
+    Android,
+    iOS,
     PM,
-    DESIGN;
+    Design;
 }
 
