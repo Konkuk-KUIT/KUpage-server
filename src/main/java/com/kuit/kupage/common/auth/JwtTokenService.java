@@ -61,9 +61,9 @@ public class JwtTokenService {
         return new AuthTokenResponse(accessToken, refreshToken);
     }
 
-    public GuestTokenResponse generateGuestToken(Member member){
+    public GuestTokenResponse generateGuestToken(Long memberId){
         final Claims claims = Jwts.claims();
-        claims.put("sub", member.getId());
+        claims.put("sub", memberId);
         claims.put("role", "GUEST");
         String guestToken = generateToken(claims, accessTokenExpiration, GUEST);
         return new GuestTokenResponse(guestToken);

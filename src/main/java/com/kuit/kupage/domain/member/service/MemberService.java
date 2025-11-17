@@ -10,6 +10,7 @@ import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.memberRole.repository.MemberRoleRepository;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
+import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
 import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,12 +45,12 @@ public class MemberService {
     }
 
     @Transactional
-    public TokenResponse signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
+    public LoginOrSignupResult signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         log.debug("[signup] 신규 회원 회원가입 처리 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급");
         Member member = new Member(response, userInfo);
         Member savedMember = memberRepository.save(member);
         log.debug("[signup] 신규 회원 member = {}", savedMember);
-        return jwtTokenService.generateGuestToken(savedMember);
+        return new LoginOrSignupResult(savedMember.getId(), jwtTokenService.generateGuestToken(savedMember.getId()));
     }
 
     @Transactional(readOnly = true)
