@@ -8,7 +8,7 @@ public record TeamApplicantOverviewDto(
         String nameAndPart,
         AppType appType,
         String topicSummary,
-        int androidApplicantNum,
+        int AndroidApplicantNum,
         int iosApplicantNum,
         int webApplicantNum,
         int serverApplicantNum,

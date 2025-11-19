@@ -30,7 +30,7 @@ class TeamApplicantRepositoryTest {
     @BeforeEach
     void setUp() {
         baseRequest = new TeamMatchRequest(
-                Part.WEB,
+                Part.Web,
                 "지원동기 예시",
                 "https://portfolio.com/jihun");
 
@@ -73,7 +73,7 @@ class TeamApplicantRepositoryTest {
         // then
         assertThat(found).isPresent();
         assertThat(found.get().getMember().getName()).isEqualTo("이서연");
-        assertThat(found.get().getAppliedPart()).isEqualTo(Part.WEB);
+        assertThat(found.get().getAppliedPart()).isEqualTo(Part.Web);
     }
 
     @Test

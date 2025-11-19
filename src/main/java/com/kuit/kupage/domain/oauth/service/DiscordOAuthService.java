@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
-import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
@@ -38,7 +38,7 @@ public class DiscordOAuthService {
     private final Map<String, CodeCacheEntry> codeCache = new ConcurrentHashMap<>();
 
     private final RestClient restClient;
-    private final MemberService memberService;
+    private final MemberRoleService memberService;
     private final JwtTokenService jwtTokenService;
 
     @Value("${spring.security.oauth2.client.registration.discord.redirect-uri}")
@@ -56,7 +56,7 @@ public class DiscordOAuthService {
     @Value("${discord.bot-token}")
     private String BOT_TOKEN;
 
-    public DiscordOAuthService(RestClient.Builder builder, MemberService memberService, JwtTokenService jwtTokenService) {
+    public DiscordOAuthService(RestClient.Builder builder, MemberRoleService memberService, JwtTokenService jwtTokenService) {
         this.restClient = builder
                 .baseUrl("https://discord.com/api/v10")
                 .build();

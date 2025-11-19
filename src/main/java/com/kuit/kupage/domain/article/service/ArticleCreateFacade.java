@@ -7,7 +7,7 @@ import com.kuit.kupage.domain.article.domain.Tag;
 import com.kuit.kupage.domain.article.dto.UploadArticleRequest;
 import com.kuit.kupage.domain.article.dto.UploadBlockRequest;
 import com.kuit.kupage.domain.member.Member;
-import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.exception.ArticleException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleCreateFacade {
 
-    private final MemberService memberService;
+    private final MemberRoleService memberService;
     private final TagService tagService;
     private final ArticleService articleService;
     private final BlockService blockService;

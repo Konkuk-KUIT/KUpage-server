@@ -61,7 +61,7 @@ class TeamMatchRequestValidationTest {
         String longPortfolioUrl = "https://".concat("a".repeat(600));
 
         TeamMatchRequest request = new TeamMatchRequest(
-                Part.ANDROID,
+                Part.Android,
                 longMotivation,
                 longPortfolioUrl
         );
@@ -78,7 +78,7 @@ class TeamMatchRequestValidationTest {
     @DisplayName("URL 형식이 아닌 경우 검증 실패")
     void invalidUrlFormat_shouldFail() {
         TeamMatchRequest request = new TeamMatchRequest(
-                Part.ANDROID,
+                Part.Android,
                 "팀의 안드로이드 개발을 담당하고 싶습니다.",
                 "not-a-valid-url"
         );

@@ -142,9 +142,58 @@ VALUES (NOW(), NOW(), 3,
         '멘토링 세션 예약, 화상 채팅 API, 학습 진도 관리 기능',
         '이런 개발자분이 오시면 좋겠습니다!',
         '이서연',
-        'Web',
+        'Android',
         'SIXTH');
 
+INSERT INTO team_applicant (
+    team_applicant_id,
+    applied_part,
+    portfolio_url,
+    motivation,
+    member_id,
+    team_id,
+    created_at,
+    modified_at
+) VALUES
+      (1, 'Android',
+       'https://github.com/jwkim/Android-portfolio',
+       'Android Studio로 앱을 개발한 경험이 있습니다.',
+       2, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (2, 'Android',
+       'https://github.com/hwlee/Android-toy',
+       'Kotlin과 Firebase를 활용한 프로젝트 경험이 있습니다.',
+       3, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (3, 'iOS',
+       'https://github.com/sylee/ios-portfolio',
+       'UIKit, SwiftUI 모두 사용해봤습니다.',
+       4, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (4, 'Web',
+       'https://github.com/mspark/web-portfolio',
+       'React와 Next.js 기반 프로젝트 경험이 있습니다.',
+       5, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (5, 'Web',
+       'https://github.com/yjjeong/web-demo',
+       'TypeScript와 Zustand를 이용한 상태 관리 경험이 있습니다.',
+       6, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (6, 'Server',
+       'https://github.com/haeun/server-portfolio',
+       'Spring Boot, JPA 기반 REST API 개발 경험이 있습니다.',
+       7, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (7, 'Design',
+       'https://behance.net/mjchoi-design',
+       'Figma와 Adobe XD를 활용한 UI/UX 디자인 경험이 있습니다.',
+       8, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+
+      (8, 'Design',
+       'https://dribbble.com/sbhan',
+       '브랜딩과 인터랙션 디자인 프로젝트를 진행했습니다.',
+       9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
 
 SELECT * FROM MEMBER;
 
