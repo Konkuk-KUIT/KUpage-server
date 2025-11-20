@@ -141,7 +141,7 @@ public class TeamMatchService {
                     String formattedTimetable = ApplyTimeConverter.formatTimetable(ta.getCreatedAt());
                     ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
 
-                    return new ApplicantInfo(applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
+                    return new ApplicantInfo(applicantMember.getId(), applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
                 }).toList();
 
         return applicantInfos;
