@@ -75,7 +75,7 @@ springdoc:
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
     enabled: true
-    path: /index.html
+    path: /swagger-ui
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha

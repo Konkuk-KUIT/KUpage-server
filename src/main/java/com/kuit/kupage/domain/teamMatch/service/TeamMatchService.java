@@ -39,6 +39,7 @@ public class TeamMatchService {
 
 
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
+        // TODO. 이미 지원한 팀의 경우 예외가 발생해야함
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
         TeamApplicant applicant = new TeamApplicant(request, member, team);
