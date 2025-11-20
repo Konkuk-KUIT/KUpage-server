@@ -67,7 +67,6 @@ public class MemberRoleService {
     }
 
     public boolean isCurrentBatch(Long memberId) {
-
         return memberRoleRepository.existsByMember_IdAndRole_Batch(memberId, constantProperties.getCurrentBatch());
     }
 

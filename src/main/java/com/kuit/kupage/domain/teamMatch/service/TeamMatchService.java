@@ -1,7 +1,6 @@
 package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
-import com.kuit.kupage.common.file.S3Service;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
@@ -20,9 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +35,6 @@ public class TeamMatchService {
     private final MemberRoleService memberService;
     private final TeamRepository teamRepository;
     private final TeamApplicantRepository teamApplicantRepository;
-    private final S3Service s3Service;
     private final ConstantProperties constantProperties;
 
 
@@ -174,5 +170,10 @@ public class TeamMatchService {
         Team team = new Team(owner.getId(), owner.getName(), constantProperties.getCurrentBatch(), request);
         Team saved = teamRepository.save(team);
         return new IdeaRegisterResponse(saved.getId());
+    }
+
+    public AllTeamsResponse getAllTeamIdeas() {
+        List<Team> teams = teamRepository.findAllByBatch(constantProperties.getCurrentBatch());
+        return AllTeamsResponse.from(teams);
     }
 }

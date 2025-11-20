@@ -3,9 +3,11 @@ package com.kuit.kupage.domain.teamMatch.controller;
 import com.kuit.kupage.common.auth.AllowedParts;
 import com.kuit.kupage.common.auth.AuthMember;
 import com.kuit.kupage.common.response.BaseResponse;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.dto.*;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
+import com.kuit.kupage.exception.KupageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.kuit.kupage.common.response.ResponseCode.NOT_CURRENT_BATCH_MEMBER;
+
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping
@@ -21,6 +25,7 @@ import java.util.List;
 public class TeamMatchController {
 
     private final TeamMatchService teamMatchService;
+    private final MemberRoleService memberRoleService;
 
     // todo 결국 멤버 전체 조회 가능하도록 해야함.
     // 운영진 -> 다 보이게
@@ -76,6 +81,19 @@ public class TeamMatchController {
         Long memberId = authMember.getId();
         log.debug("[registerIdea] memberId = {}, 팀매칭 지원 request = {}", memberId, request.toString());
         IdeaRegisterResponse response = teamMatchService.register(memberId, request);
+        return new BaseResponse<>(response);
+    }
+
+    @GetMapping("/teams")
+    public BaseResponse<AllTeamsResponse> getTeamIdeas(
+            @AuthenticationPrincipal AuthMember authMember) {
+        Long memberId = authMember.getId();
+        boolean isCurrentBatch = memberRoleService.isCurrentBatch(memberId);
+        System.out.println("isCurrentBatch = " + isCurrentBatch);
+        if (!isCurrentBatch) {
+            throw new KupageException(NOT_CURRENT_BATCH_MEMBER);
+        }
+        AllTeamsResponse response = teamMatchService.getAllTeamIdeas();
         return new BaseResponse<>(response);
     }
 }
