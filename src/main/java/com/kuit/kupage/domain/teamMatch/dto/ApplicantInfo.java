@@ -4,5 +4,5 @@ import com.kuit.kupage.domain.teamMatch.Part;
 
 import java.time.LocalDateTime;
 
-public record ApplicantInfo(String applicantMemberNameAndPart, Part part, String appliedTime, ApplicantDetail applicantDetail) {
+public record ApplicantInfo(Long memberId, String applicantMemberNameAndPart, Part part, String appliedTime, ApplicantDetail applicantDetail) {
 }
