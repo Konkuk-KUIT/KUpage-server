@@ -20,9 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -92,6 +90,18 @@ public class TeamMatchService {
         Team team = teamRepository.findTeamsByMemberIdAndBatch(memberId, constantProperties.getCurrentBatch())
                 .orElseThrow(() -> new TeamException(NONE_APPLIED_TEAM));
 
+        List<TeamApplicant> memberTeamApplicant = team.getTeamApplicants().stream()
+                .filter(ta -> ta.getMember().getId().equals(memberId))
+                .toList();
+
+        long appliedCountWithoutReject = memberTeamApplicant.stream()
+                .filter(TeamApplicant::isRejected)
+                .count();
+
+        if (appliedCountWithoutReject == memberTeamApplicant.size()) {
+            throw new TeamException(REJECTED_TEAM_MATCH);
+        }
+
         Long teamId = team.getId();
         String serviceName = team.getServiceName();
         String topicSummary = team.getTopicSummary();
@@ -132,6 +142,7 @@ public class TeamMatchService {
         List<TeamApplicant> teamApplicants = team.getTeamApplicants();
 
         List<ApplicantInfo> applicantInfos = teamApplicants.stream()
+                .filter(ta -> !ta.isRejected())
                 .map(ta -> {
                     Member applicantMember = ta.getMember();
                     String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().getDescription() + " " + ta.getAppliedPart();
