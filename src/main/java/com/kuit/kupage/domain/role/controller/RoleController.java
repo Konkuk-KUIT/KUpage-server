@@ -49,7 +49,6 @@ public class RoleController {
 
         // 각 member의 ROLE 조회, 업데이트
         List<DiscordMemberResponse> discordMemberResponses = discordOAuthService.fetchGuildMembers();
-//        int updatedMemberCnt = roleService.syncMemberRoles(discordMemberResponses);
         int updateMemberRoleCnt = roleService.batchInsertRoleMember(discordMemberResponses);
         log.debug("[syncRoles] 새롭게 저장된 memberRole 개수 = {}", updateMemberRoleCnt);
         return new BaseResponse<>(ResponseCode.SUCCESS);

@@ -40,11 +40,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/oauth2/code/discord", "/", "/error",
-                                "/auth-token/member/**",
-
-                                "/role/sync",
-
+                        .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
                 )
@@ -62,9 +58,7 @@ public class SecurityConfig {
                         .hasRole(MEMBER.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/admin/**"
-//                                , "/role/sync"
-                        )
+                        .requestMatchers("/admin/**", "/role/sync")
                         .hasRole(ADMIN.getValue())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
