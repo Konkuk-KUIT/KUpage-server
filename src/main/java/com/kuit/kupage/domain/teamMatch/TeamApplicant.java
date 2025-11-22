@@ -15,7 +15,7 @@ import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_FAILED;
 @Entity
 @Table(name = "team_applicant",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_team_applicant_member_team",
+                @UniqueConstraint(name = "uk_status_team_applicant_member_team",
                         columnNames = {"status", "member_id", "team_id"}
                 )
         })
