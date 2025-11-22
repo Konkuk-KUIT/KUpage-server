@@ -84,6 +84,8 @@ springdoc:
 
 const:
   current-batch: SIXTH
+  first-round-result-time: ${FIRST_ROUND_RESULT_TIME}
+  second-round-result-time: ${SECOND_ROUND_RESULT_TIME}
 
 ---
 

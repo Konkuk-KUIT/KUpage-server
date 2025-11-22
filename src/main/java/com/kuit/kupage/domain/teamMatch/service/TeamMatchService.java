@@ -5,6 +5,7 @@ import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
@@ -17,6 +18,7 @@ import com.kuit.kupage.exception.KupageException;
 import com.kuit.kupage.exception.TeamException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,12 +41,19 @@ public class TeamMatchService {
 
 
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
-        // TODO. 이미 지원한 팀의 경우 예외가 발생해야함
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
-        TeamApplicant applicant = new TeamApplicant(request, member, team);
-        TeamApplicant saved = teamApplicantRepository.save(applicant);
-        return new TeamMatchResponse(saved.getId());
+        ApplicantStatus status = constantProperties.getApplicantStatus();
+        TeamApplicant applicant = new TeamApplicant(request, member, team, status);
+        try {
+            TeamApplicant saved = teamApplicantRepository.save(applicant);
+            return new TeamMatchResponse(saved.getId());
+        } catch (DataIntegrityViolationException e) {
+            throw new KupageException(DUPLICATED_TEAM_APPLY);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public TeamApplicantResponse getTeamApplicant(Long memberId, Long teamId, boolean isAdmin) {

@@ -70,7 +70,11 @@ public enum ResponseCode {
     NONE_TEAM(false, 6000, "존재하지 않는 팀입니다."), 
     NONE_OWN_TEAM(false, 6001, "소유하는 팀이 존재하지 않습니다."),
     NONE_APPLIED_TEAM(false, 6002, "지원한 팀이 존재하지 않습니다."),
-    REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다.");
+    REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다."),
+    NOT_TEAM_MATCH_APPLY_PERIOD(false, 6004, "팀매칭 지원 기간이 아닙니다."),
+    DUPLICATED_TEAM_APPLY(false, 6005, "동일한 팀에 여러번 지원할 수 없습니다."),
+    EXCEEDED_TEAM_APPLY_LIMIT(false, 6006, "한 멤버 당 최대 2개의 팀에만 지원할 수 있습니다.");
+
 
     private boolean isSuccess;
     private int code;
