@@ -151,6 +151,7 @@ INSERT INTO team_applicant (
     applied_part,
     portfolio_url,
     motivation,
+    is_rejected,
     member_id,
     team_id,
     created_at,
@@ -159,41 +160,49 @@ INSERT INTO team_applicant (
       (1, 'Android',
        'https://github.com/jwkim/Android-portfolio',
        'Android Studio로 앱을 개발한 경험이 있습니다.',
+       false,
        2, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (2, 'Android',
        'https://github.com/hwlee/Android-toy',
        'Kotlin과 Firebase를 활용한 프로젝트 경험이 있습니다.',
+       false,
        3, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (3, 'iOS',
        'https://github.com/sylee/ios-portfolio',
        'UIKit, SwiftUI 모두 사용해봤습니다.',
+       false,
        4, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (4, 'Web',
        'https://github.com/mspark/web-portfolio',
        'React와 Next.js 기반 프로젝트 경험이 있습니다.',
+       false,
        5, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (5, 'Web',
        'https://github.com/yjjeong/web-demo',
        'TypeScript와 Zustand를 이용한 상태 관리 경험이 있습니다.',
+       false,
        6, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (6, 'Server',
        'https://github.com/haeun/server-portfolio',
        'Spring Boot, JPA 기반 REST API 개발 경험이 있습니다.',
+       false,
        7, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (7, 'Design',
        'https://behance.net/mjchoi-design',
        'Figma와 Adobe XD를 활용한 UI/UX 디자인 경험이 있습니다.',
+       false,
        8, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       (8, 'Design',
        'https://dribbble.com/sbhan',
        '브랜딩과 인터랙션 디자인 프로젝트를 진행했습니다.',
+       false,
        9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
 
 SELECT * FROM MEMBER;

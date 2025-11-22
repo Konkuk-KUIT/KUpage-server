@@ -89,6 +89,18 @@ public class TeamMatchService {
         Team team = teamRepository.findTeamsByMemberIdAndBatch(memberId, constantProperties.getCurrentBatch())
                 .orElseThrow(() -> new TeamException(NONE_APPLIED_TEAM));
 
+        List<TeamApplicant> memberTeamApplicant = team.getTeamApplicants().stream()
+                .filter(ta -> ta.getMember().getId().equals(memberId))
+                .toList();
+
+        long appliedCountWithoutReject = memberTeamApplicant.stream()
+                .filter(TeamApplicant::isRejected)
+                .count();
+
+        if (appliedCountWithoutReject == memberTeamApplicant.size()) {
+            throw new TeamException(REJECTED_TEAM_MATCH);
+        }
+
         Long teamId = team.getId();
         String serviceName = team.getServiceName();
         String topicSummary = team.getTopicSummary();
@@ -129,6 +141,7 @@ public class TeamMatchService {
         List<TeamApplicant> teamApplicants = team.getTeamApplicants();
 
         List<ApplicantInfo> applicantInfos = teamApplicants.stream()
+                .filter(ta -> !ta.isRejected())
                 .map(ta -> {
                     Member applicantMember = ta.getMember();
                     String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().getDescription() + " " + ta.getAppliedPart();
@@ -138,7 +151,7 @@ public class TeamMatchService {
                     String formattedTimetable = ApplyTimeConverter.formatTimetable(ta.getCreatedAt());
                     ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
 
-                    return new ApplicantInfo(applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
+                    return new ApplicantInfo(applicantMember.getId(), applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
                 }).toList();
 
         return applicantInfos;

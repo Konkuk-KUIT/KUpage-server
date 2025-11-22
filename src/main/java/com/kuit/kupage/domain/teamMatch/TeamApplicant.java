@@ -28,6 +28,8 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 500)
     private String portfolioUrl;
 
+    private boolean isRejected;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
