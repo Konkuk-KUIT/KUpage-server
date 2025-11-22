@@ -22,10 +22,6 @@ public class TeamMatchController {
 
     private final TeamMatchService teamMatchService;
 
-    // todo 결국 멤버 전체 조회 가능하도록 해야함.
-    // 운영진 -> 다 보이게
-    // PM -> 전체 및 지원 수까지 보이게
-    // 개발자, 디자이너 -> 그냥 본인이 지원한 팀 목록만
     @GetMapping("/teams/applications")
     public BaseResponse<?> applicationStatus(
             @AuthenticationPrincipal AuthMember authMember,
