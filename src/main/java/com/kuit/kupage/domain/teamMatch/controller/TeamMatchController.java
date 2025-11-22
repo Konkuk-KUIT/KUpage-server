@@ -9,7 +9,6 @@ import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.dto.*;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
-import com.kuit.kupage.exception.KupageException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,8 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.kuit.kupage.common.response.ResponseCode.NOT_CURRENT_BATCH_MEMBER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -94,6 +91,7 @@ public class TeamMatchController {
         return new BaseResponse<>(response);
     }
 
+    @AllowedParts(Part.PM)
     @PostMapping("/ideas")
     @Operation(summary = "팀 아이디어 등록",
             description = "현재 기수에서 사용할 팀 아이디어를 등록합니다. PM이 자신의 팀 아이디어를 등록할 때 사용합니다.")
@@ -109,16 +107,9 @@ public class TeamMatchController {
 
     @GetMapping("/teams")
     @Operation(summary = "전체 팀 아이디어 목록 조회",
-            description = "현재 기수에 속한 모든 팀의 아이디어/서비스 정보를 조회합니다.현재 기수 참여자만 접근할 수 있습니다.")
+            description = "현재 기수에 속한 모든 팀의 아이디어/서비스 정보를 조회합니다. 현재 기수 참여자만 접근할 수 있습니다.")
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_VIEW)
-    public BaseResponse<AllTeamsResponse> getTeamIdeas(
-            @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember) {
-        Long memberId = authMember.getId();
-        boolean isCurrentBatch = memberRoleService.isCurrentBatch(memberId);
-        System.out.println("isCurrentBatch = " + isCurrentBatch);
-        if (!isCurrentBatch) {
-            throw new KupageException(NOT_CURRENT_BATCH_MEMBER);
-        }
+    public BaseResponse<AllTeamsResponse> getTeamIdeas() {
         AllTeamsResponse response = teamMatchService.getAllTeamIdeas();
         return new BaseResponse<>(response);
     }

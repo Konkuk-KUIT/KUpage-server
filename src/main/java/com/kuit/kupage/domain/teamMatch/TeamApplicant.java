@@ -38,6 +38,7 @@ public class TeamApplicant extends BaseEntity {
     private String portfolioUrl;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(length = 20)
     private ApplicantStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,6 +59,6 @@ public class TeamApplicant extends BaseEntity {
     }
 
     public boolean isRejected() {
-        return this.getStatus() == ROUND1_FAILED;
+        return status != null && status == ROUND1_FAILED;
     }
 }

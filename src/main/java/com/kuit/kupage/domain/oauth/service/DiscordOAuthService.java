@@ -157,9 +157,6 @@ public class DiscordOAuthService {
     }
 
     public List<DiscordRoleResponse> fetchGuildRoles() {
-
-        log.info("[DiscordOAuthService] GUILD_ID={}, BOT_TOKEN={}",
-                GUILD_ID, BOT_TOKEN != null ? BOT_TOKEN : "null");
         try {
             List<DiscordRoleResponse> allRoleResponses = restClient.get()
                     .uri("/guilds/" + GUILD_ID + "/roles")

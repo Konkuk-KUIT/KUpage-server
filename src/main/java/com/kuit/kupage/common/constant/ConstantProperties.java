@@ -30,7 +30,7 @@ public class ConstantProperties {
         if (now.isBefore(firstRoundResultTime)) {
             return ROUND1_APPLYING;
         }
-        if (now.isAfter(firstRoundResultTime) && now.isBefore(secondRoundResultTime)) {
+        if (!now.isBefore(firstRoundResultTime) && now.isBefore(secondRoundResultTime)) {
             return ROUND2_APPLYING;
         }
         throw new KupageException(NOT_TEAM_MATCH_APPLY_PERIOD);
