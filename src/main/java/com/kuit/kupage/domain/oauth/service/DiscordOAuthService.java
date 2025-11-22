@@ -180,7 +180,6 @@ public class DiscordOAuthService {
             throw new KupageException(DISCORD_BOT_FORBIDDEN);
 
         } catch (HttpClientErrorException e) {
-            // 4xx인데 다른 상태코드인 경우
             log.error("[fetchGuildRoles] Discord 4xx 오류 발생. status={}, body={}",
                     e.getStatusCode(), e.getResponseBodyAsString(), e);
             throw new KupageException(DISCORD_ROLE_FETCH_FAIL);

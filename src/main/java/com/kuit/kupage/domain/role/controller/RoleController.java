@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.role.controller;
 
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.ResponseCode;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.service.DiscordOAuthService;
 import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
@@ -43,13 +44,14 @@ public class RoleController {
     public BaseResponse<?> syncRoles() {
         // KUIT 서버의 모든 ROLE 조회, 업데이트
         List<DiscordRoleResponse> roleResponses = discordOAuthService.fetchGuildRoles();
-        int updateCnt = roleService.batchInsert(roleResponses);
+        int updateCnt = roleService.batchInsertRoles(roleResponses);
         log.debug("[syncRoles] 새롭게 생성 및 저장된 Role 개수 = {}", updateCnt);
 
         // 각 member의 ROLE 조회, 업데이트
         List<DiscordMemberResponse> discordMemberResponses = discordOAuthService.fetchGuildMembers();
-        int updatedMemberCnt = roleService.syncMemberRoles(discordMemberResponses);
-        log.debug("[syncRoles] role이 업데이트 된 회원 수 = {}", updatedMemberCnt);
+//        int updatedMemberCnt = roleService.syncMemberRoles(discordMemberResponses);
+        int updateMemberRoleCnt = roleService.batchInsertRoleMember(discordMemberResponses);
+        log.debug("[syncRoles] 새롭게 저장된 memberRole 개수 = {}", updateMemberRoleCnt);
         return new BaseResponse<>(ResponseCode.SUCCESS);
     }
 

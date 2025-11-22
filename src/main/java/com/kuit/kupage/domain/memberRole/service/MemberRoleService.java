@@ -80,6 +80,13 @@ public class MemberRoleService {
                 .toList();
     }
 
+    @Transactional
+    public void updateMemberRoles(Member member) {
+        List<MemberRole> memberRoles = memberRoleRepository.findByMemberDiscordId(member.getDiscordId());
+        memberRoles.forEach(memberRole -> memberRole.setMember(member));
+        log.info("[updateMemberRoles] member = {}의 역할 {}개 업데이트", member.getDiscordLoginId(), memberRoles.size());
+    }
+
     //todo 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
 //    private AuthTokenResponse issueAndUpdateAuthToken(Member member) {
 //        AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member.getId());
@@ -87,4 +94,5 @@ public class MemberRoleService {
 //        member.updateAuthToken(authTokenResponse);
 //        return authTokenResponse;
 //    }
+
 }

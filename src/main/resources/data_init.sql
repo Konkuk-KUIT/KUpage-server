@@ -11,12 +11,12 @@ VALUES ('김지훈', 'discord_1001', 'jihoon#1234', 'https://cdn.discordapp.com/
        ('서민재', 'discord_1009', 'minjae#1357', 'https://cdn.discordapp.com/embed/avatars/3.png', NOW(), NOW()),
        ('윤아람', 'discord_1010', 'aram#8642', 'https://cdn.discordapp.com/embed/avatars/4.png', NOW(), NOW());
 
-INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, modified_at)
-VALUES (1,'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
-       (2, 'FIFTH', '5th 운영진', NULL, 0, NOW(), NOW()),
-       (3, 'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
-       (4, 'SIXTH', '6th Server 튜터', NULL, 0, NOW(), NOW()),
-       (5, 'SIXTH', '6th 운영진', NULL, 0, NOW(), NOW());
+INSERT INTO role (batch, name, discord_role_id, position, created_at, modified_at)
+VALUES ('SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
+       ('FIFTH', '5th 운영진', NULL, 0, NOW(), NOW()),
+       ('SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
+       ('SIXTH', '6th Server 튜터', NULL, 0, NOW(), NOW()),
+       ('SIXTH', '6th 운영진', NULL, 0, NOW(), NOW());
 
 INSERT INTO member_role (member_id, role_id)
 VALUES (1, 1),
@@ -147,7 +147,6 @@ VALUES (NOW(), NOW(), 3,
         'SIXTH');
 
 INSERT INTO team_applicant (
-    team_applicant_id,
     applied_part,
     portfolio_url,
     motivation,
@@ -157,52 +156,52 @@ INSERT INTO team_applicant (
     created_at,
     modified_at
 ) VALUES
-      (1, 'Android',
+      ('Android',
        'https://github.com/jwkim/Android-portfolio',
        'Android Studio로 앱을 개발한 경험이 있습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        2, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (2, 'Android',
+      ('Android',
        'https://github.com/hwlee/Android-toy',
        'Kotlin과 Firebase를 활용한 프로젝트 경험이 있습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        3, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (3, 'iOS',
+      ('iOS',
        'https://github.com/sylee/ios-portfolio',
        'UIKit, SwiftUI 모두 사용해봤습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        4, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (4, 'Web',
+      ('Web',
        'https://github.com/mspark/web-portfolio',
        'React와 Next.js 기반 프로젝트 경험이 있습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        5, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (5, 'Web',
+      ('Web',
        'https://github.com/yjjeong/web-demo',
        'TypeScript와 Zustand를 이용한 상태 관리 경험이 있습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        6, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (6, 'Server',
+      ('Server',
        'https://github.com/haeun/server-portfolio',
        'Spring Boot, JPA 기반 REST API 개발 경험이 있습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        7, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (7, 'Design',
+      ('Design',
        'https://behance.net/mjchoi-design',
        'Figma와 Adobe XD를 활용한 UI/UX 디자인 경험이 있습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        8, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
-      (8, 'Design',
+      ('Design',
        'https://dribbble.com/sbhan',
        '브랜딩과 인터랙션 디자인 프로젝트를 진행했습니다.',
-       ROUND1_APPLYING,
+       'ROUND1_APPLYING',
        9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
 
 SELECT * FROM MEMBER;

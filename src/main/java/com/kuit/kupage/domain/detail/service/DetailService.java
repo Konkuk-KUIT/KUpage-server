@@ -7,10 +7,14 @@ import com.kuit.kupage.domain.detail.dto.SignupRequest;
 import com.kuit.kupage.domain.detail.repository.DetailRepository;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
+import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
 import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.kuit.kupage.common.response.ResponseCode.*;
 
@@ -21,10 +25,11 @@ public class DetailService {
 
     private final MemberRepository memberRepository;
     private final DetailRepository detailRepository;
+    private final MemberRoleService memberRoleService;
     private final JwtTokenService jwtTokenService;
 
     @Transactional
-    public AuthTokenResponse signup(SignupRequest signupRequest, Long memberId) {
+    public LoginOrSignupResult signup(SignupRequest signupRequest, Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NONE_MEMBER));
@@ -44,9 +49,13 @@ public class DetailService {
                 signupRequest.birthday()));
 
         member.updateDetail(savedDetail);
+        memberRoleService.updateMemberRoles(member);
 
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);
+        List<String> roles = member.getMemberRoles().stream()
+                .map(memberRole -> memberRole.getRole().getName())
+                .toList();
 
-        return authTokenResponse;
+        return new LoginOrSignupResult(memberId, roles, authTokenResponse);
     }
 }

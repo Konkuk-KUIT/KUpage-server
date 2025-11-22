@@ -5,6 +5,7 @@ import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.domain.detail.dto.SignupRequest;
 import com.kuit.kupage.domain.detail.service.DetailService;
+import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,13 +29,13 @@ public class DetailAuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "최종 회원가입 API", description = "유저의 상세 정보를 등록하고 회원가입을 마칩니다.")
-    public BaseResponse<AuthTokenResponse> signup(
+    public BaseResponse<LoginOrSignupResult> signup(
             @Valid @RequestBody SignupRequest signupRequest,
             @Parameter(hidden = true)
             @AuthenticationPrincipal AuthMember authMember
     ) {
 
-        AuthTokenResponse response = detailService.signup(signupRequest, authMember.getId());
+        LoginOrSignupResult response = detailService.signup(signupRequest, authMember.getId());
 
         return new BaseResponse<>(SUCCESS, response);
     }
