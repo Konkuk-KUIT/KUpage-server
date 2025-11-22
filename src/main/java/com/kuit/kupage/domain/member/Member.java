@@ -64,7 +64,7 @@ public class Member extends BaseEntity {
                 response.refreshToken(),
                 response.expiresIn());
         this.name = userInfo.getUserResponse().getGlobalName();
-        this.discordId = userInfo.getUserResponse().getGlobalName();
+        this.discordId = userInfo.getUserResponse().getId();
         this.discordLoginId = userInfo.getUserResponse().getUsername();
         this.profileImage = createProfileImage(userInfo.getUserResponse());
     }

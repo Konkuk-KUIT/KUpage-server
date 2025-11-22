@@ -15,7 +15,8 @@ INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, m
 VALUES (1,'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
        (2, 'FIFTH', '5th 운영진', NULL, 0, NOW(), NOW()),
        (3, 'SIXTH', '6th PM 부원', NULL, 0, NOW(), NOW()),
-       (4, 'SIXTH', '6th Server 튜터', NULL, 0, NOW(), NOW());
+       (4, 'SIXTH', '6th Server 튜터', NULL, 0, NOW(), NOW()),
+       (5, 'SIXTH', '6th 운영진', NULL, 0, NOW(), NOW());
 
 INSERT INTO member_role (member_id, role_id)
 VALUES (1, 1),
@@ -27,7 +28,7 @@ VALUES (1, 1),
        (7, 3),
        (8, 4),
        (9, 1),
-       (10, 2);
+       (10, 5);
 
 
 INSERT INTO team

@@ -1,12 +1,11 @@
 package com.kuit.kupage.common.auth;
 
+import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
-import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.role.Role;
 import io.jsonwebtoken.*;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +28,7 @@ public class JwtTokenService {
     private final byte[] secretKey;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
+    private final ConstantProperties constantProperties;
 
     private final static String ACCESS = "access";
     private final static String REFRESH = "refresh";
@@ -37,11 +37,13 @@ public class JwtTokenService {
     public JwtTokenService(
             @Value("${secret.jwt.key}") String secretKey,
             @Value("${secret.jwt.access.expiration}") long accessTokenExpiration,
-            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration) {
+            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration,
+            ConstantProperties constantProperties) {
 
         this.secretKey = Base64.getDecoder().decode(secretKey);
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
+        this.constantProperties = constantProperties;
     }
 
     public AuthTokenResponse generateTokens(Member member) {
@@ -61,7 +63,7 @@ public class JwtTokenService {
         return new AuthTokenResponse(accessToken, refreshToken);
     }
 
-    public GuestTokenResponse generateGuestToken(Long memberId){
+    public GuestTokenResponse generateGuestToken(Long memberId) {
         final Claims claims = Jwts.claims();
         claims.put("sub", memberId);
         claims.put("role", "GUEST");
@@ -114,12 +116,30 @@ public class JwtTokenService {
         if (roles.isEmpty()) {
             return AuthRole.DEFAULT;
         }
-        if (roles.stream().anyMatch(role -> role.getAuthRole().isAdmin())) {
+        if (roles.stream().anyMatch(role -> getAuthRole(role).isAdmin())) {
             return AuthRole.ADMIN;
         }
-        if (roles.stream().anyMatch(role -> role.getAuthRole().isTutor())) {
+        if (roles.stream().anyMatch(role -> getAuthRole(role).isTutor())) {
             return AuthRole.TUTOR;
         }
         return AuthRole.MEMBER;
+    }
+
+    public AuthRole getAuthRole(Role role) {
+        String roleName = role.getName().toLowerCase();
+        if (roleName.contains("운영진") ||
+                roleName.contains("queens") ||
+                roleName.contains("presidents") ||
+                roleName.contains("chairman") ||
+                roleName.contains("trinity") ||
+                roleName.contains("파트장") ||
+                roleName.contains("강의자")) {
+            return AuthRole.ADMIN;
+        } else if (roleName.contains("스터디리더") ||
+                roleName.contains("튜터")) {
+            return AuthRole.TUTOR;
+        } else {
+            return AuthRole.MEMBER;
+        }
     }
 }
