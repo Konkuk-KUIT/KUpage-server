@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
+import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_APPLYING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -64,7 +65,7 @@ class TeamApplicantRepositoryTest {
     @DisplayName("TeamApplicant 엔티티를 저장하고 조회할 수 있다")
     void saveAndFindById() {
         // given
-        TeamApplicant applicant = new TeamApplicant(baseRequest, baseMember, baseTeam);
+        TeamApplicant applicant = new TeamApplicant(baseRequest, baseMember, baseTeam, ROUND1_APPLYING);
 
         // when
         TeamApplicant saved = teamApplicantRepository.save(applicant);
@@ -80,7 +81,7 @@ class TeamApplicantRepositoryTest {
     @DisplayName("TeamApplicant를 삭제하면 더 이상 조회되지 않는다")
     void deleteApplicant() {
         // given
-        TeamApplicant applicant = new TeamApplicant(baseRequest, baseMember, baseTeam);
+        TeamApplicant applicant = new TeamApplicant(baseRequest, baseMember, baseTeam, ROUND1_APPLYING);
         teamApplicantRepository.save(applicant);
 
         // when

@@ -21,7 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(checkCurrentBatchInterceptor)
                 .order(1)
-                .addPathPatterns("/teams/applications", "/teams/{teamId}/match");
+                .addPathPatterns("/teams/applications", "/teams/{teamId}/match", "/teams");
 
         registry.addInterceptor(authAllowedPartInterceptor)
                 .order(2)

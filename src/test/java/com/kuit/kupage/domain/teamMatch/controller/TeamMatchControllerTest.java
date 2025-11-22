@@ -7,6 +7,7 @@ import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
 import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
 import com.kuit.kupage.common.config.InterceptorConfig;
 import com.kuit.kupage.common.config.SecurityTestConfig;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.dto.TeamApplicantOverviewDto;
 import com.kuit.kupage.domain.teamMatch.dto.TeamApplicantResponse;
@@ -49,9 +50,12 @@ public class TeamMatchControllerTest {
 
     @MockitoBean
     private TeamMatchService teamMatchService;
+
+    @MockitoBean
+    private MemberRoleService memberRoleService;
     @MockitoBean
     private AuthAllowedPartInterceptor authAllowedPartInterceptor;
-//    @MockitoBean
+    //    @MockitoBean
 //    private InjectionRoleInterceptor injectionRoleInterceptor;
     @MockitoBean
     private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
