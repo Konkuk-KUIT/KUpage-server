@@ -17,10 +17,12 @@ public record AllTeamsResponse(List<TeamIdeaDTO> teams) {
                               String imageUrl,
                               String serviceIntroFile, String featureRequirements, String preferredDeveloper) {
         public static TeamIdeaDTO from(Team team) {
+            String ownerDisplay = team.getOwnerName() + " - " + team.getBatch().getDescription() + " PM";
+
             return new TeamIdeaDTO(
                     team.getId(),
                     team.getServiceName(),
-                    team.getOwnerName() + " - " + team.getBatch().getDescription() + " PM",
+                    ownerDisplay,
                     team.getAppType(),
                     team.getTopicSummary(),
                     team.getImageUrl(),

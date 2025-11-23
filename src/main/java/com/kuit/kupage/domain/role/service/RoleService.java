@@ -102,6 +102,9 @@ public class RoleService {
         for (DiscordMemberResponse memberResponse : discordMemberResponses) {
             String memberDiscordId = memberResponse.getUser().getId();
             String username = memberResponse.getUser().getUsername();
+            if (memberDiscordId == null || memberDiscordId.isBlank()) {
+                continue;
+            }
 
             for (String roleDiscordId : memberResponse.getRoles()) {
                 Role role = rolesByDiscordId.get(roleDiscordId);

@@ -52,6 +52,7 @@ public class Team extends BaseEntity {
     private String ownerName; // memberName
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Batch batch;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
