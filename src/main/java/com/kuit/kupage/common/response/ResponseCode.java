@@ -24,6 +24,7 @@ public enum ResponseCode {
     INVALID_TOKEN_TYPE(false, 1007, "잘못된 토큰입니다."),
     BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
 
+
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
     NONE_MEMBER(false, 2001, "존재하지 않는 회원입니다."),
@@ -31,12 +32,14 @@ public enum ResponseCode {
     NOT_CURRENT_BATCH_MEMBER(false, 2003, "이전 기수는 사용할 수 없는 기능입니다. 만약 현재 기수라면 다시 로그인을 해주십시오."),
     FORBIDDEN(false, 2004, "요청 권한이 없습니다."),
 
+
     // 3000 번대 : discord 외부 API 관련 코드
     DISCORD_ROLE_FETCH_FAIL(false, 3000, "디스코드 역할 조회 실패"),
     DISCORD_MEMBER_FETCH_FAIL(false, 3001, "디스코드 멤버 조회 실패"),
     DISCORD_BOT_INVALID_TOKEN(false, 3002, "Discord Bot 토큰이 유효하지 않습니다."),
     DISCORD_BOT_FORBIDDEN(false, 3003, "Discord Bot이 역할 조회 권한이 없습니다."),
     DISCORD_ROLE_CONVERT_FAIL(false, 3005, "역할 이름을 Role로 변경하는 중 오류 발생"),
+
 
     // 4000 번대 : article 관련 코드
     INVALID_TITLE(false, 4000, "아티클의 제목의 형식을 확인해주세요."),
@@ -58,14 +61,20 @@ public enum ResponseCode {
 
     NONE_ARTICLE(false, 4012, "존재하지 않는 아티클입니다."),
 
+
     // 5000 : project 관련
     NONE_PROJECT(false, 5000, "존재하지 않는 프로젝트입니다."),
+
 
     // 6000 번대 : team-match 관련
     NONE_TEAM(false, 6000, "존재하지 않는 팀입니다."), 
     NONE_OWN_TEAM(false, 6001, "소유하는 팀이 존재하지 않습니다."),
     NONE_APPLIED_TEAM(false, 6002, "지원한 팀이 존재하지 않습니다."),
-    REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다.");
+    REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다."),
+    NOT_TEAM_MATCH_APPLY_PERIOD(false, 6004, "팀매칭 지원 기간이 아닙니다."),
+    DUPLICATED_TEAM_APPLY(false, 6005, "동일한 팀에 여러번 지원할 수 없습니다."),
+    EXCEEDED_TEAM_APPLY_LIMIT(false, 6006, "한 멤버 당 최대 2개의 팀에만 지원할 수 있습니다.");
+
 
     private boolean isSuccess;
     private int code;

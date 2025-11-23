@@ -69,7 +69,7 @@ public class RoleService {
             // 3-1. Discord 사용자 ID로 Member 조회
             Member member = memberByDiscordId.get(memberResponse.getUser().getId());
             if (member == null) {
-                log.error("[syncMemberRoles] KUIT discord 서버에 가입하지 않은 사용자입니다. discordId = {}, username = {}",
+                log.error("[syncMemberRoles] KUITee에 가입하지 않은 사용자입니다. discordId = {}, username = {}",
                         memberResponse.getUser().getId(), memberResponse.getUser().getUsername());
                 continue;
             }

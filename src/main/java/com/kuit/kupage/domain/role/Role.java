@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.role;
 
 import com.kuit.kupage.common.auth.AuthRole;
+import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
@@ -23,7 +24,7 @@ public class Role extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Batch batch;                // 기수
-    private String name;                  // 부원, 튜터, 파트장, 운영진..
+    private String name;                // 부원, 튜터, 파트장, 운영진..
     private String discordRoleId;       // 디스코드에 등록된 role의 id
     private Integer position;           // 디스코드에 등록된 role의 position (숫자가 클수록 권한이 많음)
 
@@ -32,30 +33,5 @@ public class Role extends BaseEntity {
         this.name = roleDto.getName();
         this.discordRoleId = roleDto.getId();
         this.position = roleDto.getPosition();
-    }
-
-    public AuthRole getAuthRole() {
-        return RoleMapper.getRole(name);
-    }
-
-    static class RoleMapper {
-        private static AuthRole getRole(String rawRoleName) {
-            String roleName = rawRoleName.toLowerCase();
-
-            if (roleName.contains("운영진") ||
-                    roleName.contains("queens") ||
-                    roleName.contains("presidents") ||
-                    roleName.contains("chairman") ||
-                    roleName.contains("trinity") ||
-                    roleName.contains("파트장") ||
-                    roleName.contains("강의자")) {
-                return AuthRole.ADMIN;
-            } else if (roleName.contains("스터디리더") ||
-                    roleName.contains("튜터")) {
-                return AuthRole.TUTOR;
-            } else {
-                return AuthRole.MEMBER;
-            }
-        }
     }
 }

@@ -1,7 +1,6 @@
 package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
-import com.kuit.kupage.common.file.S3Service;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;

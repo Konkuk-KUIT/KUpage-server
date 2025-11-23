@@ -2,6 +2,9 @@ package com.kuit.kupage.domain.oauth.controller;
 
 import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.common.response.BaseResponse;
+import com.kuit.kupage.common.swagger.SwaggerErrorResponse;
+import com.kuit.kupage.common.swagger.SwaggerErrorResponses;
+import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
 import com.kuit.kupage.domain.oauth.service.DiscordOAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +26,10 @@ public class OAuthController {
 
     @GetMapping("/code/discord")
     @Operation(summary = "디스코드 로그인/회원가입 API", description = "인가코드를 제공하고 로그인/회원가입을 진행합니다.")
-    public BaseResponse<? extends TokenResponse> callback(@RequestParam("code") String code) {
+    @SwaggerErrorResponses(SwaggerErrorResponse.DISCORD_OAUTH2)
+    public BaseResponse<LoginOrSignupResult> callback(@RequestParam("code") String code) {
         log.info("[callback] 디스코드 인가코드 발급 완료 = {}", code);
-        TokenResponse response = discordOAuthService.requestToken(code);
-        return response.toBaseResponse();
+        LoginOrSignupResult response = discordOAuthService.requestToken(code);
+        return new BaseResponse<>(response);
     }
 }

@@ -1,16 +1,12 @@
 package com.kuit.kupage.domain.oauth.service;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
+import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
 import com.kuit.kupage.exception.KupageException;
@@ -24,9 +20,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.kuit.kupage.common.auth.AuthRole.GUEST;
 import static com.kuit.kupage.common.response.ResponseCode.*;
 
 @Slf4j
@@ -64,20 +65,21 @@ public class DiscordOAuthService {
         this.jwtTokenService = jwtTokenService;
     }
 
-    public TokenResponse requestToken(String code) {
+    public LoginOrSignupResult requestToken(String code) {
         log.info("[requestToken] code={}", code);
 
         // 1) 재호출 빠른 처리: 같은 code로 이미 처리했다면 Discord 호출 없이 게스트 토큰 발급
         Long cachedMemberId = getCachedMemberId(code);
         if (cachedMemberId != null) {
             log.info("[requestToken] code 재호출 감지 → 캐시로 guestToken 재발급 (memberId={})", cachedMemberId);
-            return issueGuestToken(cachedMemberId);
+            return new LoginOrSignupResult(cachedMemberId, List.of(GUEST.getValue()), issueGuestToken(cachedMemberId));
         }
 
         try {
             // 2) 최초 처리: Discord에 1회 교환 요청
             DiscordTokenResponse token = requestAccessToken(code);
             DiscordInfoResponse user = requestUserInfo(token.accessToken());
+
             Long memberId = memberService.getMemberIdByDiscordInfo(user);
             log.info("[requestToken] memberId = {}", memberId);
 
@@ -88,7 +90,7 @@ public class DiscordOAuthService {
             log.info("[requestToken] code = {}, finalMemberId = {}", code, result.memberId());
             cacheCode(code, result.memberId());
 
-            return result.tokenResponse();
+            return result;
 
         } catch (HttpClientErrorException.BadRequest e) {
             // 4) invalid_grant(동일 code 재사용 등) 이면 캐시 폴백
@@ -96,7 +98,7 @@ public class DiscordOAuthService {
                 Long memberId = getCachedMemberId(code);
                 if (memberId != null) {
                     log.info("[requestToken] invalid_grant but cached → guestToken 재발급 (memberId={})", memberId);
-                    return issueGuestToken(memberId);
+                    return new LoginOrSignupResult(memberId, List.of(GUEST.getValue()), issueGuestToken(memberId));
                 }
             }
             throw e;
@@ -145,7 +147,10 @@ public class DiscordOAuthService {
     private LoginOrSignupResult processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         if (memberId != null) {
             log.info("[processLoginOrSignup] 기존 회원 로그인 처리");
-            return new LoginOrSignupResult(memberId, memberService.updateToken(memberId, response));
+            List<String> roleNames = memberService.getCurrentMemberRolesByMemberId(memberId).stream()
+                    .map(Role::getName)
+                    .toList();
+            return new LoginOrSignupResult(memberId, roleNames, memberService.updateToken(memberId, response));
         }
         log.info("[processLoginOrSignup] 신규 회원 회원가입 처리");
         return memberService.signup(response, userInfo);
@@ -165,10 +170,22 @@ public class DiscordOAuthService {
                     .filter(roleResponse -> !roleResponse.isManaged())
                     .toList();
         } catch (HttpClientErrorException.Unauthorized e) {
+            log.error("[fetchGuildRoles] Bot 토큰이 잘못됨 (401 Unauthorized). body={}",
+                    e.getResponseBodyAsString(), e);
             throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
+
         } catch (HttpClientErrorException.Forbidden e) {
+            log.error("[fetchGuildRoles] 권한 부족 (403 Forbidden). body={}",
+                    e.getResponseBodyAsString(), e);
             throw new KupageException(DISCORD_BOT_FORBIDDEN);
+        } catch (HttpClientErrorException e) {
+            // 4xx인데 다른 상태코드인 경우
+            log.error("[fetchGuildRoles] Discord 4xx 오류 발생. status={}, body={}",
+                    e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new KupageException(DISCORD_ROLE_FETCH_FAIL);
+
         } catch (Exception e) {
+            log.error("[fetchGuildRoles] 알 수 없는 예외 발생", e);
             throw new KupageException(DISCORD_ROLE_FETCH_FAIL);
         }
     }
@@ -242,10 +259,10 @@ public class DiscordOAuthService {
                 CodeCacheEntry c = entry.getValue();
                 long ttlMs = c.expiresAtMs - now;
                 sb.append(System.lineSeparator())
-                  .append(" - code=").append(mask(entry.getKey()))
-                  .append(", memberId=").append(c.memberId)
-                  .append(", expiresAt=").append(Instant.ofEpochMilli(c.expiresAtMs))
-                  .append(" (in ").append(ttlMs).append("ms)");
+                        .append(" - code=").append(mask(entry.getKey()))
+                        .append(", memberId=").append(c.memberId)
+                        .append(", expiresAt=").append(Instant.ofEpochMilli(c.expiresAtMs))
+                        .append(" (in ").append(ttlMs).append("ms)");
             }
             log.info(sb.toString());
         } catch (Exception e) {
@@ -253,7 +270,9 @@ public class DiscordOAuthService {
         }
     }
 
-    /** 민감한 code 문자열을 일부만 보이도록 마스킹 */
+    /**
+     * 민감한 code 문자열을 일부만 보이도록 마스킹
+     */
     private static String mask(String s) {
         if (s == null) return "null";
         int n = s.length();
