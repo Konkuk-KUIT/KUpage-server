@@ -133,15 +133,16 @@ spring:
       data-source-properties:
         rewriteBatchedStatements: true
 
-server:
-  port: 8080
-
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
         jdbc.batch_size: 50
         order_inserts: true
         order_updates: true
+
+
+server:
+  port: 8080
