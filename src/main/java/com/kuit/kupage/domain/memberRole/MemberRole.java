@@ -28,7 +28,6 @@ public class MemberRole {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @NotNull
     @Column(length = 50)
     private String memberDiscordId;
 

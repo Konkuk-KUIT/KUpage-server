@@ -112,7 +112,7 @@ public class RoleService {
 
                 String key = createKey(memberDiscordId, role.getId());
                 if (existingMemberRoles.containsKey(key)) {
-                    log.info("[batchInsertRoleMember] 이미 존재하는 memberRole : 사용자 discordId = {}, username = {}, roleName = {}",
+                    log.debug("[batchInsertRoleMember] 이미 존재하는 memberRole : 사용자 discordId = {}, username = {}, roleName = {}",
                             memberDiscordId, username, role.getName());
                     continue;
                 }
