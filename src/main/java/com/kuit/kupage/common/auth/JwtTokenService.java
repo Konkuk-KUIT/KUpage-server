@@ -28,7 +28,6 @@ public class JwtTokenService {
     private final byte[] secretKey;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
-    private final ConstantProperties constantProperties;
 
     private final static String ACCESS = "access";
     private final static String REFRESH = "refresh";
@@ -37,13 +36,11 @@ public class JwtTokenService {
     public JwtTokenService(
             @Value("${secret.jwt.key}") String secretKey,
             @Value("${secret.jwt.access.expiration}") long accessTokenExpiration,
-            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration,
-            ConstantProperties constantProperties) {
+            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration) {
 
         this.secretKey = Base64.getDecoder().decode(secretKey);
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
-        this.constantProperties = constantProperties;
     }
 
     public AuthTokenResponse generateTokens(Member member) {

@@ -63,18 +63,6 @@ public class RoleService {
                 .toList();
     }
 
-    private boolean hasRolesChanged(List<MemberRole> oldRoles, List<Role> newRoles) {
-        Set<Long> currentRoleIds = oldRoles.stream()
-                .map(memberRole -> memberRole.getRole().getId())
-                .collect(Collectors.toSet());
-
-        Set<Long> newRoleIds = newRoles.stream()
-                .map(Role::getId)
-                .collect(Collectors.toSet());
-
-        return !currentRoleIds.equals(newRoleIds);
-    }
-
     public int batchInsertRoleMember(List<DiscordMemberResponse> discordMemberResponses) {
         if (discordMemberResponses == null || discordMemberResponses.isEmpty()) {
             return 0;

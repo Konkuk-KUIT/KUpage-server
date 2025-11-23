@@ -178,7 +178,6 @@ public class DiscordOAuthService {
             log.error("[fetchGuildRoles] 권한 부족 (403 Forbidden). body={}",
                     e.getResponseBodyAsString(), e);
             throw new KupageException(DISCORD_BOT_FORBIDDEN);
-
         } catch (HttpClientErrorException e) {
             log.error("[fetchGuildRoles] Discord 4xx 오류 발생. status={}, body={}",
                     e.getStatusCode(), e.getResponseBodyAsString(), e);
