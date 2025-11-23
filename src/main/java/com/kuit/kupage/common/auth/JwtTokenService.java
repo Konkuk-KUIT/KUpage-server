@@ -1,6 +1,5 @@
 package com.kuit.kupage.common.auth;
 
-import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.role.Role;
@@ -28,7 +27,6 @@ public class JwtTokenService {
     private final byte[] secretKey;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
-    private final ConstantProperties constantProperties;
 
     private final static String ACCESS = "access";
     private final static String REFRESH = "refresh";
@@ -37,13 +35,11 @@ public class JwtTokenService {
     public JwtTokenService(
             @Value("${secret.jwt.key}") String secretKey,
             @Value("${secret.jwt.access.expiration}") long accessTokenExpiration,
-            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration,
-            ConstantProperties constantProperties) {
+            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration) {
 
         this.secretKey = Base64.getDecoder().decode(secretKey);
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
-        this.constantProperties = constantProperties;
     }
 
     public AuthTokenResponse generateTokens(Member member) {
