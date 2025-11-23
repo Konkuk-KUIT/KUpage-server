@@ -1,5 +1,6 @@
 package com.kuit.kupage.common.auth;
 
+import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.role.Role;

@@ -40,8 +40,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/oauth2/code/discord", "/", "/error",
-                                "/auth-token/member/**",
+                        .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
                 )

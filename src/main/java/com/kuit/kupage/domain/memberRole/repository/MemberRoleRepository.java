@@ -15,6 +15,8 @@ public interface MemberRoleRepository extends JpaRepository<MemberRole, Long> {
     @Query("select mr from MemberRole mr join fetch mr.role where mr.member.id =:memberId")
     List<MemberRole> findWithRoleByMemberId(@Param("memberId") Long memberId);
 
+    List<MemberRole> findByMemberDiscordId(String discordId);
+
     @Query("select mr from MemberRole mr join fetch mr.role where mr.member.id =:memberId and mr.role.batch =:batch")
     List<MemberRole> findByMember_IdAndRole_Batch(@Param("memberId") Long memberId, @Param("batch") Batch batch);
 }

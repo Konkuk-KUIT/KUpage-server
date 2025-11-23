@@ -1,7 +1,5 @@
 package com.kuit.kupage.domain.role;
 
-import com.kuit.kupage.common.auth.AuthRole;
-import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
@@ -17,8 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq_gen")
-    @SequenceGenerator(name = "role_seq_gen", sequenceName = "role_seq", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private Long id;
 

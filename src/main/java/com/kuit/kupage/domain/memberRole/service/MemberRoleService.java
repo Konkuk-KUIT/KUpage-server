@@ -4,7 +4,6 @@ import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
-import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.memberRole.MemberRole;
@@ -74,15 +73,18 @@ public class MemberRoleService {
     }
 
     public List<Role> getCurrentMemberRolesByMemberId(Long memberId) {
-        List<MemberRole> currentBatchMemberRoles = getMemberRolesByMemberIdAndBatch(memberId, constantProperties.getCurrentBatch());
-        return currentBatchMemberRoles.stream()
+        List<MemberRole> memberRoles = getMemberRolesByMemberId(memberId);
+        return memberRoles.stream()
                 .map(MemberRole::getRole)
+                .filter(role -> role.getBatch() == constantProperties.getCurrentBatch())
                 .toList();
     }
 
-    private List<MemberRole> getMemberRolesByMemberIdAndBatch(Long memberId, Batch currentBatch) {
-        return memberRoleRepository.findByMember_IdAndRole_Batch(memberId, currentBatch);
-
+    @Transactional
+    public void updateMemberRoles(Member member) {
+        List<MemberRole> memberRoles = memberRoleRepository.findByMemberDiscordId(member.getDiscordId());
+        memberRoles.forEach(memberRole -> memberRole.setMember(member));
+        log.info("[updateMemberRoles] member = {}의 역할 {}개 업데이트", member.getDiscordLoginId(), memberRoles.size());
     }
 
     //todo 리프레시 토큰을 db에 저장할지 레디스에 저장할지?
@@ -92,4 +94,5 @@ public class MemberRoleService {
 //        member.updateAuthToken(authTokenResponse);
 //        return authTokenResponse;
 //    }
+
 }
