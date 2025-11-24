@@ -3,6 +3,7 @@ package com.kuit.kupage.domain.oauth.service;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
+import com.kuit.kupage.domain.oauth.DiscordApiType;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import static com.kuit.kupage.common.auth.AuthRole.GUEST;
 import static com.kuit.kupage.common.response.ResponseCode.*;
@@ -75,48 +77,66 @@ public class DiscordOAuthService {
             return new LoginOrSignupResult(cachedMemberId, List.of(GUEST.getValue()), issueGuestToken(cachedMemberId));
         }
 
-        try {
-            // 2) 최초 처리: Discord에 1회 교환 요청
-            DiscordTokenResponse token = requestAccessToken(code);
-            DiscordInfoResponse user = requestUserInfo(token.accessToken());
+        // 2) 최초 처리: Discord에 1회 교환 요청
+        DiscordTokenResponse token = requestAccessToken(code);
+        DiscordInfoResponse user = requestUserInfo(token.accessToken());
 
-            Long memberId = memberService.getMemberIdByDiscordInfo(user);
-            log.info("[requestToken] memberId = {}", memberId);
+        Long memberId = memberService.getMemberIdByDiscordInfo(user);
+        log.info("[requestToken] memberId = {}", memberId);
 
-            // 2) 로그인/회원가입 기본 플로우 수행
-            LoginOrSignupResult result = processLoginOrSignup(memberId, token, user);
+        // 3) 로그인/회원가입 기본 플로우 수행
+        LoginOrSignupResult result = processLoginOrSignup(memberId, token, user);
 
-            // 3) code → memberId 캐시
-            log.info("[requestToken] code = {}, finalMemberId = {}", code, result.memberId());
-            cacheCode(code, result.memberId());
+        // 4) code → memberId 캐시
+        log.info("[requestToken] code = {}, finalMemberId = {}", code, result.memberId());
+        cacheCode(code, result.memberId());
 
-            return result;
+        return result;
+    }
 
-        } catch (HttpClientErrorException.BadRequest e) {
-            // 4) invalid_grant(동일 code 재사용 등) 이면 캐시 폴백
-            if (isInvalidGrant(e)) {
-                Long memberId = getCachedMemberId(code);
-                if (memberId != null) {
-                    log.info("[requestToken] invalid_grant but cached → guestToken 재발급 (memberId={})", memberId);
-                    return new LoginOrSignupResult(memberId, List.of(GUEST.getValue()), issueGuestToken(memberId));
-                }
-            }
-            throw e;
-        }
+    public List<DiscordRoleResponse> fetchGuildRoles() {
+        List<DiscordRoleResponse> allRoleResponses = callDiscord(
+                () -> restClient.get()
+                        .uri("/guilds/" + GUILD_ID + "/roles")
+                        .headers(headers -> headers.set("Authorization", getBotAuthorizationHeader()))
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<>() {
+                        }),
+                DiscordApiType.GUILD_ROLES
+        );
+
+        // 봇을 제외하고 반환
+        return Objects.requireNonNull(allRoleResponses).stream()
+                .filter(roleResponse -> !roleResponse.isManaged())
+                .toList();
+    }
+
+    public List<DiscordMemberResponse> fetchGuildMembers() {
+        return callDiscord(
+                () -> restClient.get()
+                        .uri("/guilds/" + GUILD_ID + "/members?limit=1000")
+                        .headers(headers -> headers.set("Authorization", getBotAuthorizationHeader()))
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<>() {
+                        }),
+                DiscordApiType.GUILD_MEMBERS
+        );
     }
 
     private DiscordTokenResponse requestAccessToken(String code) {
-        log.info("[requestAccessToken] access token 요청");
+        log.info("[requestAccessToken] access token 요청, code={}", code);
         LinkedMultiValueMap<String, String> body = createBody(code);
-        DiscordTokenResponse response = restClient.post()
-                .uri("/oauth2/token")
-                .headers(headers -> headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .body(body)
-                .retrieve()
-                .toEntity(DiscordTokenResponse.class)
-                .getBody();
-        log.info("[requestAccessToken] 토큰 응답 = {}", response);
-        return response;
+
+        return callDiscord(
+                () -> restClient.post()
+                        .uri("/oauth2/token")
+                        .headers(headers -> headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED))
+                        .body(body)
+                        .retrieve()
+                        .toEntity(DiscordTokenResponse.class)
+                        .getBody(),
+                DiscordApiType.TOKEN
+        );
     }
 
     private LinkedMultiValueMap<String, String> createBody(String code) {
@@ -131,18 +151,110 @@ public class DiscordOAuthService {
 
     private DiscordInfoResponse requestUserInfo(String accessToken) {
         log.info("[requestUserInfo] 사용자 정보 요청시 필요한 access token = {}", accessToken);
-        DiscordInfoResponse response = restClient.get()
-                .uri("/oauth2/@me")
-                .headers(headers -> {
-                    headers.setBearerAuth(accessToken);
-                })
-                .retrieve()
-                .toEntity(DiscordInfoResponse.class)
-                .getBody();
-        log.info("[requestUserInfo] 사용자 정보 응답 = {}", response);
-        return response;
+        return callDiscord(
+                () -> restClient.get()
+                        .uri("/oauth2/@me")
+                        .headers(headers -> headers.setBearerAuth(accessToken))
+                        .retrieve()
+                        .toEntity(DiscordInfoResponse.class)
+                        .getBody(),
+                DiscordApiType.USER_INFO
+        );
     }
 
+    private <T> T callDiscord(Supplier<T> caller, DiscordApiType type) {
+        try {
+            return caller.get();
+        } catch (HttpClientErrorException e) {
+            int status = e.getStatusCode().value();
+            String responseBody = e.getResponseBodyAsString();
+            log.error("[discord-api] type={}, status={}, body={}", type, status, responseBody, e);
+
+            switch (type) {
+                case TOKEN -> throw mapTokenError(status, responseBody);
+                case USER_INFO -> throw mapUserInfoError(status);
+                case GUILD_ROLES -> throw mapGuildRolesError(status);
+                case GUILD_MEMBERS -> throw mapGuildMembersError(status);
+                default -> throw new KupageException(DISCORD_OAUTH_CLIENT_ERROR);
+            }
+        } catch (Exception e) {
+            log.error("[discord-api] type={} 알 수 없는 예외 발생", type, e);
+            throw switch (type) {
+                case TOKEN, USER_INFO -> new KupageException(DISCORD_OAUTH_SERVER_ERROR);
+                case GUILD_ROLES -> new KupageException(DISCORD_ROLE_FETCH_FAIL);
+                case GUILD_MEMBERS -> new KupageException(DISCORD_MEMBER_FETCH_FAIL);
+            };
+        }
+    }
+
+    private KupageException mapTokenError(int status, String responseBody) {
+        // 400 Bad Request - 주로 code, redirect_uri, client 설정 문제
+        if (status == 400) {
+            if (responseBody != null) {
+                // invalid_grant + Invalid "code" → 잘못되었거나 이미 사용/만료된 code
+                if (responseBody.contains("invalid_grant") && responseBody.contains("Invalid \"code\"")) {
+                    return new KupageException(DISCORD_OAUTH_INVALID_CODE);
+                }
+                // 기타 invalid_grant
+                if (responseBody.contains("invalid_grant")) {
+                    return new KupageException(DISCORD_OAUTH_INVALID_GRANT);
+                }
+                // 클라이언트 ID/Secret 또는 redirect 설정 문제
+                if (responseBody.contains("invalid_client")) {
+                    return new KupageException(DISCORD_OAUTH_INVALID_CLIENT);
+                }
+            }
+            // 그 외 400 계열 토큰 요청 실패
+            return new KupageException(DISCORD_OAUTH_BAD_REQUEST);
+        }
+
+        return mapCommonOAuthError(status);
+    }
+
+    private KupageException mapUserInfoError(int status) {
+        // 유저 정보 조회 시에는 access token/권한 관련 오류 위주로 처리
+        if (status == 400) {
+            // 형식 오류 등 일반적인 잘못된 요청
+            return new KupageException(DISCORD_OAUTH_BAD_REQUEST);
+        }
+        return mapCommonOAuthError(status);
+    }
+
+
+    private KupageException mapCommonOAuthError(int status) {
+        // 401 Unauthorized - 보통 access token 또는 클라이언트 인증 정보가 잘못된 경우
+        if (status == 401) {
+            return new KupageException(DISCORD_OAUTH_UNAUTHORIZED);
+        }
+        // 403 Forbidden - 애플리케이션이 이 그랜트/리소스를 사용할 권한이 없는 경우
+        if (status == 403) {
+            return new KupageException(DISCORD_OAUTH_FORBIDDEN);
+        }
+        // 429 Too Many Requests - 레이트 리밋 초과
+        if (status == 429) {
+            return new KupageException(DISCORD_OAUTH_RATE_LIMITED);
+        }
+        // 나머지 4xx
+        return new KupageException(DISCORD_OAUTH_CLIENT_ERROR);
+    }
+
+    private KupageException mapGuildRolesError(int status) {
+        return mapGuildBotError(status, new KupageException(DISCORD_ROLE_FETCH_FAIL));
+    }
+
+    private KupageException mapGuildMembersError(int status) {
+        return mapGuildBotError(status, new KupageException(DISCORD_MEMBER_FETCH_FAIL));
+    }
+
+    private KupageException mapGuildBotError(int status, KupageException defaultException) {
+        if (status == 401) {
+            return new KupageException(DISCORD_BOT_INVALID_TOKEN);
+        }
+        if (status == 403) {
+            return new KupageException(DISCORD_BOT_FORBIDDEN);
+        }
+        return defaultException;
+    }
 
     private LoginOrSignupResult processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         if (memberId != null) {
@@ -156,55 +268,8 @@ public class DiscordOAuthService {
         return memberService.signup(response, userInfo);
     }
 
-    public List<DiscordRoleResponse> fetchGuildRoles() {
-        try {
-            List<DiscordRoleResponse> allRoleResponses = restClient.get()
-                    .uri("/guilds/" + GUILD_ID + "/roles")
-                    .headers(headers -> headers.set("Authorization", "Bot " + BOT_TOKEN))
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>() {
-                    });
-
-            // 봇을 제외하고 반환
-            return Objects.requireNonNull(allRoleResponses).stream()
-                    .filter(roleResponse -> !roleResponse.isManaged())
-                    .toList();
-        } catch (HttpClientErrorException.Unauthorized e) {
-            log.error("[fetchGuildRoles] Bot 토큰이 잘못됨 (401 Unauthorized). body={}",
-                    e.getResponseBodyAsString(), e);
-            throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
-
-        } catch (HttpClientErrorException.Forbidden e) {
-            log.error("[fetchGuildRoles] 권한 부족 (403 Forbidden). body={}",
-                    e.getResponseBodyAsString(), e);
-            throw new KupageException(DISCORD_BOT_FORBIDDEN);
-        } catch (HttpClientErrorException e) {
-            log.error("[fetchGuildRoles] Discord 4xx 오류 발생. status={}, body={}",
-                    e.getStatusCode(), e.getResponseBodyAsString(), e);
-            throw new KupageException(DISCORD_ROLE_FETCH_FAIL);
-
-        } catch (Exception e) {
-            log.error("[fetchGuildRoles] 알 수 없는 예외 발생", e);
-            throw new KupageException(DISCORD_ROLE_FETCH_FAIL);
-        }
-    }
-
-    public List<DiscordMemberResponse> fetchGuildMembers() {
-        try {
-            List<DiscordMemberResponse> body = restClient.get()
-                    .uri("/guilds/" + GUILD_ID + "/members?limit=1000")
-                    .headers(headers -> headers.set("Authorization", "Bot " + BOT_TOKEN))
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>() {
-                    });
-            return body;
-        } catch (HttpClientErrorException.Unauthorized e) {
-            throw new KupageException(DISCORD_BOT_INVALID_TOKEN);
-        } catch (HttpClientErrorException.Forbidden e) {
-            throw new KupageException(DISCORD_BOT_FORBIDDEN);
-        } catch (Exception e) {
-            throw new KupageException(DISCORD_MEMBER_FETCH_FAIL);
-        }
+    private String getBotAuthorizationHeader() {
+        return "Bot " + BOT_TOKEN;
     }
 
     private void cacheCode(String code, Long memberId) {
@@ -212,12 +277,8 @@ public class DiscordOAuthService {
         long expiresAt = Instant.now().toEpochMilli() + CODE_CACHE_TTL_MILLIS;
         codeCache.put(code, new CodeCacheEntry(memberId, expiresAt));
 
-        // 단건 캐시 저장 로그
         log.info("[cacheCode] cached code={} → memberId={}, expiresAt={}",
-                mask(code), memberId, Instant.ofEpochMilli(expiresAt));
-
-        // 전체 캐시 스냅샷 출력
-        logCacheSnapshot();
+                code, memberId, Instant.ofEpochMilli(expiresAt));
     }
 
     private Long getCachedMemberId(String code) {
@@ -231,53 +292,11 @@ public class DiscordOAuthService {
         return entry.memberId;
     }
 
-    private boolean isInvalidGrant(HttpClientErrorException.BadRequest e) {
-        String body = e.getResponseBodyAsString();
-        return body.contains("invalid_grant");
-    }
 
-    /**
-     * 게스트 토큰 발급 헬퍼.
-     * JwtTokenService API에 맞게 메서드명을 조정하세요.
-     */
     private TokenResponse issueGuestToken(Long memberId) {
         return jwtTokenService.generateGuestToken(memberId);
     }
 
-    /**
-     * codeCache 전체 내용을 보기 좋게 출력합니다.
-     * (code는 일부만 마스킹하여 노출)
-     */
-    private void logCacheSnapshot() {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append("[codeCache] size=").append(codeCache.size());
-            long now = Instant.now().toEpochMilli();
-
-            for (Map.Entry<String, CodeCacheEntry> entry : codeCache.entrySet()) {
-                CodeCacheEntry c = entry.getValue();
-                long ttlMs = c.expiresAtMs - now;
-                sb.append(System.lineSeparator())
-                        .append(" - code=").append(mask(entry.getKey()))
-                        .append(", memberId=").append(c.memberId)
-                        .append(", expiresAt=").append(Instant.ofEpochMilli(c.expiresAtMs))
-                        .append(" (in ").append(ttlMs).append("ms)");
-            }
-            log.info(sb.toString());
-        } catch (Exception e) {
-            log.warn("Failed to log codeCache snapshot", e);
-        }
-    }
-
-    /**
-     * 민감한 code 문자열을 일부만 보이도록 마스킹
-     */
-    private static String mask(String s) {
-        if (s == null) return "null";
-        int n = s.length();
-        if (n <= 7) return "***";
-        return s.substring(0, 4) + "..." + s.substring(n - 3);
-    }
 
     private static final class CodeCacheEntry {
         private final Long memberId;
