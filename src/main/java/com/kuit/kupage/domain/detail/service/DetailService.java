@@ -9,6 +9,7 @@ import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
+import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

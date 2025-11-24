@@ -90,4 +90,35 @@ public class Member extends BaseEntity {
         this.detail = detail;
     }
 
+    // == 연관관계 편의 메서드 (Member ↔ MemberRole) ==
+
+    /**
+     * MemberRole 추가 시 양방향 연관관계를 함께 설정한다.
+     */
+    public void addMemberRole(MemberRole memberRole) {
+        if (memberRole == null) {
+            return;
+        }
+
+        // 이미 다른 Member에 연결되어 있다면 끊어준다 (선택사항)
+        if (memberRole.getMember() != null && memberRole.getMember() != this) {
+            memberRole.getMember().getMemberRoles().remove(memberRole);
+        }
+
+        this.memberRoles.add(memberRole);
+        memberRole.setMember(this); // MemberRole 쪽에도 Member 설정
+    }
+
+    /**
+     * MemberRole 제거 시 양방향 연관관계를 함께 해제한다.
+     */
+    public void removeMemberRole(MemberRole memberRole) {
+        if (memberRole == null) {
+            return;
+        }
+
+        this.memberRoles.remove(memberRole);
+        memberRole.setMember(null); // MemberRole 쪽 Member 해제
+    }
+
 }

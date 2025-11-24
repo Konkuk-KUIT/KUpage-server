@@ -83,7 +83,7 @@ public class MemberRoleService {
     @Transactional
     public void updateMemberRoles(Member member) {
         List<MemberRole> memberRoles = memberRoleRepository.findByMemberDiscordId(member.getDiscordId());
-        memberRoles.forEach(memberRole -> memberRole.setMember(member));
+        memberRoles.forEach(member::addMemberRole);
         log.info("[updateMemberRoles] member = {}의 역할 {}개 업데이트", member.getDiscordLoginId(), memberRoles.size());
     }
 

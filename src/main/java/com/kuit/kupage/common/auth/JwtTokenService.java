@@ -128,8 +128,10 @@ public class JwtTokenService {
                 roleName.contains("queens") ||
                 roleName.contains("presidents") ||
                 roleName.contains("chairman") ||
-                roleName.contains("trinity") ||
+                roleName.contains("Trinity") ||
                 roleName.contains("파트장") ||
+                roleName.contains("회장") ||
+                roleName.contains("부회장") ||
                 roleName.contains("강의자")) {
             return AuthRole.ADMIN;
         } else if (roleName.contains("스터디리더") ||

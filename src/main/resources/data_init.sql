@@ -18,17 +18,19 @@ VALUES (1,'SIXTH', '6th PM 부원', 1, 0, NOW(), NOW()),
        (3, 'SIXTH', '6th Server 튜터', 3, 0, NOW(), NOW()),
        (4, 'SIXTH', '6th 운영진', 4, 0, NOW(), NOW());
 
-INSERT INTO member_role (member_id, role_id)
-VALUES (1, 1),
-       (2, 2),
-       (3, 1),
-       (4, 3),
-       (5, 1),
-       (6, 2),
-       (7, 1),
-       (8, 3),
-       (9, 1),
-       (10, 4);
+INSERT INTO member_role (member_discord_id, role_id)
+VALUES ('discord_1001', 1),
+       ('discord_1001', 2),
+       ('discord_1001', 4),
+       ('discord_1002', 2),
+       ('discord_1003', 1),
+       ('discord_1004', 3),
+       ('discord_1005', 1),
+       ('discord_1006', 2),
+       ('discord_1007', 1),
+       ('discord_1008', 3),
+       ('discord_1009', 1),
+       ('discord_1010', 4);
 
 
 INSERT INTO team
