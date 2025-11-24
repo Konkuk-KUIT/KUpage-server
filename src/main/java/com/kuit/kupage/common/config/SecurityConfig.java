@@ -50,12 +50,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest.
                         requestMatchers(HttpMethod.POST, "/articles", "/portfolios")
-                        .hasRole(MEMBER.getValue()).
+                        .hasAnyRole(MEMBER.getValue(), ADMIN.getValue()).
                         requestMatchers(HttpMethod.POST, "/teams/*/match", "/ideas")
-                        .hasRole(MEMBER.getValue()).
+                        .hasAnyRole(MEMBER.getValue(), ADMIN.getValue()).
                         requestMatchers("/pre-signed/articles/*", "/teams/applications",
                                 "/teams", "/teams/{teamId}/applications")
-                        .hasRole(MEMBER.getValue())
+                        .hasAnyRole(MEMBER.getValue(), ADMIN.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/admin/**", "/role/sync")
