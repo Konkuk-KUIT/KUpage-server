@@ -56,7 +56,7 @@ public class MemberRoleService {
 
         if (memberId != null) {
             log.info("[processLoginOrSignup] 기존 회원 로그인 처리");
-            List<String> roleNames = getCurrentMemberRolesByMemberId(memberId).stream()
+            List<String> roleNames = getMemberCurrentRolesByMemberId(memberId).stream()
                     .map(Role::getName)
                     .toList();
             return new LoginOrSignupResult(memberId, roleNames, updateToken(memberId, response));
@@ -74,7 +74,7 @@ public class MemberRoleService {
             Long existingMemberId = getMemberIdByDiscordInfo(userInfo);
             if (existingMemberId != null) {
                 log.info("[processLoginOrSignup] unique 예외 이후 재조회 결과, 기존 회원으로 판단 → 로그인 처리");
-                List<String> roleNames = getCurrentMemberRolesByMemberId(existingMemberId).stream()
+                List<String> roleNames = getMemberCurrentRolesByMemberId(existingMemberId).stream()
                         .map(Role::getName)
                         .toList();
 
@@ -97,7 +97,7 @@ public class MemberRoleService {
         return new LoginOrSignupResult(savedMember.getId(), List.of(GUEST.getValue()), jwtTokenService.generateGuestToken(savedMember.getId()));
     }
 
-    @Transactional(readOnly = true)
+
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(ResponseCode.NONE_MEMBER));
@@ -121,9 +121,8 @@ public class MemberRoleService {
                 .orElse(null);
     }
 
-    private List<Role> getCurrentMemberRolesByMemberId(Long memberId) {
-        List<MemberRole> memberRoles = getMemberRolesByMemberId(memberId);
-        return memberRoles.stream()
+    public List<Role> getMemberCurrentRolesByMemberId(Long memberId) {
+        return getMemberRolesByMemberId(memberId).stream()
                 .map(MemberRole::getRole)
                 .filter(role -> role.getBatch() == constantProperties.getCurrentBatch())
                 .toList();
