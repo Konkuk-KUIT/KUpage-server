@@ -7,7 +7,6 @@ import com.kuit.kupage.domain.oauth.DiscordApiType;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
-import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
 import com.kuit.kupage.exception.KupageException;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -67,6 +67,7 @@ public class DiscordOAuthService {
         this.jwtTokenService = jwtTokenService;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public LoginOrSignupResult requestToken(String code) {
         log.info("[requestToken] code={}", code);
 
@@ -81,11 +82,8 @@ public class DiscordOAuthService {
         DiscordTokenResponse token = requestAccessToken(code);
         DiscordInfoResponse user = requestUserInfo(token.accessToken());
 
-        Long memberId = memberService.getMemberIdByDiscordInfo(user);
-        log.info("[requestToken] memberId = {}", memberId);
-
         // 3) 로그인/회원가입 기본 플로우 수행
-        LoginOrSignupResult result = processLoginOrSignup(memberId, token, user);
+        LoginOrSignupResult result = memberService.processLoginOrSignup(token, user);
 
         // 4) code → memberId 캐시
         log.info("[requestToken] code = {}, finalMemberId = {}", code, result.memberId());
@@ -94,6 +92,7 @@ public class DiscordOAuthService {
         return result;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DiscordRoleResponse> fetchGuildRoles() {
         List<DiscordRoleResponse> allRoleResponses = callDiscord(
                 () -> restClient.get()
@@ -111,6 +110,7 @@ public class DiscordOAuthService {
                 .toList();
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DiscordMemberResponse> fetchGuildMembers() {
         return callDiscord(
                 () -> restClient.get()
@@ -254,18 +254,6 @@ public class DiscordOAuthService {
             return new KupageException(DISCORD_BOT_FORBIDDEN);
         }
         return defaultException;
-    }
-
-    private LoginOrSignupResult processLoginOrSignup(Long memberId, DiscordTokenResponse response, DiscordInfoResponse userInfo) {
-        if (memberId != null) {
-            log.info("[processLoginOrSignup] 기존 회원 로그인 처리");
-            List<String> roleNames = memberService.getCurrentMemberRolesByMemberId(memberId).stream()
-                    .map(Role::getName)
-                    .toList();
-            return new LoginOrSignupResult(memberId, roleNames, memberService.updateToken(memberId, response));
-        }
-        log.info("[processLoginOrSignup] 신규 회원 회원가입 처리");
-        return memberService.signup(response, userInfo);
     }
 
     private String getBotAuthorizationHeader() {

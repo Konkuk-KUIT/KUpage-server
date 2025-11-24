@@ -31,6 +31,7 @@ public enum ResponseCode {
     ALREADY_MEMBER(false, 2002, "이미 회원가입 된 멤버입니다."),
     NOT_CURRENT_BATCH_MEMBER(false, 2003, "이전 기수는 사용할 수 없는 기능입니다. 만약 현재 기수라면 다시 로그인을 해주십시오."),
     FORBIDDEN(false, 2004, "요청 권한이 없습니다."),
+    MEMBER_SIGNUP_CONFLICT(false, 2005, "회원 가입 중 충돌이 발생했습니다. 다시 시도해주세요."),
 
 
     // 3000 번대 : discord 외부 API 관련 코드
