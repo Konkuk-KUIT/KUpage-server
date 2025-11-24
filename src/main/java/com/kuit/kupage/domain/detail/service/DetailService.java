@@ -53,7 +53,9 @@ public class DetailService {
         memberRoleService.updateMemberRoles(member);
 
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);
-        List<Role> roles = memberRoleService.getMemberCurrentRolesByMemberId(memberId);
+        List<String> roles = memberRoleService.getMemberCurrentRolesByMemberId(memberId).stream()
+                .map(Role::getName)
+                .toList();
 
         return new LoginOrSignupResult(memberId, roles, authTokenResponse);
     }
