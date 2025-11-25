@@ -24,6 +24,13 @@ public enum ResponseCode {
     INVALID_TOKEN_TYPE(false, 1007, "잘못된 토큰입니다."),
     BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
 
+    // DB 오류
+    DATA_INTEGRITY_VIOLATION(false, 1010, "데이터 무결성 제약조건을 위반했습니다."),
+    INCORRECT_RESULT_SIZE(false, 1011, "요청한 결과 개수가 올바르지 않습니다."),
+    OPTIMISTIC_LOCK_FAILURE(false, 1012, "다른 요청에 의해 데이터가 변경되었습니다. 다시 시도해 주세요."),
+    QUERY_TIMEOUT(false, 1013, "데이터베이스 요청 시간이 초과되었습니다."),
+    PESSIMISTIC_LOCK_FAILURE(false, 1014, "데이터베이스 잠금 획득 중 오류가 발생했습니다. 다시 시도해 주세요."),
+
 
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
