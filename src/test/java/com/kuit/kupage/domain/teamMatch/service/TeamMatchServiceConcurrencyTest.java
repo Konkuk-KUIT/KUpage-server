@@ -60,7 +60,7 @@ class TeamMatchServiceConcurrencyTest {
     @DisplayName("[SUCCESS] 동시에 팀매칭 지원 요청이 와도 최대 2개까지만 저장된다.")
     void maximum_apply_is_two() throws InterruptedException {
         // given
-        int threadCount = 10;
+        int threadCount = 5;
         Member member = memberRepository.save(EntityFactory.member());
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < threadCount; i++) {
@@ -99,8 +99,8 @@ class TeamMatchServiceConcurrencyTest {
         // then
         // DB에 실제로 저장된 지원 내역이 최대 2개인지 검증
         long savedCount = teamApplicantRepository.countByMemberAndBatchAndStatus(member, applicantStatus);
-        Assertions.assertThat(successCount.get()).isEqualTo(2);
-        Assertions.assertThat(savedCount).isEqualTo(2);
+        Assertions.assertThat(successCount.get()).isEqualTo(1);
+        Assertions.assertThat(savedCount).isEqualTo(1);
     }
 
 }

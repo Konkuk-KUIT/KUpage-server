@@ -2,7 +2,6 @@ package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
-import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.project.entity.AppType;
@@ -20,6 +19,7 @@ import com.kuit.kupage.exception.TeamException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +40,6 @@ public class TeamMatchService {
     private final TeamApplicantRepository teamApplicantRepository;
     private final ConstantProperties constantProperties;
 
-
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
@@ -50,10 +49,13 @@ public class TeamMatchService {
             if (teamApplicantRepository.countByMemberAndBatchAndStatus(member, status) >= 2) {
                 throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
             }
+            member.increaseApplyCount();
             TeamApplicant saved = teamApplicantRepository.save(applicant);
             return new TeamMatchResponse(saved.getId());
         } catch (DataIntegrityViolationException e) {
             throw new KupageException(DUPLICATED_TEAM_APPLY);
+        } catch (OptimisticLockingFailureException e) {
+            throw new KupageException(TEAM_APPLY_FAILED);
         }
     }
 
@@ -119,7 +121,6 @@ public class TeamMatchService {
         AppType appType = team.getAppType();
 
         return new TeamOverviewDto(teamId, serviceName, topicSummary, ownerNameAndPart, appType);
-
     }
 
     private TeamApplicantOverviewDto parseTeamApplicantOverviewDto(Team team) {

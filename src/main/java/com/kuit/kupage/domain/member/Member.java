@@ -45,13 +45,21 @@ public class Member extends BaseEntity {
     @Embedded
     private DiscordToken discordToken;
 
+    @Version
+    private Long version;
+
+    @Builder.Default
+    private int applyCount = 0;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "detail_id")
     private Detail detail;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberRole> memberRoles = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberTeam> memberTeams = new ArrayList<>();
 
@@ -88,6 +96,10 @@ public class Member extends BaseEntity {
 
     public void updateDetail(Detail detail) {
         this.detail = detail;
+    }
+
+    public void increaseApplyCount() {
+        applyCount++;
     }
 
 }
