@@ -5,6 +5,7 @@ import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_FAILED;
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class TeamApplicant extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

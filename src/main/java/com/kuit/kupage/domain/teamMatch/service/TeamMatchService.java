@@ -44,11 +44,10 @@ public class TeamMatchService {
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
-        Batch currentBatch = constantProperties.getCurrentBatch();
         ApplicantStatus status = constantProperties.getApplicantStatus();
         TeamApplicant applicant = new TeamApplicant(request, member, team, status);
         try {
-            if (teamApplicantRepository.countByMemberAndBatchAndStatus(member, currentBatch, status) >= 2) {
+            if (teamApplicantRepository.countByMemberAndBatchAndStatus(member, status) >= 2) {
                 throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
             }
             TeamApplicant saved = teamApplicantRepository.save(applicant);

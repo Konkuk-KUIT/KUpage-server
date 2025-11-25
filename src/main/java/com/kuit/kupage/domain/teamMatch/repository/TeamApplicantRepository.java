@@ -15,11 +15,10 @@ import java.util.Optional;
 public interface TeamApplicantRepository extends JpaRepository<TeamApplicant, Long> {
 
     @Query("""
-            select COUNT(ta)
-            from TeamApplicant ta join fetch ta.team t
-            where ta.member = :member and t.batch = :batch and ta.status = :status
-           """)
+             select COUNT(ta)
+             from TeamApplicant ta 
+             where ta.member = :member and ta.status = :status
+            """)
     long countByMemberAndBatchAndStatus(@Param("member") Member member,
-                                        @Param("batch") Batch batch,
                                         @Param("status") ApplicantStatus status);
 }
