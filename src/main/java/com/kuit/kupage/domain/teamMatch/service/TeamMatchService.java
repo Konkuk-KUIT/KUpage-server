@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.project.entity.AppType;
@@ -43,16 +44,17 @@ public class TeamMatchService {
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
+        Batch currentBatch = constantProperties.getCurrentBatch();
         ApplicantStatus status = constantProperties.getApplicantStatus();
         TeamApplicant applicant = new TeamApplicant(request, member, team, status);
         try {
+            if (teamApplicantRepository.countByMemberAndBatchAndStatus(member, currentBatch, status) >= 2) {
+                throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+            }
             TeamApplicant saved = teamApplicantRepository.save(applicant);
             return new TeamMatchResponse(saved.getId());
         } catch (DataIntegrityViolationException e) {
             throw new KupageException(DUPLICATED_TEAM_APPLY);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
         }
     }
 
