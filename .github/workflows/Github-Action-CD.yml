@@ -3,7 +3,8 @@ name: CD with Docker to EC2
 on:
   push:
     branches: [ "*" ]
-
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
   deploy:
