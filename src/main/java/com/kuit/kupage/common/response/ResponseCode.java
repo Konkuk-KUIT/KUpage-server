@@ -25,6 +25,7 @@ public enum ResponseCode {
     BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
 
     // DB 오류
+    SQL_EXCEPTION(false, 1009, "데이터베이스 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."),
     DATA_INTEGRITY_VIOLATION(false, 1010, "데이터 무결성 제약조건을 위반했습니다."),
     INCORRECT_RESULT_SIZE(false, 1011, "요청한 결과 개수가 올바르지 않습니다."),
     OPTIMISTIC_LOCK_FAILURE(false, 1012, "다른 요청에 의해 데이터가 변경되었습니다. 다시 시도해 주세요."),
@@ -73,7 +74,7 @@ public enum ResponseCode {
 
 
     // 6000 번대 : team-match 관련
-    NONE_TEAM(false, 6000, "존재하지 않는 팀입니다."), 
+    NONE_TEAM(false, 6000, "존재하지 않는 팀입니다."),
     NONE_OWN_TEAM(false, 6001, "소유하는 팀이 존재하지 않습니다."),
     NONE_APPLIED_TEAM(false, 6002, "지원한 팀이 존재하지 않습니다."),
     REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다."),
