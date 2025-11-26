@@ -102,6 +102,8 @@ public class Member extends BaseEntity {
     public void increaseApplyCount() {
         applyCount++;
 
+    }
+
     // == 연관관계 편의 메서드 (Member ↔ MemberRole) ==
 
     /**
@@ -131,7 +133,7 @@ public class Member extends BaseEntity {
 
         this.memberRoles.remove(memberRole);
         memberRole.setMember(null); // MemberRole 쪽 Member 해제
-
     }
+
 
 }
