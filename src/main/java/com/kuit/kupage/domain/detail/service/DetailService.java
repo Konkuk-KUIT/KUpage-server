@@ -9,6 +9,7 @@ import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
+import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,8 +53,8 @@ public class DetailService {
         memberRoleService.updateMemberRoles(member);
 
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);
-        List<String> roles = member.getMemberRoles().stream()
-                .map(memberRole -> memberRole.getRole().getName())
+        List<String> roles = memberRoleService.getMemberCurrentRolesByMemberId(memberId).stream()
+                .map(Role::getName)
                 .toList();
 
         return new LoginOrSignupResult(memberId, roles, authTokenResponse);

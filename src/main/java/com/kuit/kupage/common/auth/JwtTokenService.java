@@ -1,6 +1,5 @@
 package com.kuit.kupage.common.auth;
 
-import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.role.Role;
@@ -124,13 +123,11 @@ public class JwtTokenService {
 
     public AuthRole getAuthRole(Role role) {
         String roleName = role.getName().toLowerCase();
-        if (roleName.contains("운영진") ||
-                roleName.contains("queens") ||
-                roleName.contains("presidents") ||
-                roleName.contains("chairman") ||
-                roleName.contains("trinity") ||
+        if (roleName.contains("회장") ||
+                roleName.contains("부회장") ||
+                roleName.contains("운영진") ||
                 roleName.contains("파트장") ||
-                roleName.contains("강의자")) {
+                roleName.contains("총무")) {
             return AuthRole.ADMIN;
         } else if (roleName.contains("스터디리더") ||
                 roleName.contains("튜터")) {
