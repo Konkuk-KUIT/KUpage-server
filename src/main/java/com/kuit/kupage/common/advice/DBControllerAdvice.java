@@ -7,8 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class DBControllerAdvice {
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ResponseCode> handleSQLError(SQLException e) {
+        return new ResponseEntity<>(ResponseCode.SQL_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ResponseCode> handleDataIntegrityViolation(DataIntegrityViolationException e) {
