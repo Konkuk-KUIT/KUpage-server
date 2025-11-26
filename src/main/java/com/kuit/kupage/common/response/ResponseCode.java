@@ -31,6 +31,7 @@ public enum ResponseCode {
     ALREADY_MEMBER(false, 2002, "이미 회원가입 된 멤버입니다."),
     NOT_CURRENT_BATCH_MEMBER(false, 2003, "이전 기수는 사용할 수 없는 기능입니다. 만약 현재 기수라면 다시 로그인을 해주십시오."),
     FORBIDDEN(false, 2004, "요청 권한이 없습니다."),
+    MEMBER_SIGNUP_CONFLICT(false, 2005, "회원 가입 중 충돌이 발생했습니다. 다시 시도해주세요."),
 
 
     // 3000 번대 : discord 외부 API 관련 코드
@@ -40,6 +41,15 @@ public enum ResponseCode {
     DISCORD_BOT_FORBIDDEN(false, 3003, "Discord Bot이 역할 조회 권한이 없습니다."),
     DISCORD_ROLE_CONVERT_FAIL(false, 3005, "역할 이름을 Role로 변경하는 중 오류 발생"),
 
+    DISCORD_OAUTH_INVALID_CODE(false, 3006, "유효하지 않거나 만료된 디스코드 인가 코드입니다."),
+    DISCORD_OAUTH_INVALID_GRANT(false, 3007, "디스코드 OAuth grant가 유효하지 않습니다."),
+    DISCORD_OAUTH_INVALID_CLIENT(false, 3008, "디스코드 OAuth 클라이언트 설정이 올바르지 않습니다."),
+    DISCORD_OAUTH_BAD_REQUEST(false, 3009, "디스코드 OAuth 요청 형식이 올바르지 않습니다."),
+    DISCORD_OAUTH_UNAUTHORIZED(false, 3010, "디스코드 OAuth 클라이언트 인증에 실패했습니다."),
+    DISCORD_OAUTH_FORBIDDEN(false, 3011, "디스코드 OAuth 권한이 없습니다."),
+    DISCORD_OAUTH_RATE_LIMITED(false, 3012, "디스코드 OAuth 요청 제한을 초과했습니다."),
+    DISCORD_OAUTH_CLIENT_ERROR(false, 3013, "디스코드 OAuth 클라이언트 오류가 발생했습니다."),
+    DISCORD_OAUTH_SERVER_ERROR(false, 3014, "디스코드 OAuth 서버 오류가 발생했습니다."),
 
     // 4000 번대 : article 관련 코드
     INVALID_TITLE(false, 4000, "아티클의 제목의 형식을 확인해주세요."),
