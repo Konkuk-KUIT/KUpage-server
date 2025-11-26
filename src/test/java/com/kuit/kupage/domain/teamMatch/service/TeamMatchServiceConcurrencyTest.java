@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Propagation;
@@ -47,8 +48,20 @@ class TeamMatchServiceConcurrencyTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     @MockitoBean
     ConstantProperties constantProperties;
+
+
+    @BeforeEach
+    void cleanDb() {
+        // FK 순서 때문에 자식 → 부모 순으로 삭제
+        jdbcTemplate.update("DELETE FROM TEAM_APPLICANT");
+        jdbcTemplate.update("DELETE FROM TEAM");
+        jdbcTemplate.update("DELETE FROM MEMBER");
+    }
 
     @BeforeEach
     void setUp() {
@@ -103,4 +116,46 @@ class TeamMatchServiceConcurrencyTest {
         Assertions.assertThat(savedCount).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("[SUCCESS] 한명의 부원은 한 팀에 중복 지원할 수 없다.")
+    void one_team_one_apply() throws InterruptedException {
+        // given
+        int threadCount = 5;
+        Member member = memberRepository.save(EntityFactory.member());
+        Team team = teamRepository.save(EntityFactory.team());
+        ApplicantStatus applicantStatus = constantProperties.getApplicantStatus();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch doneLatch = new CountDownLatch(threadCount);
+
+        AtomicInteger successCount = new AtomicInteger();
+        AtomicInteger failureCount = new AtomicInteger();
+
+        // when
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    startLatch.await();
+                    TeamMatchRequest applyRequest = new TeamMatchRequest(Part.Server, "지원동기", "https://portfolio-url.com");
+                    teamMatchService.apply(member.getId(), team.getId(), applyRequest);
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failureCount.incrementAndGet();
+                } finally {
+                    doneLatch.countDown();
+                }
+            });
+        }
+
+        startLatch.countDown();                 // 모든 작업을 동시에 시작
+        doneLatch.await();                      // 모든 스레드 종료까지 대기
+        executorService.shutdown();
+
+        // then
+        // DB에 실제로 저장된 지원 내역이 최대 2개인지 검증
+        long savedCount = teamApplicantRepository.countByMemberAndBatchAndStatus(member, applicantStatus);
+        Assertions.assertThat(successCount.get()).isEqualTo(1);
+        Assertions.assertThat(savedCount).isEqualTo(1);
+    }
 }
