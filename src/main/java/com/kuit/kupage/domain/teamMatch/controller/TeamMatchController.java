@@ -2,10 +2,10 @@ package com.kuit.kupage.domain.teamMatch.controller;
 
 import com.kuit.kupage.common.auth.AllowedParts;
 import com.kuit.kupage.common.auth.AuthMember;
+import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.swagger.SwaggerErrorResponse;
 import com.kuit.kupage.common.swagger.SwaggerErrorResponses;
-import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.dto.*;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +29,7 @@ import java.util.List;
 public class TeamMatchController {
 
     private final TeamMatchService teamMatchService;
-    private final MemberRoleService memberRoleService;
+    private final ConstantProperties constantProperties;
 
     @GetMapping("/teams/applications")
     @Operation(
@@ -40,7 +41,7 @@ public class TeamMatchController {
                     * 개발자/디자이너 등 일반 참여자: 내가 지원한 팀 목록 및 각 팀에 대한 지원 상태를 조회합니다.
                     """
     )
-    @SwaggerErrorResponses()
+    @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_STATUS)
     public BaseResponse<?> applicationStatus(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
             @RequestAttribute("role") String role) {
@@ -56,6 +57,10 @@ public class TeamMatchController {
             return new BaseResponse<>(teamMatchService.getCurrentBatchOwnTeam(id));
         }
 
+        if (LocalDateTime.now().isAfter(constantProperties.getFinalResultTime())) {
+            return new BaseResponse<>(teamMatchService.getFinalResultTeamMatching(id));
+        }
+
         return new BaseResponse<>(teamMatchService.getCurrentBatchAppliedTeam(id));
     }
 
@@ -66,7 +71,7 @@ public class TeamMatchController {
             summary = "특정 팀 지원자 목록 조회 (PM 전용)",
             description = "특정 팀에 지원한 지원자들의 상세 리스트를 조회합니다. PM 또는 운영진 권한이 필요합니다."
     )
-    @SwaggerErrorResponses()
+    @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_APPLICANT)
     public BaseResponse<TeamApplicantResponse> getApplications(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
             @PathVariable("teamId") Long teamId) {
