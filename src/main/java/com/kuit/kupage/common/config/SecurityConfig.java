@@ -42,8 +42,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**",
-                                "/actuator/health", "/actuator/metrics", "/actuator/metrics/http.server.requests",
-                                "/actuator/metrics/jvm.memory.used", "/actuator/info", "/actuator/prometheus")
+                                "/actuator/health", "/actuator/prometheus"
+                        )
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
                 )
