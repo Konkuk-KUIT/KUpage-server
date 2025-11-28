@@ -1,6 +1,5 @@
 package com.kuit.kupage.domain.memberRole.service;
 
-import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
@@ -101,7 +100,7 @@ public class MemberRoleService {
                 .toList();
     }
 
-    public List<Role> getRolesByMemberId(Long memberId) {
+    public List<Role> getAllRolesByMemberId(Long memberId) {
         return getMemberRolesByMemberId(memberId).stream()
                 .map(MemberRole::getRole)
                 .toList();

@@ -6,7 +6,6 @@ import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.detail.Detail;
 import com.kuit.kupage.domain.detail.dto.MyPageResponse;
 import com.kuit.kupage.domain.detail.dto.MyPageUpdateRequest;
-import com.kuit.kupage.domain.detail.repository.DetailRepository;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
@@ -29,7 +28,6 @@ import static com.kuit.kupage.common.auth.AuthRole.GUEST;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenService jwtTokenService;
-    private final DetailRepository detailRepository;
 
     @Transactional
     public LoginOrSignupResult signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
@@ -74,7 +72,6 @@ public class MemberService {
     @Transactional
     public void updateMyInfo(MyPageUpdateRequest request, Long memberId) {
         Member member = getMemberWithDetail(memberId);
-        member.setName(request.name());
         Detail detail = Detail.of(request.name(),
                 request.studentNumber(),
                 request.departName(),
@@ -84,7 +81,7 @@ public class MemberService {
                 request.phoneNumber(),
                 request.birthday()
         );
-        member.updateDetail(detail);
+        member.updateDetail(request.name(), detail);
     }
 
 

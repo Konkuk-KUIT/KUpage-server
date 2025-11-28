@@ -3,8 +3,6 @@ package com.kuit.kupage.domain.detail.service;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.auth.JwtTokenService;
 import com.kuit.kupage.domain.detail.Detail;
-import com.kuit.kupage.domain.detail.dto.MyPageResponse;
-import com.kuit.kupage.domain.detail.dto.MyPageUpdateRequest;
 import com.kuit.kupage.domain.detail.dto.SignupRequest;
 import com.kuit.kupage.domain.detail.repository.DetailRepository;
 import com.kuit.kupage.domain.member.Member;
@@ -13,14 +11,14 @@ import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
 import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.exception.MemberException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.kuit.kupage.common.response.ResponseCode.*;
+import static com.kuit.kupage.common.response.ResponseCode.ALREADY_MEMBER;
+import static com.kuit.kupage.common.response.ResponseCode.NONE_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +50,7 @@ public class DetailService {
                 signupRequest.phoneNumber(),
                 signupRequest.birthday()));
 
-        member.updateDetail(savedDetail);
+        member.updateDetail(signupRequest.name(), savedDetail);
         memberRoleService.updateMemberRoles(member);
 
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);

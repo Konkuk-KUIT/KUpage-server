@@ -87,7 +87,8 @@ public class Member extends BaseEntity {
                 authTokenResponse.refreshToken());
     }
 
-    public void updateDetail(Detail detail) {
+    public void updateDetail(String name, Detail detail) {
+        this.name = name;
         this.detail = detail;
     }
 

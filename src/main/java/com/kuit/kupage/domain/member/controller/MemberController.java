@@ -37,11 +37,11 @@ public class MemberController {
     public BaseResponse<MyPageResponse> getMyPage(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember
     ) {
-        List<String> roles = memberRoleService.getRolesByMemberId(authMember.getId()).stream()
+        List<String> roles = memberRoleService.getAllRolesByMemberId(authMember.getId()).stream()
                 .map(Role::getName)
                 .toList();
         MyPageResponse response = memberService.getMyInfo(authMember.getId(), roles);
-        return new BaseResponse<>(SUCCESS, response);
+        return new BaseResponse<>(response);
     }
 
     @PutMapping("/me")
