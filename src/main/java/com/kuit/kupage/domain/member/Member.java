@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
     @Embedded
     private DiscordToken discordToken;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "detail_id")
     private Detail detail;
 
