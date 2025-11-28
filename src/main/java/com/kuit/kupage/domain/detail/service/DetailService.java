@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.kuit.kupage.common.response.ResponseCode.*;
+import static com.kuit.kupage.common.response.ResponseCode.ALREADY_MEMBER;
+import static com.kuit.kupage.common.response.ResponseCode.NONE_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,7 @@ public class DetailService {
                 signupRequest.phoneNumber(),
                 signupRequest.birthday()));
 
-        member.updateDetail(savedDetail);
+        member.updateDetail(signupRequest.name(), savedDetail);
         memberRoleService.updateMemberRoles(member);
 
         AuthTokenResponse authTokenResponse = jwtTokenService.generateTokens(member);

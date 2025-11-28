@@ -68,6 +68,16 @@ public enum SwaggerErrorResponse {
             NONE_OWN_TEAM
     ), AUTH_COMMON)),
 
+    GET_MY_PAGE(merge(Set.of(
+            NONE_MEMBER,
+            NONE_DETAIL
+    ), AUTH_COMMON)),
+
+
+    UPDATE_MY_PAGE(merge(Set.of(
+            INVALID_INPUT_ENUM
+    ), AUTH_COMMON)),
+
     DEFAULT(new LinkedHashSet<>());
 
     private final Set<ResponseCode> responseCodeSet;

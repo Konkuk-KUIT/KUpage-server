@@ -7,7 +7,7 @@ import com.kuit.kupage.domain.article.domain.Tag;
 import com.kuit.kupage.domain.article.dto.UploadArticleRequest;
 import com.kuit.kupage.domain.article.dto.UploadBlockRequest;
 import com.kuit.kupage.domain.member.Member;
-import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
+import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.exception.ArticleException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleCreateFacade {
 
-    private final MemberRoleService memberService;
+    private final MemberService memberService;
     private final TagService tagService;
     private final ArticleService articleService;
     private final BlockService blockService;
@@ -49,7 +49,7 @@ public class ArticleCreateFacade {
                 .map(UploadBlockRequest::position)
                 .collect(Collectors.toSet())
                 .size();
-        if(blocks.size() != setSize) {
+        if (blocks.size() != setSize) {
             throw new ArticleException(ResponseCode.INVALID_POSITIONS);
         }
     }
@@ -59,7 +59,7 @@ public class ArticleCreateFacade {
                 .map(b -> b.type() == BlockType.FILE)
                 .toList()
                 .size();
-        if(fileCount > FILE_BLOCK_MAX_COUNT)
+        if (fileCount > FILE_BLOCK_MAX_COUNT)
             throw new ArticleException(ResponseCode.TOO_MANY_FILE);
     }
 
@@ -68,7 +68,7 @@ public class ArticleCreateFacade {
                 .map(b -> b.type() == BlockType.IMAGE)
                 .toList()
                 .size();
-        if(imageCount > IMAGE_BLOCK_MAX_COUNT)
+        if (imageCount > IMAGE_BLOCK_MAX_COUNT)
             throw new ArticleException(ResponseCode.TOO_MANY_IMAGE);
     }
 }

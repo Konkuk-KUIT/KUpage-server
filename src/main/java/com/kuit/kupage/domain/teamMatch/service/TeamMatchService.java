@@ -3,7 +3,7 @@ package com.kuit.kupage.domain.teamMatch.service;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
-import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
+import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
@@ -34,7 +34,7 @@ import static com.kuit.kupage.common.response.ResponseCode.*;
 @RequiredArgsConstructor
 public class TeamMatchService {
 
-    private final MemberRoleService memberService;
+    private final MemberService memberService;
     private final TeamRepository teamRepository;
     private final TeamApplicantRepository teamApplicantRepository;
     private final ConstantProperties constantProperties;
@@ -88,8 +88,7 @@ public class TeamMatchService {
     }
 
     public TeamApplicantOverviewDto getCurrentBatchOwnTeam(Long memberId) {
-        Team team = teamRepository.findByOwnerIdAndBatch(memberId, constantProperties.getCurrentBatch())
-                .orElseThrow(() -> new TeamException(NONE_OWN_TEAM));
+        Team team = teamRepository.findByOwnerIdAndBatch(memberId, constantProperties.getCurrentBatch()).orElseThrow(() -> new TeamException(NONE_OWN_TEAM));
 
         return parseTeamApplicantOverviewDto(team);
     }
@@ -98,18 +97,13 @@ public class TeamMatchService {
 
         List<TeamApplicant> memberTeamApplicants = findMyTeamApplicants(memberId);
 
-        long appliedCountWithoutReject = memberTeamApplicants.stream()
-                .filter(TeamApplicant::isRejected)
-                .count();
+        long appliedCountWithoutReject = memberTeamApplicants.stream().filter(TeamApplicant::isRejected).count();
 
         if (appliedCountWithoutReject == memberTeamApplicants.size()) {
             throw new TeamException(REJECTED_TEAM_MATCH);
         }
 
-        Team team = memberTeamApplicants.stream()
-                .filter(ta -> !ta.isRejected())
-                .findFirst()
-                .get() // 앞 조건문을 통과하면 반드시 객체 존재
+        Team team = memberTeamApplicants.stream().filter(ta -> !ta.isRejected()).findFirst().get() // 앞 조건문을 통과하면 반드시 객체 존재
                 .getTeam();
 
         Long teamId = team.getId();
@@ -132,10 +126,7 @@ public class TeamMatchService {
         }
 
         // 팀의 지원자 중 자신의 지원 정보만 추출
-        List<TeamApplicant> memberTeamApplicant = allTeamsByMemberIdAndBatch.stream()
-                .flatMap(t -> t.getTeamApplicants().stream())
-                .filter(ta -> ta.getMember().getId().equals(memberId))
-                .toList();
+        List<TeamApplicant> memberTeamApplicant = allTeamsByMemberIdAndBatch.stream().flatMap(t -> t.getTeamApplicants().stream()).filter(ta -> ta.getMember().getId().equals(memberId)).toList();
         return memberTeamApplicant;
     }
 
@@ -144,10 +135,7 @@ public class TeamMatchService {
         List<TeamApplicant> memberTeamApplicants = findMyTeamApplicants(memberId);
 
         // 최종 확정된 지원 정보
-        TeamApplicant teamApplicant = memberTeamApplicants.stream()
-                .filter(ta -> ta.getStatus().equals(ApplicantStatus.FINAL_CONFIRMED))
-                .findFirst()
-                .orElseThrow(() -> new TeamException(REJECTED_TEAM_MATCH));
+        TeamApplicant teamApplicant = memberTeamApplicants.stream().filter(ta -> ta.getStatus().equals(ApplicantStatus.FINAL_CONFIRMED)).findFirst().orElseThrow(() -> new TeamException(REJECTED_TEAM_MATCH));
 
         return parseTeamApplicantOverviewDto(teamApplicant.getTeam());
     }
@@ -173,33 +161,29 @@ public class TeamMatchService {
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {
-        return applicantInfos.stream()
-                .collect(Collectors.groupingBy(ApplicantInfo::part));
+        return applicantInfos.stream().collect(Collectors.groupingBy(ApplicantInfo::part));
     }
 
     private List<ApplicantInfo> parseApplicantInfo(Team team) {
         List<TeamApplicant> teamApplicants = team.getTeamApplicants();
 
-        List<ApplicantInfo> applicantInfos = teamApplicants.stream()
-                .filter(ta -> !ta.isRejected())
-                .map(ta -> {
-                    Member applicantMember = ta.getMember();
-                    String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().getDescription() + " " + ta.getAppliedPart();
-                    Part appliedPart = ta.getAppliedPart();
+        List<ApplicantInfo> applicantInfos = teamApplicants.stream().filter(ta -> !ta.isRejected()).map(ta -> {
+            Member applicantMember = ta.getMember();
+            String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().getDescription() + " " + ta.getAppliedPart();
+            Part appliedPart = ta.getAppliedPart();
 
-                    String portfolioUrl = ta.getPortfolioUrl();
-                    String formattedTimetable = ApplyTimeConverter.formatTimetable(ta.getCreatedAt());
-                    ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
+            String portfolioUrl = ta.getPortfolioUrl();
+            String formattedTimetable = ApplyTimeConverter.formatTimetable(ta.getCreatedAt());
+            ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
 
-                    return new ApplicantInfo(applicantMember.getId(), applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
-                }).toList();
+            return new ApplicantInfo(applicantMember.getId(), applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
+        }).toList();
 
         return applicantInfos;
     }
 
     private Team getOwnTeam(Long memberId, Long teamId, boolean isAdmin) {
-        Team team = teamRepository.findAllWithTeamApplicantAndMemberById(teamId)
-                .orElseThrow(() -> new KupageException(NONE_TEAM));
+        Team team = teamRepository.findAllWithTeamApplicantAndMemberById(teamId).orElseThrow(() -> new KupageException(NONE_TEAM));
 
         if (!isAdmin) {
             isTeamOwner(memberId, team);
@@ -215,8 +199,7 @@ public class TeamMatchService {
     }
 
     private Team getTeam(Long teamId) {
-        return teamRepository.findById(teamId)
-                .orElseThrow(() -> new KupageException(ResponseCode.NONE_TEAM));
+        return teamRepository.findById(teamId).orElseThrow(() -> new KupageException(ResponseCode.NONE_TEAM));
     }
 
     public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request) {

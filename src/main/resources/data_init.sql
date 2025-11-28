@@ -11,6 +11,20 @@ VALUES ('김지훈', 'discord_1001', 'jihoon#1234', 'https://cdn.discordapp.com/
        ('서민재', 'discord_1009', 'minjae#1357', 'https://cdn.discordapp.com/embed/avatars/3.png', NOW(), NOW()),
        ('윤아람', 'discord_1010', 'aram#8642', 'https://cdn.discordapp.com/embed/avatars/4.png', NOW(), NOW());
 
+INSERT INTO detail
+(name, student_number, depart_name, grade, github_id, email, phone_number, birthday)
+VALUES
+    ('김지훈', '202012301', '스마트ICT융합공학과', 'THIRD_YEAR', 'jihoon-dev', 'jihoon@example.com', '010-1111-1111', '2001-03-23'),
+    ('이서연', '202112302', '컴퓨터공학부',       'SECOND_YEAR', 'seoyeon-dev', 'seoyeon@example.com', '010-2222-2222', '2002-07-15'),
+    ('박민수', '202012303', '소프트웨어학과',     'FOURTH_YEAR', 'minsu-backend', 'minsu@example.com', '010-3333-3333', '2000-11-02'),
+    ('최유진', '202212304', '스마트ICT융합공학과', 'FIRST_YEAR',  'yujin-fe', 'yujin@example.com', '010-4444-4444', '2004-05-30'),
+    ('정하늘', '202012305', '전자정보공학부',     'THIRD_YEAR', 'haneul-dev', 'haneul@example.com', '010-5555-5555', '2001-01-10'),
+    ('오세훈', '202012306', '스마트ICT융합공학과', 'FOURTH_YEAR', 'sehun-dev', 'sehun@example.com', '010-6666-6666', '2000-08-21'),
+    ('한수민', '202112307', '컴퓨터공학부',       'SECOND_YEAR', 'sumin-dev', 'sumin@example.com', '010-7777-7777', '2002-02-14'),
+    ('류지호', '202012308', '소프트웨어학과',     'THIRD_YEAR', 'jiho-dev', 'jiho@example.com', '010-8888-8888', '2001-09-09'),
+    ('서민재', '202012309', '스마트ICT융합공학과', 'FOURTH_YEAR', 'minjae-dev', 'minjae@example.com', '010-9999-9999', '2000-12-01'),
+    ('윤아람', '202112310', '컴퓨터공학부',       'SECOND_YEAR', 'aram-dev', 'aram@example.com', '010-0000-0000', '2002-04-18');
+
 
 INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, modified_at)
 VALUES (1,'SIXTH', '6th PM 부원', 1, 0, NOW(), NOW()),
@@ -18,19 +32,30 @@ VALUES (1,'SIXTH', '6th PM 부원', 1, 0, NOW(), NOW()),
        (3, 'SIXTH', '6th Server 튜터', 3, 0, NOW(), NOW()),
        (4, 'SIXTH', '6th 운영진', 4, 0, NOW(), NOW());
 
-INSERT INTO member_role (member_discord_id, role_id)
-VALUES ('discord_1001', 1),
-       ('discord_1001', 2),
-       ('discord_1001', 4),
-       ('discord_1002', 2),
-       ('discord_1003', 1),
-       ('discord_1004', 3),
-       ('discord_1005', 1),
-       ('discord_1006', 2),
-       ('discord_1007', 1),
-       ('discord_1008', 3),
-       ('discord_1009', 1),
-       ('discord_1010', 4);
+UPDATE member SET detail_id = 1 WHERE discord_id = 'discord_1001';
+UPDATE member SET detail_id = 2 WHERE discord_id = 'discord_1002';
+UPDATE member SET detail_id = 3 WHERE discord_id = 'discord_1003';
+UPDATE member SET detail_id = 4 WHERE discord_id = 'discord_1004';
+UPDATE member SET detail_id = 5 WHERE discord_id = 'discord_1005';
+UPDATE member SET detail_id = 6 WHERE discord_id = 'discord_1006';
+UPDATE member SET detail_id = 7 WHERE discord_id = 'discord_1007';
+UPDATE member SET detail_id = 8 WHERE discord_id = 'discord_1008';
+UPDATE member SET detail_id = 9 WHERE discord_id = 'discord_1009';
+UPDATE member SET detail_id = 10 WHERE discord_id = 'discord_1010';
+
+INSERT INTO member_role (member_discord_id, role_id, member_id)
+VALUES ('discord_1001', 1, 1),
+       ('discord_1001', 2, 1),
+       ('discord_1001', 4, 1),
+       ('discord_1002', 2, 2),
+       ('discord_1003', 1, 3),
+       ('discord_1004', 3, 4),
+       ('discord_1005', 1, 5),
+       ('discord_1006', 2, 6),
+       ('discord_1007', 1, 7),
+       ('discord_1008', 3, 8),
+       ('discord_1009', 1, 9),
+       ('discord_1010', 4, 10);
 
 
 INSERT INTO team
@@ -207,6 +232,8 @@ INSERT INTO team_applicant (
        9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
 
 SELECT * FROM MEMBER;
+
+SELECT * FROM DETAIL;
 
 SELECT * FROM ROLE ;
 
