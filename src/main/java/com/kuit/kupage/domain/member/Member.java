@@ -28,6 +28,7 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
+    @Setter
     private String name;
 
     @Column(name = "discord_id", unique = true, nullable = false)
@@ -45,7 +46,7 @@ public class Member extends BaseEntity {
     @Embedded
     private DiscordToken discordToken;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "detail_id")
     private Detail detail;
 

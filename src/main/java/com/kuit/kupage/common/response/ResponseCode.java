@@ -23,7 +23,7 @@ public enum ResponseCode {
     INVALID_SIGNATURE_JWT(false, 1006, "인증 시그니처가 올바르지 않습니다"),
     INVALID_TOKEN_TYPE(false, 1007, "잘못된 토큰입니다."),
     BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
-
+    INVALID_INPUT_ENUM(false, 1009, "입력값이 올바르지 않습니다. 허용된 값 중 하나를 사용해야 합니다."),
 
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
@@ -32,7 +32,7 @@ public enum ResponseCode {
     NOT_CURRENT_BATCH_MEMBER(false, 2003, "이전 기수는 사용할 수 없는 기능입니다. 만약 현재 기수라면 다시 로그인을 해주십시오."),
     FORBIDDEN(false, 2004, "요청 권한이 없습니다."),
     MEMBER_SIGNUP_CONFLICT(false, 2005, "회원 가입 중 충돌이 발생했습니다. 다시 시도해주세요."),
-
+    NONE_DETAIL(false, 2006, "해당 회원의 상세 정보가 존재하지 않습니다."),
 
     // 3000 번대 : discord 외부 API 관련 코드
     DISCORD_ROLE_FETCH_FAIL(false, 3000, "디스코드 역할 조회 실패"),

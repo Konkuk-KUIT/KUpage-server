@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**",
+                                "/role/sync",                   "members/me",
                                 "/actuator/health", "/actuator/prometheus"
                         )
                         .permitAll()
@@ -57,7 +58,7 @@ public class SecurityConfig {
                         requestMatchers(HttpMethod.POST, "/teams/*/match", "/ideas")
                         .hasRole(MEMBER.getValue()).
                         requestMatchers("/pre-signed/articles/*", "/teams/applications",
-                                "/teams", "/teams/{teamId}/applications")
+                                "/teams", "/teams/{teamId}/applications", "members/me")
                         .hasRole(MEMBER.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
