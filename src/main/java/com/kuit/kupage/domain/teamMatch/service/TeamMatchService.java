@@ -95,20 +95,22 @@ public class TeamMatchService {
     }
 
     public TeamOverviewDto getCurrentBatchAppliedTeam(Long memberId) {
-        Team team = teamRepository.findTeamsByMemberIdAndBatch(memberId, constantProperties.getCurrentBatch())
-                .orElseThrow(() -> new TeamException(NONE_APPLIED_TEAM));
 
-        List<TeamApplicant> memberTeamApplicant = team.getTeamApplicants().stream()
-                .filter(ta -> ta.getMember().getId().equals(memberId))
-                .toList();
+        List<TeamApplicant> memberTeamApplicants = findMyTeamApplicants(memberId);
 
-        long appliedCountWithoutReject = memberTeamApplicant.stream()
+        long appliedCountWithoutReject = memberTeamApplicants.stream()
                 .filter(TeamApplicant::isRejected)
                 .count();
 
-        if (appliedCountWithoutReject == memberTeamApplicant.size()) {
+        if (appliedCountWithoutReject == memberTeamApplicants.size()) {
             throw new TeamException(REJECTED_TEAM_MATCH);
         }
+
+        Team team = memberTeamApplicants.stream()
+                .filter(ta -> !ta.isRejected())
+                .findFirst()
+                .get() // 앞 조건문을 통과하면 반드시 객체 존재
+                .getTeam();
 
         Long teamId = team.getId();
         String serviceName = team.getServiceName();
@@ -119,6 +121,35 @@ public class TeamMatchService {
 
         return new TeamOverviewDto(teamId, serviceName, topicSummary, ownerNameAndPart, appType);
 
+    }
+
+    private List<TeamApplicant> findMyTeamApplicants(Long memberId) {
+        // 지원한 모든 팀 조회
+        List<Team> allTeamsByMemberIdAndBatch = teamRepository.findAllTeamsByMemberIdAndBatch(memberId, constantProperties.getCurrentBatch());
+
+        if (allTeamsByMemberIdAndBatch.isEmpty()) {
+            throw new TeamException(NONE_APPLIED_TEAM);
+        }
+
+        // 팀의 지원자 중 자신의 지원 정보만 추출
+        List<TeamApplicant> memberTeamApplicant = allTeamsByMemberIdAndBatch.stream()
+                .flatMap(t -> t.getTeamApplicants().stream())
+                .filter(ta -> ta.getMember().getId().equals(memberId))
+                .toList();
+        return memberTeamApplicant;
+    }
+
+    public TeamApplicantOverviewDto getFinalResultTeamMatching(Long memberId) {
+
+        List<TeamApplicant> memberTeamApplicants = findMyTeamApplicants(memberId);
+
+        // 최종 확정된 지원 정보
+        TeamApplicant teamApplicant = memberTeamApplicants.stream()
+                .filter(ta -> ta.getStatus().equals(ApplicantStatus.FINAL_CONFIRMED))
+                .findFirst()
+                .orElseThrow(() -> new TeamException(REJECTED_TEAM_MATCH));
+
+        return parseTeamApplicantOverviewDto(teamApplicant.getTeam());
     }
 
     private TeamApplicantOverviewDto parseTeamApplicantOverviewDto(Team team) {

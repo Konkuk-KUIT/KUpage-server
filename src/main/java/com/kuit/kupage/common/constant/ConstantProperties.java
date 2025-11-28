@@ -3,6 +3,7 @@ package com.kuit.kupage.common.constant;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.exception.KupageException;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_APPLYING;
 import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND2_APPLYING;
 
 @Setter
+@Getter
 @ConfigurationProperties(prefix = "const")
 @Component
 public class ConstantProperties {
