@@ -7,6 +7,7 @@ import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
 import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
 import com.kuit.kupage.common.config.InterceptorConfig;
 import com.kuit.kupage.common.config.SecurityTestConfig;
+import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.dto.TeamApplicantOverviewDto;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = TeamMatchController.class)
 @Import({SecurityTestConfig.class, InterceptorConfig.class})
+@EnableConfigurationProperties(ConstantProperties.class)
 public class TeamMatchControllerTest {
 
     @Autowired
