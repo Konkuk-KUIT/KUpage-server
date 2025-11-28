@@ -22,7 +22,6 @@ public class ConstantProperties {
     private String currentBatch;
     private LocalDateTime firstRoundResultTime;
     private LocalDateTime secondRoundResultTime;
-    private LocalDateTime finalResultTime;
 
     public Batch getCurrentBatch() {
         return Batch.valueOf(currentBatch);

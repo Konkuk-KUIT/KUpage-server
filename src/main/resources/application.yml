@@ -86,7 +86,6 @@ const:
   current-batch: SIXTH
   first-round-result-time: ${FIRST_ROUND_RESULT_TIME:2025-12-02T21:00:00}
   second-round-result-time: ${SECOND_ROUND_RESULT_TIME:2025-12-04T21:00:00}
-  final-result-time: ${FINAL_RESULT_TIME:2025-12-04T21:00:00}
 
 ---
 
@@ -103,7 +102,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect

@@ -57,7 +57,7 @@ public class TeamMatchController {
             return new BaseResponse<>(teamMatchService.getCurrentBatchOwnTeam(id));
         }
 
-        if (LocalDateTime.now().isAfter(constantProperties.getFinalResultTime())) {
+        if (LocalDateTime.now().isAfter(constantProperties.getSecondRoundResultTime())) {
             return new BaseResponse<>(teamMatchService.getFinalResultTeamMatching(id));
         }
 
