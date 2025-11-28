@@ -87,6 +87,15 @@ const:
   first-round-result-time: ${FIRST_ROUND_RESULT_TIME:2025-12-02T21:00:00}
   second-round-result-time: ${SECOND_ROUND_RESULT_TIME:2025-12-04T21:00:00}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus, info
+  endpoint:
+    health:
+      show-details: always
+
 ---
 
 spring:

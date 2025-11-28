@@ -6,6 +6,8 @@ services:
       - .env
     ports:
       - "8080:8080"
+    networks:
+      - monitoring
 
   green:
     container_name: green
@@ -14,3 +16,9 @@ services:
       - .env
     ports:
       - "8081:8080"
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    external: true   # 이미 docker network create monitoring 으로 만들어 둘 거라 external 로 선언

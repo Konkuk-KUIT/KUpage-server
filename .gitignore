@@ -38,3 +38,4 @@ out/
 .vscode/
 scripts
 src/main/java/com/kuit/kupage/common/auth/LocalAuthTokenController.java
+/monitoring
