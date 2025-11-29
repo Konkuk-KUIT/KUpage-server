@@ -1,7 +1,6 @@
 package com.kuit.kupage.domain.detail.controller;
 
 import com.kuit.kupage.common.auth.AuthMember;
-import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.domain.detail.dto.SignupRequest;
 import com.kuit.kupage.domain.detail.service.DetailService;

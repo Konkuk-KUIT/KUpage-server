@@ -51,7 +51,7 @@ public class Member extends BaseEntity {
     @Builder.Default
     private int applyCount = 0;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "detail_id")
     private Detail detail;
 
@@ -94,7 +94,8 @@ public class Member extends BaseEntity {
                 authTokenResponse.refreshToken());
     }
 
-    public void updateDetail(Detail detail) {
+    public void updateDetail(String name, Detail detail) {
+        this.name = name;
         this.detail = detail;
     }
 
@@ -134,6 +135,5 @@ public class Member extends BaseEntity {
         this.memberRoles.remove(memberRole);
         memberRole.setMember(null); // MemberRole 쪽 Member 해제
     }
-
 
 }

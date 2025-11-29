@@ -12,11 +12,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.kuit.kupage.common.response.ResponseCode.BAD_REQUEST;
+import static com.kuit.kupage.common.response.ResponseCode.INVALID_INPUT_ENUM;
 
 @Hidden
 @RestControllerAdvice
@@ -28,13 +28,10 @@ public class KupageControllerAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, Object>> handleEnumError(HttpMessageNotReadableException ex) {
+    public ResponseEntity<BaseResponse<Object>> handleEnumError(HttpMessageNotReadableException ex) {
         if (ex.getCause() instanceof InvalidFormatException) {
-            Map<String, Object> body = new HashMap<>();
-            body.put("code", 400);
-            body.put("message", "입력값이 올바르지 않습니다. 허용된 값 중 하나를 사용해야 합니다.");
-            body.put("success", false);
-            return ResponseEntity.badRequest().body(body);
+            BaseResponse<Object> response = new BaseResponse<>(INVALID_INPUT_ENUM, null);
+            return ResponseEntity.badRequest().body(response);
         }
         throw ex;
     }

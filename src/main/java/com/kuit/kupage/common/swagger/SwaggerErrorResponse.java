@@ -47,8 +47,35 @@ public enum SwaggerErrorResponse {
             FORBIDDEN
     ))),
 
+    /**
+     * 팀매칭 관련 공통 오류 세트
+     */
     TEAM_MATCH_VIEW(merge(Set.of(
             NOT_CURRENT_BATCH_MEMBER
+    ), AUTH_COMMON)),
+
+    TEAM_MATCH_STATUS(merge(Set.of(
+            NOT_CURRENT_BATCH_MEMBER,
+            NONE_TEAM,
+            NONE_OWN_TEAM,
+            NONE_APPLIED_TEAM,
+            REJECTED_TEAM_MATCH
+    ), AUTH_COMMON)),
+
+    TEAM_MATCH_APPLICANT(merge(Set.of(
+            NOT_CURRENT_BATCH_MEMBER,
+            NONE_TEAM,
+            NONE_OWN_TEAM
+    ), AUTH_COMMON)),
+
+    GET_MY_PAGE(merge(Set.of(
+            NONE_MEMBER,
+            NONE_DETAIL
+    ), AUTH_COMMON)),
+
+
+    UPDATE_MY_PAGE(merge(Set.of(
+            INVALID_INPUT_ENUM
     ), AUTH_COMMON)),
 
     DEFAULT(new LinkedHashSet<>());

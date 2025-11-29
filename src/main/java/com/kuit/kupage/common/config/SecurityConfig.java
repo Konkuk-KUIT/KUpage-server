@@ -1,6 +1,6 @@
 package com.kuit.kupage.common.config;
 
-import com.kuit.kupage.common.auth.JwtTokenService;
+import com.kuit.kupage.common.jwt.JwtTokenService;
 import com.kuit.kupage.common.jwt.JwtAuthenticationFilter;
 import com.kuit.kupage.common.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,10 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
-                                "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                                "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**",
+                                "/actuator/health", "/actuator/prometheus"
+                        )
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
@@ -54,7 +57,7 @@ public class SecurityConfig {
                         requestMatchers(HttpMethod.POST, "/teams/*/match", "/ideas")
                         .hasRole(MEMBER.getValue()).
                         requestMatchers("/pre-signed/articles/*", "/teams/applications",
-                                "/teams", "/teams/{teamId}/applications")
+                                "/teams", "/teams/{teamId}/applications", "members/me")
                         .hasRole(MEMBER.getValue())
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest

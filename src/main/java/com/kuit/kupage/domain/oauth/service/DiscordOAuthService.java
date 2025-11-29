@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.oauth.service;
 
-import com.kuit.kupage.common.auth.JwtTokenService;
+import com.kuit.kupage.common.jwt.JwtTokenService;
 import com.kuit.kupage.common.auth.TokenResponse;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.DiscordApiType;

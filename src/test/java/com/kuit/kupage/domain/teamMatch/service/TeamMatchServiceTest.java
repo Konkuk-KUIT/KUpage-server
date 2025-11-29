@@ -3,7 +3,7 @@ package com.kuit.kupage.domain.teamMatch.service;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
-import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
+import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.project.entity.AppType;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 class TeamMatchServiceTest {
 
     @Mock
-    private MemberRoleService memberService;
+    private MemberService memberService;
 
     @Mock
     private TeamRepository teamRepository;
