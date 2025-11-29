@@ -118,7 +118,7 @@ class TeamMatchServiceTest {
                 .willReturn(Optional.empty());
 
         // when / then
-        assertThatThrownBy(() -> teamMatchService.getTeamApplicant(memberId, teamId, isAdmin))
+        assertThatThrownBy(() -> teamMatchService.getTeamApplicantByMemberAndTeam(memberId, teamId, isAdmin))
                 .isInstanceOf(KupageException.class)
                 .hasMessageContaining(ResponseCode.NONE_TEAM.getMessage());
 
@@ -140,7 +140,7 @@ class TeamMatchServiceTest {
         given(team.getOwnerId()).willReturn(2L); // memberId와 다른 소유자
 
         // when / then
-        assertThatThrownBy(() -> teamMatchService.getTeamApplicant(memberId, teamId, isAdmin))
+        assertThatThrownBy(() -> teamMatchService.getTeamApplicantByMemberAndTeam(memberId, teamId, isAdmin))
                 .isInstanceOf(AuthException.class)
                 .hasMessageContaining(FORBIDDEN.getMessage());
 

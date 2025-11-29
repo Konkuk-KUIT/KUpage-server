@@ -19,7 +19,9 @@ import java.util.List;
 public class PresignedUrlController {
 
     private final PresignedUrlService presignedUrlService;
-    private final List<String> ALLOWED_IMAGE_TYPES = List.of("image/png", "image/jpeg", "image/gif");
+    private final List<String> ALLOWED_IMAGE_TYPES = List.of(
+            "image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp", "image/heic", "image/avif"
+    );
     private final static Integer MAX_IMAGE_SIZE = 20 * 1024 * 1024;     // 20MB
     private final static Integer MAX_FILE_SIZE = 50 * 1024 * 1024;      // 50MB
 

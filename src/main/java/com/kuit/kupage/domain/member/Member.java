@@ -28,7 +28,6 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Setter
     private String name;
 
     @Column(name = "discord_id", unique = true, nullable = false)
@@ -50,9 +49,11 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "detail_id")
     private Detail detail;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberRole> memberRoles = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberTeam> memberTeams = new ArrayList<>();
 

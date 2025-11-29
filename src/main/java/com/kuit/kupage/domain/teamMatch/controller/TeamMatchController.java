@@ -4,6 +4,7 @@ import com.kuit.kupage.common.auth.AllowedParts;
 import com.kuit.kupage.common.auth.AuthMember;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.BaseResponse;
+import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.common.swagger.SwaggerErrorResponse;
 import com.kuit.kupage.common.swagger.SwaggerErrorResponses;
 import com.kuit.kupage.domain.teamMatch.Part;
@@ -79,7 +80,7 @@ public class TeamMatchController {
         Long memberId = authMember.getId();
         boolean isAdmin = authMember.isAdmin();
 
-        return new BaseResponse<>(teamMatchService.getTeamApplicant(memberId, teamId, isAdmin));
+        return new BaseResponse<>(teamMatchService.getTeamApplicantByMemberAndTeam(memberId, teamId, isAdmin));
     }
 
     @PostMapping("/teams/{teamId}/match")
@@ -114,8 +115,30 @@ public class TeamMatchController {
     @Operation(summary = "전체 팀 아이디어 목록 조회",
             description = "현재 기수에 속한 모든 팀의 아이디어/서비스 정보를 조회합니다. 현재 기수 참여자만 접근할 수 있습니다.")
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_VIEW)
-    public BaseResponse<AllTeamsResponse> getTeamIdeas() {
-        AllTeamsResponse response = teamMatchService.getAllTeamIdeas();
+    public BaseResponse<AllTeamsResponse> getTeamIdeas(
+            @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember
+            ) {
+        AllTeamsResponse response = teamMatchService.getAllTeamIdeas(authMember.getId());
         return new BaseResponse<>(response);
+    }
+
+    @AllowedParts(Part.PM)
+    @PostMapping("/teams/applications/{teamApplicantId}/accept")
+    @Operation(summary = "팀매칭 지원 수락 (PM 전용)", description = "PM이 특정 팀에 지원한 지원자의 신청을 수락합니다.")
+    @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_APPLICANT_DETAIL)
+    public BaseResponse<?> acceptApplicant(@PathVariable(name = "teamApplicantId") Long teamApplicantId) {
+        log.info("[acceptApplicant] accept teamApplicant = {}", teamApplicantId);
+        teamMatchService.acceptTeamApplication(teamApplicantId);
+        return new BaseResponse<>(ResponseCode.SUCCESS);
+    }
+
+    @AllowedParts(Part.PM)
+    @PostMapping("/teams/applications/{teamApplicantId}/reject")
+    @Operation(summary = "팀매칭 지원 거절 (PM 전용)", description = "PM이 특정 팀에 지원한 지원자의 신청을 거절합니다.")
+    @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_APPLICANT_DETAIL)
+    public BaseResponse<?> rejectApplicant(@PathVariable(name = "teamApplicantId") Long teamApplicantId) {
+        log.info("[rejectApplicant] reject teamApplicant = {}", teamApplicantId);
+        teamMatchService.rejectTeamApplicant(teamApplicantId);
+        return new BaseResponse<>(ResponseCode.SUCCESS);
     }
 }

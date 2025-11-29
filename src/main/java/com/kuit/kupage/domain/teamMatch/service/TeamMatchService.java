@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.project.entity.AppType;
@@ -19,14 +20,17 @@ import com.kuit.kupage.exception.TeamException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.kuit.kupage.common.response.ResponseCode.*;
+import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.FINAL_CONFIRMED;
 
 @Slf4j
 @Service
@@ -39,24 +43,35 @@ public class TeamMatchService {
     private final TeamApplicantRepository teamApplicantRepository;
     private final ConstantProperties constantProperties;
 
-
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
         ApplicantStatus status = constantProperties.getApplicantStatus();
-        TeamApplicant applicant = new TeamApplicant(request, member, team, status);
+        Batch batch = constantProperties.getCurrentBatch();
+        int slotNo = resolveSlotNo(member, status, batch);
+        TeamApplicant applicant = new TeamApplicant(request, member, team, status, slotNo, batch);
         try {
             TeamApplicant saved = teamApplicantRepository.save(applicant);
             return new TeamMatchResponse(saved.getId());
         } catch (DataIntegrityViolationException e) {
-            throw new KupageException(DUPLICATED_TEAM_APPLY);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            Throwable cause = e.getCause();
+            if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
+                String constraintName = cve.getConstraintName().toLowerCase(Locale.ROOT);
+                if (constraintName.contains("uk_status_team_applicant_member_team")) {
+                    throw new KupageException(DUPLICATED_TEAM_APPLY);
+                }
+                if (constraintName.contains("uk_member_status_slot")) {
+                    throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+                }
+            }
+            throw new KupageException(TEAM_APPLY_FAILED);
+        } catch (OptimisticLockingFailureException e) {
+            throw new KupageException(TEAM_APPLY_FAILED);
         }
     }
 
-    public TeamApplicantResponse getTeamApplicant(Long memberId, Long teamId, boolean isAdmin) {
+    @Transactional(readOnly = true)
+    public TeamApplicantResponse getTeamApplicantByMemberAndTeam(Long memberId, Long teamId, boolean isAdmin) {
         Team team = getOwnTeam(memberId, teamId, isAdmin);
 
         //팀 : 제목, 사람, 역할, 안드인지웹인지, 설명(소제목, 설명)
@@ -76,6 +91,7 @@ public class TeamMatchService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<TeamApplicantOverviewDto> getAllCurrentBatchTeamApplicants() {
         List<Team> teams = teamRepository.findAllWithTeamApplicantAndMemberByBatch(constantProperties.getCurrentBatch());
 
@@ -83,27 +99,36 @@ public class TeamMatchService {
             throw new TeamException(NONE_TEAM);
         }
 
-        return teams.stream().map(this::parseTeamApplicantOverviewDto).toList();
+        return teams.stream()
+                .map(this::parseTeamApplicantOverviewDto)
+                .toList();
 
     }
 
+    @Transactional(readOnly = true)
     public TeamApplicantOverviewDto getCurrentBatchOwnTeam(Long memberId) {
-        Team team = teamRepository.findByOwnerIdAndBatch(memberId, constantProperties.getCurrentBatch()).orElseThrow(() -> new TeamException(NONE_OWN_TEAM));
+        Team team = teamRepository.findByOwnerIdAndBatch(memberId, constantProperties.getCurrentBatch())
+                .orElseThrow(() -> new TeamException(NONE_OWN_TEAM));
 
         return parseTeamApplicantOverviewDto(team);
     }
 
+    @Transactional(readOnly = true)
     public TeamOverviewDto getCurrentBatchAppliedTeam(Long memberId) {
 
         List<TeamApplicant> memberTeamApplicants = findMyTeamApplicants(memberId);
 
-        long appliedCountWithoutReject = memberTeamApplicants.stream().filter(TeamApplicant::isRejected).count();
+        long appliedCountWithoutReject = memberTeamApplicants.stream()
+                .filter(TeamApplicant::isRejected)
+                .count();
 
         if (appliedCountWithoutReject == memberTeamApplicants.size()) {
             throw new TeamException(REJECTED_TEAM_MATCH);
         }
 
-        Team team = memberTeamApplicants.stream().filter(ta -> !ta.isRejected()).findFirst().get() // 앞 조건문을 통과하면 반드시 객체 존재
+        Team team = memberTeamApplicants.stream()
+                .filter(ta -> !ta.isRejected())
+                .findFirst().get() // 앞 조건문을 통과하면 반드시 객체 존재
                 .getTeam();
 
         Long teamId = team.getId();
@@ -114,7 +139,6 @@ public class TeamMatchService {
         AppType appType = team.getAppType();
 
         return new TeamOverviewDto(teamId, serviceName, topicSummary, ownerNameAndPart, appType);
-
     }
 
     private List<TeamApplicant> findMyTeamApplicants(Long memberId) {
@@ -130,12 +154,16 @@ public class TeamMatchService {
         return memberTeamApplicant;
     }
 
+    @Transactional(readOnly = true)
     public TeamApplicantOverviewDto getFinalResultTeamMatching(Long memberId) {
 
         List<TeamApplicant> memberTeamApplicants = findMyTeamApplicants(memberId);
 
         // 최종 확정된 지원 정보
-        TeamApplicant teamApplicant = memberTeamApplicants.stream().filter(ta -> ta.getStatus().equals(ApplicantStatus.FINAL_CONFIRMED)).findFirst().orElseThrow(() -> new TeamException(REJECTED_TEAM_MATCH));
+        TeamApplicant teamApplicant = memberTeamApplicants.stream()
+                .filter(ta -> ta.getStatus().equals(FINAL_CONFIRMED))
+                .findFirst()
+                .orElseThrow(() -> new TeamException(REJECTED_TEAM_MATCH));
 
         return parseTeamApplicantOverviewDto(teamApplicant.getTeam());
     }
@@ -158,6 +186,21 @@ public class TeamMatchService {
         int designApplicantNum = partListMap.getOrDefault(Part.Design, List.of()).size();
 
         return new TeamApplicantOverviewDto(teamId, serviceName, ownerNameAndPart, appType, topicSummary, AndroidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
+    }
+
+    private int resolveSlotNo(Member member, ApplicantStatus status, Batch batch) {
+        List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status, batch);
+
+        boolean used1 = usedSlots.contains(1);
+        boolean used2 = usedSlots.contains(2);
+
+        if (used1 && used2) {
+            throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+        }
+        if (!used1) {
+            return 1;
+        }
+        return 2;
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {
@@ -204,13 +247,33 @@ public class TeamMatchService {
 
     public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request) {
         Member owner = memberService.getMember(memberId);
-        Team team = new Team(owner.getId(), owner.getName(), constantProperties.getCurrentBatch(), request);
+        Batch batch = constantProperties.getCurrentBatch();
+        Team team = new Team(owner.getId(), owner.getName(), batch, request);
         Team saved = teamRepository.save(team);
         return new IdeaRegisterResponse(saved.getId());
     }
 
-    public AllTeamsResponse getAllTeamIdeas() {
+    @Transactional(readOnly = true)
+    public AllTeamsResponse getAllTeamIdeas(Long memberId) {
         List<Team> teams = teamRepository.findAllByBatch(constantProperties.getCurrentBatch());
-        return AllTeamsResponse.from(teams);
+        List<TeamApplicant> teamApplicants = teamApplicantRepository.findByMember_IdAndTeam_Batch(memberId, constantProperties.getCurrentBatch());
+        boolean teamMatchCompleted = teamApplicants.stream()
+                .anyMatch(teamApplicant -> teamApplicant.getStatus() == FINAL_CONFIRMED);
+        return AllTeamsResponse.from(teams, teamApplicants, teamMatchCompleted);
+    }
+
+    public void acceptTeamApplication(Long teamApplicantId) {
+        TeamApplicant teamApplicant = getTeamApplicantById(teamApplicantId);
+        teamApplicant.accept();
+    }
+
+    public void rejectTeamApplicant(Long teamApplicantId) {
+        TeamApplicant teamApplicant = getTeamApplicantById(teamApplicantId);
+        teamApplicant.reject();
+    }
+
+    private TeamApplicant getTeamApplicantById(Long teamApplicantId) {
+        return teamApplicantRepository.findById(teamApplicantId)
+                .orElseThrow(() -> new KupageException(NONE_APPLICANT));
     }
 }

@@ -25,6 +25,14 @@ public enum ResponseCode {
     BAD_REQUEST(false, 1008, "잘못된 요청입니다."),
     INVALID_INPUT_ENUM(false, 1009, "입력값이 올바르지 않습니다. 허용된 값 중 하나를 사용해야 합니다."),
 
+    // DB 오류
+    SQL_EXCEPTION(false, 1010, "데이터베이스 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."),
+    DATA_INTEGRITY_VIOLATION(false, 1011, "데이터 무결성 제약조건을 위반했습니다."),
+    INCORRECT_RESULT_SIZE(false, 1012, "요청한 결과 개수가 올바르지 않습니다."),
+    OPTIMISTIC_LOCK_FAILURE(false, 1013, "다른 요청에 의해 데이터가 변경되었습니다. 다시 시도해 주세요."),
+    QUERY_TIMEOUT(false, 1014, "데이터베이스 요청 시간이 초과되었습니다."),
+    PESSIMISTIC_LOCK_FAILURE(false, 1015, "데이터베이스 잠금 획득 중 오류가 발생했습니다. 다시 시도해 주세요."),
+
     // 2000 번대 : auth 관련 상태 코드
     GUEST_REQUIRED_SIGNUP(true, 2000, "회원가입 처리가 완료되지 않은 회원입니다. 회원가입을 시도하세요."),
     NONE_MEMBER(false, 2001, "존재하지 않는 회원입니다."),
@@ -83,7 +91,10 @@ public enum ResponseCode {
     REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다."),
     NOT_TEAM_MATCH_APPLY_PERIOD(false, 6004, "팀매칭 지원 기간이 아닙니다."),
     DUPLICATED_TEAM_APPLY(false, 6005, "동일한 팀에 여러번 지원할 수 없습니다."),
-    EXCEEDED_TEAM_APPLY_LIMIT(false, 6006, "한 멤버 당 최대 2개의 팀에만 지원할 수 있습니다.");
+    EXCEEDED_TEAM_APPLY_LIMIT(false, 6006, "한 멤버 당 최대 2개의 팀에만 지원할 수 있습니다."),
+    TEAM_APPLY_FAILED(false, 6007, "팀매칭 지원에 실패했습니다. 다시 시도해주세요."),
+    NONE_APPLICANT(false, 6008, "팀매칭 지원 정보가 존재하지 않습니다."),
+    ALREADY_COMPLETED_TEAM_MATCH(false, 6009, "이미 완료된 팀매칭입니다.");
 
 
     private boolean isSuccess;
