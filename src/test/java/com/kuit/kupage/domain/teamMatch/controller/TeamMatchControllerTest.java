@@ -158,7 +158,7 @@ public class TeamMatchControllerTest {
                 new UsernamePasswordAuthenticationToken(member, null, member.getAuthorities());
 
         TeamApplicantResponse mockResponse = new TeamApplicantResponse(null, null, null, null, null, null, null);
-        when(teamMatchService.getTeamApplicant(3L, teamId, false)).thenReturn(mockResponse);
+        when(teamMatchService.getTeamApplicantByMemberAndTeam(3L, teamId, false)).thenReturn(mockResponse);
 
         // when & then
         mockMvc.perform(get("/teams/{teamId}/applications", teamId)

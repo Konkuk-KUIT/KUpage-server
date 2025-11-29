@@ -78,6 +78,10 @@ public enum SwaggerErrorResponse {
             INVALID_INPUT_ENUM
     ), AUTH_COMMON)),
 
+    TEAM_MATCH_APPLICANT_DETAIL(merge(Set.of(
+            NONE_APPLICANT
+    ), AUTH_COMMON)),
+
     DEFAULT(new LinkedHashSet<>());
 
     private final Set<ResponseCode> responseCodeSet;

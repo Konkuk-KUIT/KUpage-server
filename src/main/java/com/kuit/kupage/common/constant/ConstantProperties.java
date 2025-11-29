@@ -37,5 +37,4 @@ public class ConstantProperties {
         }
         throw new KupageException(NOT_TEAM_MATCH_APPLY_PERIOD);
     }
-
 }

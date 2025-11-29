@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_FAILED;
+import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.*;
 
 // - 한 사용자는 2개 이상 지원 불가능 : TeamApplicant에서 동일한 (memberId, 기수, 몇차지원, batch) 는 2개 이하만 가능
 
@@ -46,9 +46,7 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 20, nullable = false)
     private ApplicantStatus status;
 
-    @Column(name = "slot_no", nullable = false,
-            columnDefinition = "TINYINT NOT NULL CHECK (slot_no IN (1,2))"
-    )
+    @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2) OR slot_no IS NULL)")
     private Integer slotNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -71,5 +69,19 @@ public class TeamApplicant extends BaseEntity {
 
     public boolean isRejected() {
         return status == ROUND1_FAILED;
+    }
+
+    public void accept() {
+        this.slotNo = null;
+        this.status = FINAL_CONFIRMED;
+    }
+
+    public void reject() {
+        this.slotNo = null;
+        if (this.status == ROUND1_APPLYING) {
+            this.status = ROUND1_FAILED;
+        } else {
+            this.status = ROUND2_FAILED;
+        }
     }
 }

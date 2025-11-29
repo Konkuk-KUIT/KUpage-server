@@ -113,8 +113,7 @@ class TeamMatchServiceConcurrencyTest {
         doneLatch.await();                      // 모든 스레드 종료까지 대기
         executorService.shutdown();
 
-        // then
-        // DB에 실제로 저장된 지원 내역이 최대 2개인지 검증
+        // then : DB에 실제로 저장된 지원 내역이 최대 1개인지 검증
         long savedCount = teamApplicantRepository.countByMemberAndStatus(member, applicantStatus);
         Assertions.assertThat(successCount.get()).isEqualTo(1);
         Assertions.assertThat(savedCount).isEqualTo(1);
