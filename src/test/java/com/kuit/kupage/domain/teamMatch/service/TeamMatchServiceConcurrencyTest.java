@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
@@ -71,6 +72,9 @@ class TeamMatchServiceConcurrencyTest {
 
         when(constantProperties.getApplicantStatus())
                 .thenReturn(ApplicantStatus.ROUND1_APPLYING);
+
+        when(constantProperties.getCurrentBatch())
+                .thenReturn(Batch.SIXTH);
     }
 
     @Test
@@ -114,7 +118,8 @@ class TeamMatchServiceConcurrencyTest {
         executorService.shutdown();
 
         // then : DB에 실제로 저장된 지원 내역이 최대 1개인지 검증
-        long savedCount = teamApplicantRepository.countByMemberAndStatus(member, applicantStatus);
+        Batch currentBatch = constantProperties.getCurrentBatch();
+        long savedCount = teamApplicantRepository.countByMemberAndStatusAndBatch(member, applicantStatus, currentBatch);
         Assertions.assertThat(successCount.get()).isEqualTo(1);
         Assertions.assertThat(savedCount).isEqualTo(1);
     }

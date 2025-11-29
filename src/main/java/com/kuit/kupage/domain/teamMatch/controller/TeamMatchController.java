@@ -126,7 +126,7 @@ public class TeamMatchController {
     @PostMapping("/teams/applications/{teamApplicantId}/accept")
     @Operation(summary = "팀매칭 지원 수락 (PM 전용)", description = "PM이 특정 팀에 지원한 지원자의 신청을 수락합니다.")
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_APPLICANT_DETAIL)
-    public BaseResponse<?> acceptApplicant(@RequestParam(name = "teamApplicantId") Long teamApplicantId) {
+    public BaseResponse<?> acceptApplicant(@PathVariable(name = "teamApplicantId") Long teamApplicantId) {
         log.info("[acceptApplicant] accept teamApplicant = {}", teamApplicantId);
         teamMatchService.acceptTeamApplication(teamApplicantId);
         return new BaseResponse<>(ResponseCode.SUCCESS);
@@ -136,7 +136,7 @@ public class TeamMatchController {
     @PostMapping("/teams/applications/{teamApplicantId}/reject")
     @Operation(summary = "팀매칭 지원 거절 (PM 전용)", description = "PM이 특정 팀에 지원한 지원자의 신청을 거절합니다.")
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_APPLICANT_DETAIL)
-    public BaseResponse<?> rejectApplicant(@RequestParam(name = "teamApplicantId") Long teamApplicantId) {
+    public BaseResponse<?> rejectApplicant(@PathVariable(name = "teamApplicantId") Long teamApplicantId) {
         log.info("[rejectApplicant] reject teamApplicant = {}", teamApplicantId);
         teamMatchService.rejectTeamApplicant(teamApplicantId);
         return new BaseResponse<>(ResponseCode.SUCCESS);

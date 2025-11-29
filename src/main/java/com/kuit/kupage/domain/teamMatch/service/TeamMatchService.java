@@ -2,6 +2,7 @@ package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.project.entity.AppType;
@@ -30,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static com.kuit.kupage.common.response.ResponseCode.*;
 import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.FINAL_CONFIRMED;
-import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND2_APPLYING;
 
 @Slf4j
 @Service
@@ -47,15 +47,16 @@ public class TeamMatchService {
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
         ApplicantStatus status = constantProperties.getApplicantStatus();
-        int slotNo = resolveSlotNo(member, status);
-        TeamApplicant applicant = new TeamApplicant(request, member, team, status, slotNo);
+        Batch batch = constantProperties.getCurrentBatch();
+        int slotNo = resolveSlotNo(member, status, batch);
+        TeamApplicant applicant = new TeamApplicant(request, member, team, status, slotNo, batch);
         try {
             TeamApplicant saved = teamApplicantRepository.save(applicant);
             return new TeamMatchResponse(saved.getId());
         } catch (DataIntegrityViolationException e) {
             Throwable cause = e.getCause();
             if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
-                String constraintName = cve.getConstraintName().toLowerCase();
+                String constraintName = cve.getConstraintName().toLowerCase(Locale.ROOT);
                 if (constraintName.contains("uk_status_team_applicant_member_team")) {
                     throw new KupageException(DUPLICATED_TEAM_APPLY);
                 }
@@ -187,8 +188,8 @@ public class TeamMatchService {
         return new TeamApplicantOverviewDto(teamId, serviceName, ownerNameAndPart, appType, topicSummary, AndroidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
     }
 
-    private int resolveSlotNo(Member member, ApplicantStatus status) {
-        List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status);
+    private int resolveSlotNo(Member member, ApplicantStatus status, Batch batch) {
+        List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status, constantProperties.getCurrentBatch());
 
         boolean used1 = usedSlots.contains(1);
         boolean used2 = usedSlots.contains(2);
@@ -246,7 +247,8 @@ public class TeamMatchService {
 
     public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request) {
         Member owner = memberService.getMember(memberId);
-        Team team = new Team(owner.getId(), owner.getName(), constantProperties.getCurrentBatch(), request);
+        Batch batch = constantProperties.getCurrentBatch();
+        Team team = new Team(owner.getId(), owner.getName(), batch, request);
         Team saved = teamRepository.save(team);
         return new IdeaRegisterResponse(saved.getId());
     }

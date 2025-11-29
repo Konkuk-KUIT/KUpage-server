@@ -13,10 +13,11 @@ import java.util.List;
 
 @Repository
 public interface TeamApplicantRepository extends JpaRepository<TeamApplicant, Long> {
-    @Query("select ta.slotNo from TeamApplicant ta where ta.member = :member and ta.status = :status")
-    List<Integer> findSlotNosByMemberAndStatus(Member member, ApplicantStatus status);
+    @Query("select ta.slotNo from TeamApplicant ta where ta.member = :member and ta.status = :status and ta.batch = :batch")
+    List<Integer> findSlotNosByMemberAndStatus(Member member, ApplicantStatus status, Batch batch);
 
-    long countByMemberAndStatus(Member member, ApplicantStatus status);
+    @Query("select count(ta) from TeamApplicant ta where ta.member = :member and ta.status = :status and ta.batch = :batch")
+    long countByMemberAndStatusAndBatch(Member member, ApplicantStatus status, Batch batch);
 
     long countByMemberAndTeamAndStatus(Member member, Team team, ApplicantStatus status);
 

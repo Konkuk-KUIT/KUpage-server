@@ -3,12 +3,13 @@ package com.kuit.kupage.domain.utils;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.project.entity.AppType;
-import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
 
 import java.util.ArrayList;
+
+import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_APPLYING;
 
 public class EntityFactory {
     public static Member member() {
@@ -55,8 +56,9 @@ public class EntityFactory {
                 Part.Server,
                 "테스트 지원 동기입니다.",
                 "https://example.com/portfolio",
-                ApplicantStatus.ROUND1_APPLYING,
+                ROUND1_APPLYING,
                 1,
+                Batch.SIXTH,
                 member,
                 team
         );

@@ -1,6 +1,7 @@
 package com.kuit.kupage.domain.teamMatch;
 
 import com.kuit.kupage.common.type.BaseEntity;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import jakarta.persistence.*;
@@ -20,7 +21,7 @@ import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.*;
                         columnNames = {"status", "member_id", "team_id"}
                 ),
                 @UniqueConstraint(name = "uk_member_status_slot",
-                        columnNames = {"status", "member_id", "slot_no"}
+                        columnNames = {"status", "member_id", "slot_no", "batch"}
                 )
         })
 @Getter
@@ -49,6 +50,10 @@ public class TeamApplicant extends BaseEntity {
     @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2) OR slot_no IS NULL)")
     private Integer slotNo;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private Batch batch;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -57,12 +62,13 @@ public class TeamApplicant extends BaseEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    public TeamApplicant(TeamMatchRequest request, Member member, Team team, ApplicantStatus status, int slotNo) {
+    public TeamApplicant(TeamMatchRequest request, Member member, Team team, ApplicantStatus status, int slotNo, Batch batch) {
         this.appliedPart = request.appliedPart();
         this.motivation = request.motivation();
         this.portfolioUrl = request.portfolioUrl();
         this.status = status;
         this.slotNo = slotNo;
+        this.batch = batch;
         this.member = member;
         this.team = team;
     }
