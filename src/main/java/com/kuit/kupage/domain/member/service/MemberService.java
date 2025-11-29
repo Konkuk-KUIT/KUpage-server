@@ -30,12 +30,14 @@ public class MemberService {
     private final JwtTokenService jwtTokenService;
 
     @Transactional
-    public LoginOrSignupResult signup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
+    public LoginOrSignupResult signup(DiscordTokenResponse response, DiscordInfoResponse userInfo, Member member) {
         log.debug("[signup] 신규 회원 회원가입 처리 : 추가 정보 받기 -> 회원가입 처리 -> AuthToken 발급");
-        Member member = new Member(response, userInfo);
-        Member savedMember = memberRepository.save(member);
-        log.debug("[signup] 신규 회원 member = {}", savedMember);
-        return new LoginOrSignupResult(savedMember.getId(), List.of(GUEST.getValue()), jwtTokenService.generateGuestToken(savedMember.getId()));
+        if (member == null) {
+            Member savedMember = memberRepository.save(new Member(response, userInfo));
+            log.debug("[signup] 신규 회원 member = {}", savedMember);
+            return new LoginOrSignupResult(savedMember.getId(), List.of(GUEST.getValue()), jwtTokenService.generateGuestToken(savedMember.getId()));
+        }
+        return new LoginOrSignupResult(member.getId(), List.of(GUEST.getValue()), jwtTokenService.generateGuestToken(member.getId()));
     }
 
 

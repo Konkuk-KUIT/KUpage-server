@@ -39,10 +39,9 @@ public class MemberRoleService {
     @Transactional
     public LoginOrSignupResult processLoginOrSignup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
         Member member = getMemberIdByDiscordInfo(userInfo);
-        log.info("[processLoginOrSignup] memberId = {}", member.getId());
 
-        if (member.getDetail() != null) {
-            log.info("[processLoginOrSignup] 기존 회원 로그인 처리");
+        if (member != null && member.getDetail() != null) {
+            log.info("[processLoginOrSignup] 기존 회원 로그인 처리 memberId = {}", member.getId());
             List<String> roleNames = getMemberCurrentRolesByMemberId(member.getId()).stream()
                     .map(Role::getName)
                     .toList();
@@ -51,7 +50,7 @@ public class MemberRoleService {
 
         try {
             log.info("[processLoginOrSignup] 신규 회원 회원가입 처리");
-            return memberService.signup(response, userInfo);
+            return memberService.signup(response, userInfo, member);
         } catch (DataIntegrityViolationException e) {
             log.warn("[processLoginOrSignup] signup 중 unique 제약조건 위반 발생. " +
                             "동시 가입 요청(race condition) 가능성. discordId={}",
