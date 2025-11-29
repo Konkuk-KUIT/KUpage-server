@@ -1,5 +1,9 @@
-package com.kuit.kupage.common.auth;
+package com.kuit.kupage.common.jwt;
 
+import com.kuit.kupage.common.auth.AuthMember;
+import com.kuit.kupage.common.auth.AuthRole;
+import com.kuit.kupage.common.auth.AuthTokenResponse;
+import com.kuit.kupage.common.auth.GuestTokenResponse;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.role.Role;
@@ -43,7 +47,6 @@ public class JwtTokenService {
     }
 
     public AuthTokenResponse generateTokens(Member member) {
-        log.info("[generateTokens] 토큰을 발급할 회원 id = {}", member.getId());
         final Claims claims = Jwts.claims();
         claims.put("sub", member.getId());
 

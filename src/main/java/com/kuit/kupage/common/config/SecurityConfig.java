@@ -1,6 +1,6 @@
 package com.kuit.kupage.common.config;
 
-import com.kuit.kupage.common.auth.JwtTokenService;
+import com.kuit.kupage.common.jwt.JwtTokenService;
 import com.kuit.kupage.common.jwt.JwtAuthenticationFilter;
 import com.kuit.kupage.common.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**",
-                                "/role/sync",                   "members/me",
                                 "/actuator/health", "/actuator/prometheus"
                         )
                         .permitAll()

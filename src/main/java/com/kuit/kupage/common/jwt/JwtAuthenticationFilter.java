@@ -1,6 +1,5 @@
 package com.kuit.kupage.common.jwt;
 
-import com.kuit.kupage.common.auth.JwtTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String token = resolveToken(request);
 
         tokenValidateAndAuthorization(token);

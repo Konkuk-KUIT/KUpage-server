@@ -66,9 +66,9 @@ secret:
   jwt:
     key: ${JWT_SECRET_KEY}
     access:
-      expiration: 3600000
+      expiration: 2592000000
     refresh:
-      expiration: 1209600000
+      expiration: 2592000000
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
@@ -105,7 +105,7 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: ${LOCAL_DB_URL:jdbc:h2:mem:testdb}
+    url: ${LOCAL_DB_URL:jdbc:h2:mem:kupage}
     username: ${LOCAL_DB_USERNAME:sa}
     password: ${LOCAL_DB_PASSWORD:}
 
