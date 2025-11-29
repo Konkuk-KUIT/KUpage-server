@@ -38,15 +38,15 @@ public class MemberRoleService {
 
     @Transactional
     public LoginOrSignupResult processLoginOrSignup(DiscordTokenResponse response, DiscordInfoResponse userInfo) {
-        Long memberId = getMemberIdByDiscordInfo(userInfo);
-        log.info("[processLoginOrSignup] memberId = {}", memberId);
+        Member member = getMemberIdByDiscordInfo(userInfo);
+        log.info("[processLoginOrSignup] memberId = {}", member.getId());
 
-        if (memberId != null) {
+        if (member.getDetail() != null) {
             log.info("[processLoginOrSignup] 기존 회원 로그인 처리");
-            List<String> roleNames = getMemberCurrentRolesByMemberId(memberId).stream()
+            List<String> roleNames = getMemberCurrentRolesByMemberId(member.getId()).stream()
                     .map(Role::getName)
                     .toList();
-            return new LoginOrSignupResult(memberId, roleNames, memberService.updateToken(memberId, response));
+            return new LoginOrSignupResult(member.getId(), roleNames, memberService.updateToken(member.getId(), response));
         }
 
         try {
@@ -58,17 +58,17 @@ public class MemberRoleService {
                     userInfo.getUserResponse().getId(), e);
 
             // 이미 다른 트랜잭션에서 가입이 끝났을 수 있으니 다시 조회
-            Long existingMemberId = getMemberIdByDiscordInfo(userInfo);
-            if (existingMemberId != null) {
+            Member existingMember = getMemberIdByDiscordInfo(userInfo);
+            if (existingMember.getDetail() != null) {
                 log.info("[processLoginOrSignup] unique 예외 이후 재조회 결과, 기존 회원으로 판단 → 로그인 처리");
-                List<String> roleNames = getMemberCurrentRolesByMemberId(existingMemberId).stream()
+                List<String> roleNames = getMemberCurrentRolesByMemberId(existingMember.getId()).stream()
                         .map(Role::getName)
                         .toList();
 
                 return new LoginOrSignupResult(
-                        existingMemberId,
+                        existingMember.getId(),
                         roleNames,
-                        memberService.updateToken(existingMemberId, response)
+                        memberService.updateToken(existingMember.getId(), response)
                 );
             }
             throw new KupageException(MEMBER_SIGNUP_CONFLICT);
@@ -86,10 +86,9 @@ public class MemberRoleService {
         log.info("[updateMemberRoles] member = {}의 역할 {}개 업데이트", member.getDiscordLoginId(), memberRoles.size());
     }
 
-    private Long getMemberIdByDiscordInfo(DiscordInfoResponse userInfo) {
+    private Member getMemberIdByDiscordInfo(DiscordInfoResponse userInfo) {
         String discordId = userInfo.getUserResponse().getId();
         return memberRepository.findByDiscordId(discordId)
-                .map(Member::getId)
                 .orElse(null);
     }
 
