@@ -189,7 +189,7 @@ public class TeamMatchService {
     }
 
     private int resolveSlotNo(Member member, ApplicantStatus status, Batch batch) {
-        List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status, constantProperties.getCurrentBatch());
+        List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status, batch);
 
         boolean used1 = usedSlots.contains(1);
         boolean used2 = usedSlots.contains(2);

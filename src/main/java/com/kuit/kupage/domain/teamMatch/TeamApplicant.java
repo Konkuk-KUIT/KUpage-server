@@ -4,12 +4,14 @@ import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
+import com.kuit.kupage.exception.KupageException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.kuit.kupage.common.response.ResponseCode.ALREADY_COMPLETED_TEAM_MATCH;
 import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.*;
 
 // - 한 사용자는 2개 이상 지원 불가능 : TeamApplicant에서 동일한 (memberId, 기수, 몇차지원, batch) 는 2개 이하만 가능
@@ -86,8 +88,12 @@ public class TeamApplicant extends BaseEntity {
         this.slotNo = null;
         if (this.status == ROUND1_APPLYING) {
             this.status = ROUND1_FAILED;
-        } else {
-            this.status = ROUND2_FAILED;
+            return;
         }
+        if (this.status == ROUND2_APPLYING) {
+            this.status = ROUND2_FAILED;
+            return;
+        }
+        throw new KupageException(ALREADY_COMPLETED_TEAM_MATCH);
     }
 }
