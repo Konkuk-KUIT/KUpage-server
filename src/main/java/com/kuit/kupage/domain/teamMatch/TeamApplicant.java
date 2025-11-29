@@ -18,6 +18,9 @@ import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.ROUND1_FAILED;
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_status_team_applicant_member_team",
                         columnNames = {"status", "member_id", "team_id"}
+                ),
+                @UniqueConstraint(name = "uk_member_status_slot",
+                        columnNames = {"status", "member_id", "slot_no"}
                 )
         })
 @Getter
@@ -43,6 +46,11 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 20, nullable = false)
     private ApplicantStatus status;
 
+    @Column(name = "slot_no", nullable = false,
+            columnDefinition = "TINYINT NOT NULL CHECK (slot_no IN (1,2))"
+    )
+    private Integer slotNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -51,11 +59,12 @@ public class TeamApplicant extends BaseEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    public TeamApplicant(TeamMatchRequest request, Member member, Team team, ApplicantStatus status) {
+    public TeamApplicant(TeamMatchRequest request, Member member, Team team, ApplicantStatus status, int slotNo) {
         this.appliedPart = request.appliedPart();
         this.motivation = request.motivation();
         this.portfolioUrl = request.portfolioUrl();
         this.status = status;
+        this.slotNo = slotNo;
         this.member = member;
         this.team = team;
     }

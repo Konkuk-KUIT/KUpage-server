@@ -45,12 +45,6 @@ public class Member extends BaseEntity {
     @Embedded
     private DiscordToken discordToken;
 
-    @Version
-    private Long version;
-
-    @Builder.Default
-    private int applyCount = 0;
-
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "detail_id")
     private Detail detail;
@@ -97,12 +91,6 @@ public class Member extends BaseEntity {
     public void updateDetail(String name, Detail detail) {
         this.name = name;
         this.detail = detail;
-    }
-
-
-    public void increaseApplyCount() {
-        applyCount++;
-
     }
 
     // == 연관관계 편의 메서드 (Member ↔ MemberRole) ==

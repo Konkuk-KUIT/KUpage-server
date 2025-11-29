@@ -65,6 +65,10 @@ class TeamMatchServiceConcurrencyTest {
 
     @BeforeEach
     void setUp() {
+        jdbcTemplate.update("DELETE FROM TEAM_APPLICANT");
+        jdbcTemplate.update("DELETE FROM TEAM");
+        jdbcTemplate.update("DELETE FROM MEMBER");
+
         when(constantProperties.getApplicantStatus())
                 .thenReturn(ApplicantStatus.ROUND1_APPLYING);
     }
@@ -111,7 +115,7 @@ class TeamMatchServiceConcurrencyTest {
 
         // then
         // DB에 실제로 저장된 지원 내역이 최대 2개인지 검증
-        long savedCount = teamApplicantRepository.countByMemberAndBatchAndStatus(member, applicantStatus);
+        long savedCount = teamApplicantRepository.countByMemberAndStatus(member, applicantStatus);
         Assertions.assertThat(successCount.get()).isEqualTo(1);
         Assertions.assertThat(savedCount).isEqualTo(1);
     }
@@ -152,9 +156,8 @@ class TeamMatchServiceConcurrencyTest {
         doneLatch.await();                      // 모든 스레드 종료까지 대기
         executorService.shutdown();
 
-        // then
-        // DB에 실제로 저장된 지원 내역이 최대 2개인지 검증
-        long savedCount = teamApplicantRepository.countByMemberAndBatchAndStatus(member, applicantStatus);
+        // then : 동일 팀에 대해 실제로 저장된 지원 내역이 1개인지 검증
+        long savedCount = teamApplicantRepository.countByMemberAndTeamAndStatus(member, team, applicantStatus);
         Assertions.assertThat(successCount.get()).isEqualTo(1);
         Assertions.assertThat(savedCount).isEqualTo(1);
     }

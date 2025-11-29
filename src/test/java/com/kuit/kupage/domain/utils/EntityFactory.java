@@ -56,6 +56,7 @@ public class EntityFactory {
                 "테스트 지원 동기입니다.",
                 "https://example.com/portfolio",
                 ApplicantStatus.ROUND1_APPLYING,
+                1,
                 member,
                 team
         );

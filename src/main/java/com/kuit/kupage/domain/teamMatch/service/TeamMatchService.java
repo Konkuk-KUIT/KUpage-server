@@ -44,16 +44,24 @@ public class TeamMatchService {
         Member member = memberService.getMember(memberId);
         Team team = getTeam(teamId);
         ApplicantStatus status = constantProperties.getApplicantStatus();
-        TeamApplicant applicant = new TeamApplicant(request, member, team, status);
+        int slotNo = resolveSlotNo(member, status);
+
+        TeamApplicant applicant = new TeamApplicant(request, member, team, status, slotNo);
         try {
-            if (teamApplicantRepository.countByMemberAndBatchAndStatus(member, status) >= 2) {
-                throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
-            }
-            member.increaseApplyCount();
             TeamApplicant saved = teamApplicantRepository.save(applicant);
             return new TeamMatchResponse(saved.getId());
         } catch (DataIntegrityViolationException e) {
-            throw new KupageException(DUPLICATED_TEAM_APPLY);
+            Throwable cause = e.getCause();
+            if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
+                String constraintName = cve.getConstraintName();
+                if ("uk_status_team_applicant_member_team".equals(constraintName)) {
+                    throw new KupageException(DUPLICATED_TEAM_APPLY);
+                }
+                if ("uk_member_status_slot".equals(constraintName)) {
+                    throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+                }
+            }
+            throw new KupageException(TEAM_APPLY_FAILED);
         } catch (OptimisticLockingFailureException e) {
             throw new KupageException(TEAM_APPLY_FAILED);
         }
@@ -160,6 +168,21 @@ public class TeamMatchService {
         int designApplicantNum = partListMap.getOrDefault(Part.Design, List.of()).size();
 
         return new TeamApplicantOverviewDto(teamId, serviceName, ownerNameAndPart, appType, topicSummary, AndroidApplicantNum, iosApplicantNum, webApplicantNum, serverApplicantNum, designApplicantNum);
+    }
+
+    private int resolveSlotNo(Member member, ApplicantStatus status) {
+        List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status);
+
+        boolean used1 = usedSlots.contains(1);
+        boolean used2 = usedSlots.contains(2);
+
+        if (used1 && used2) {
+            throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+        }
+        if (!used1) {
+            return 1;
+        }
+        return 2;
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {
