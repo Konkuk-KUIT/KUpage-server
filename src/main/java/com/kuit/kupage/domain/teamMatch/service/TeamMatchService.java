@@ -306,11 +306,18 @@ public class TeamMatchService {
                 .orElseThrow(() -> new KupageException(NONE_APPLICANT));
     }
 
-    public void getTeamMatchingTime() {
+    public TeamMatchingTimeResponse getTeamMatchingTime() {
         LocalDateTime firstRoundResultTime = constantProperties.getFirstRoundResultTime();
         LocalDateTime secondRoundResultTime = constantProperties.getSecondRoundResultTime();
 
         log.info("[팀매칭 시간] 첫번째 결과 발표 = {}", firstRoundResultTime);
         log.info("[팀매칭 시간] 두번째 결과 발표 = {}", secondRoundResultTime);
+
+        return new TeamMatchingTimeResponse(firstRoundResultTime, secondRoundResultTime);
+    }
+    public static record TeamMatchingTimeResponse(
+            LocalDateTime firstRoundResultTime,
+            LocalDateTime secondRoundResultTime
+    ) {
     }
 }

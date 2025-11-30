@@ -143,7 +143,8 @@ public class TeamMatchController {
     }
 
     @GetMapping("/team-matching/time")
-    public void rejectApplicant() {
-        teamMatchService.getTeamMatchingTime();
+    public BaseResponse<?> rejectApplicant() {
+        TeamMatchService.TeamMatchingTimeResponse teamMatchingTime = teamMatchService.getTeamMatchingTime();
+        return new BaseResponse<>(teamMatchingTime);
     }
 }
