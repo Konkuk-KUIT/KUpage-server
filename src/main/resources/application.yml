@@ -84,8 +84,8 @@ springdoc:
 
 const:
   current-batch: SIXTH
-  first-round-result-time: ${FIRST_ROUND_RESULT_TIME:2025-12-02T21:00:00}
-  second-round-result-time: ${SECOND_ROUND_RESULT_TIME:2025-12-04T21:00:00}
+  first-round-result-time: ${FIRST_ROUND_RESULT_TIME:2025-12-02T12:00:00Z}
+  second-round-result-time: ${SECOND_ROUND_RESULT_TIME:2025-12-04T12:00:00Z}
 
 management:
   endpoints:
