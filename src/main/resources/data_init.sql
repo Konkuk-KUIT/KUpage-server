@@ -179,6 +179,7 @@ INSERT INTO team_applicant (
     motivation,
     status,
     slot_no,
+                            batch,
     member_id,
     team_id,
     created_at,
@@ -188,49 +189,49 @@ INSERT INTO team_applicant (
        'https://github.com/jwkim/Android-portfolio',
        'Android Studio로 앱을 개발한 경험이 있습니다.',
        'ROUND1_APPLYING',
-       1, 2, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 2, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('Android',
        'https://github.com/hwlee/Android-toy',
        'Kotlin과 Firebase를 활용한 프로젝트 경험이 있습니다.',
        'ROUND1_APPLYING',
-       1, 3, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 3, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('iOS',
        'https://github.com/sylee/ios-portfolio',
        'UIKit, SwiftUI 모두 사용해봤습니다.',
        'ROUND1_APPLYING',
-       1, 4, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 4, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('Web',
        'https://github.com/mspark/web-portfolio',
        'React와 Next.js 기반 프로젝트 경험이 있습니다.',
        'ROUND1_APPLYING',
-       1, 5, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 5, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('Web',
        'https://github.com/yjjeong/web-demo',
        'TypeScript와 Zustand를 이용한 상태 관리 경험이 있습니다.',
        'ROUND1_APPLYING',
-       1, 6, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 6, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('Server',
        'https://github.com/haeun/server-portfolio',
        'Spring Boot, JPA 기반 REST API 개발 경험이 있습니다.',
        'ROUND1_APPLYING',
-       1, 7, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 7, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('Design',
        'https://behance.net/mjchoi-design',
        'Figma와 Adobe XD를 활용한 UI/UX 디자인 경험이 있습니다.',
        'ROUND1_APPLYING',
-       1, 8, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
+       1, 'SIXTH', 8, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655'),
 
       ('Design',
        'https://dribbble.com/sbhan',
        '브랜딩과 인터랙션 디자인 프로젝트를 진행했습니다.',
        'ROUND1_APPLYING',
-       1, 9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
+       1, 'SIXTH', 9, 1, '2025-11-02 22:40:50.709655', '2025-11-02 22:40:50.709655');
 
 SELECT * FROM MEMBER;
 

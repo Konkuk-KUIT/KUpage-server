@@ -216,8 +216,9 @@ public class TeamMatchService {
             Part appliedPart = ta.getAppliedPart();
 
             String portfolioUrl = ta.getPortfolioUrl();
+            String motivation = ta.getMotivation();
             String formattedTimetable = ApplyTimeConverter.formatTimetable(ta.getCreatedAt());
-            ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl);
+            ApplicantDetail applicantDetail = new ApplicantDetail(portfolioUrl, motivation);
 
             return new ApplicantInfo(applicantMember.getId(), applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
         }).toList();
