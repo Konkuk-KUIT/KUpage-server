@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**",
                                 "/actuator/health", "/actuator/prometheus",
-                                "/team-matching/time"
+                                "/team-matching/time","/role/sync"
                         )
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/articles", "/projects/**").permitAll()
