@@ -23,7 +23,7 @@ import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.*;
                         columnNames = {"status", "member_id", "team_id"}
                 ),
                 @UniqueConstraint(name = "uk_member_status_slot",
-                        columnNames = {"status", "member_id", "slot_no", "batch"}
+                        columnNames = {"member_id", "slot_no", "batch"}
                 )
         })
 @Getter
@@ -49,7 +49,7 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 20, nullable = false)
     private ApplicantStatus status;
 
-    @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2) OR slot_no IS NULL)")
+    @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2))")
     private Integer slotNo;
 
     @Enumerated(EnumType.STRING)
@@ -80,12 +80,10 @@ public class TeamApplicant extends BaseEntity {
     }
 
     public void accept() {
-        this.slotNo = null;
         this.status = FINAL_CONFIRMED;
     }
 
     public void reject() {
-        this.slotNo = null;
         if (this.status == ROUND1_APPLYING) {
             this.status = ROUND1_FAILED;
             return;

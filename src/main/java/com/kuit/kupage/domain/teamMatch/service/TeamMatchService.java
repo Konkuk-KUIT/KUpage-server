@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.kuit.kupage.common.response.ResponseCode.*;
-import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.FINAL_CONFIRMED;
+import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.*;
 
 @Slf4j
 @Service
@@ -191,16 +191,14 @@ public class TeamMatchService {
     private int resolveSlotNo(Member member, ApplicantStatus status, Batch batch) {
         List<Integer> usedSlots = teamApplicantRepository.findSlotNosByMemberAndStatus(member, status, batch);
 
-        boolean used1 = usedSlots.contains(1);
-        boolean used2 = usedSlots.contains(2);
-
-        if (used1 && used2) {
-            throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
-        }
-        if (!used1) {
+        log.info("usedSlots = {}", usedSlots);
+        if (status == ROUND1_APPLYING && !usedSlots.contains(1)) {
             return 1;
         }
-        return 2;
+        if (status == ROUND2_APPLYING && !usedSlots.contains(2)) {
+            return 2;
+        }
+        throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
     }
 
     private Map<Part, List<ApplicantInfo>> collectPart(List<ApplicantInfo> applicantInfos) {

@@ -91,7 +91,7 @@ public enum ResponseCode {
     REJECTED_TEAM_MATCH(false, 6003, "매칭되지 않았습니다."),
     NOT_TEAM_MATCH_APPLY_PERIOD(false, 6004, "팀매칭 지원 기간이 아닙니다."),
     DUPLICATED_TEAM_APPLY(false, 6005, "동일한 팀에 여러번 지원할 수 없습니다."),
-    EXCEEDED_TEAM_APPLY_LIMIT(false, 6006, "한 멤버 당 최대 2개의 팀에만 지원할 수 있습니다."),
+    EXCEEDED_TEAM_APPLY_LIMIT(false, 6006, "한 멤버 당 최대 1개의 팀에만 지원할 수 있습니다."),
     TEAM_APPLY_FAILED(false, 6007, "팀매칭 지원에 실패했습니다. 다시 시도해주세요."),
     NONE_APPLICANT(false, 6008, "팀매칭 지원 정보가 존재하지 않습니다."),
     ALREADY_COMPLETED_TEAM_MATCH(false, 6009, "이미 완료된 팀매칭입니다.");

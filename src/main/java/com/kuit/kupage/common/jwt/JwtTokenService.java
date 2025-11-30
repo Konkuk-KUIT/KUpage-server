@@ -4,6 +4,8 @@ import com.kuit.kupage.common.auth.AuthMember;
 import com.kuit.kupage.common.auth.AuthRole;
 import com.kuit.kupage.common.auth.AuthTokenResponse;
 import com.kuit.kupage.common.auth.GuestTokenResponse;
+import com.kuit.kupage.common.constant.ConstantProperties;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.role.Role;
@@ -35,15 +37,17 @@ public class JwtTokenService {
     private final static String ACCESS = "access";
     private final static String REFRESH = "refresh";
     private final static String GUEST = "guest";
+    private final ConstantProperties constantProperties;
 
     public JwtTokenService(
             @Value("${secret.jwt.key}") String secretKey,
             @Value("${secret.jwt.access.expiration}") long accessTokenExpiration,
-            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration) {
+            @Value("${secret.jwt.refresh.expiration}") long refreshTokenExpiration, ConstantProperties constantProperties) {
 
         this.secretKey = Base64.getDecoder().decode(secretKey);
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
+        this.constantProperties = constantProperties;
     }
 
     public AuthTokenResponse generateTokens(Member member) {
@@ -126,17 +130,19 @@ public class JwtTokenService {
 
     public AuthRole getAuthRole(Role role) {
         String roleName = role.getName().toLowerCase();
-        if (roleName.contains("회장") ||
-                roleName.contains("부회장") ||
-                roleName.contains("운영진") ||
-                roleName.contains("파트장") ||
-                roleName.contains("총무")) {
-            return AuthRole.ADMIN;
-        } else if (roleName.contains("스터디리더") ||
-                roleName.contains("튜터")) {
-            return AuthRole.TUTOR;
-        } else {
-            return AuthRole.MEMBER;
+        Batch currentBatch = constantProperties.getCurrentBatch();
+        if (roleName.contains(currentBatch.getDescription())) {
+            if (isAdmin(roleName, currentBatch)) {
+                return AuthRole.ADMIN;
+            } else if (roleName.contains("스터디리더") || roleName.contains("스터디장") || roleName.contains("튜터")) {
+                return AuthRole.TUTOR;
+            }
         }
+        return AuthRole.MEMBER;
+    }
+
+    private static boolean isAdmin(String roleName, Batch currentBatch) {
+        return roleName.contains("회장") || roleName.contains("부회장") || roleName.contains("운영진") ||
+                roleName.contains("파트장") || roleName.contains("총무");
     }
 }

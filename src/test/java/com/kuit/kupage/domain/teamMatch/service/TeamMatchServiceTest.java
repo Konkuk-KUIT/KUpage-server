@@ -2,9 +2,11 @@ package com.kuit.kupage.domain.teamMatch.service;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
+import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
@@ -38,7 +40,6 @@ class TeamMatchServiceTest {
 
     @Mock
     private MemberService memberService;
-
     @Mock
     private TeamRepository teamRepository;
     @Mock
@@ -61,6 +62,10 @@ class TeamMatchServiceTest {
         mockApplicant = mock(TeamApplicant.class);
 
         when(mockApplicant.getId()).thenReturn(1L);
+
+        given(constantProperties.getApplicantStatus()).willReturn(ApplicantStatus.ROUND1_APPLYING);
+        given(teamApplicantRepository.findSlotNosByMemberAndStatus(any(), any(), any()))
+                .willReturn(List.of());
     }
 
     @Test
