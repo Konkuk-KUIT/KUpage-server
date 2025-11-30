@@ -24,6 +24,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -256,9 +257,38 @@ public class TeamMatchService {
     public AllTeamsResponse getAllTeamIdeas(Long memberId) {
         List<Team> teams = teamRepository.findAllByBatch(constantProperties.getCurrentBatch());
         List<TeamApplicant> teamApplicants = teamApplicantRepository.findByMember_IdAndTeam_Batch(memberId, constantProperties.getCurrentBatch());
-        boolean teamMatchCompleted = teamApplicants.stream()
-                .anyMatch(teamApplicant -> teamApplicant.getStatus() == FINAL_CONFIRMED);
-        return AllTeamsResponse.from(teams, teamApplicants, teamMatchCompleted);
+        boolean canApply = canApply(teamApplicants);
+        return AllTeamsResponse.from(teams, canApply);
+    }
+
+    private boolean canApply(List<TeamApplicant> teamApplicants) {
+        ApplicantStatus currentStatus = constantProperties.getApplicantStatus();
+
+        // 이미 최종 확정된 팀이 있으면 추가 지원 불가
+        boolean hasFinalConfirmed = teamApplicants.stream()
+                .anyMatch(ta -> ta.getStatus() == FINAL_CONFIRMED);
+        if (hasFinalConfirmed) {
+            return false;
+        }
+
+        // 현재 모집 라운드에서 이미 지원한 상태라면 추가 지원 불가
+        if (currentStatus == ROUND1_APPLYING) {
+            boolean alreadyAppliedRound1 = teamApplicants.stream()
+                    .anyMatch(ta -> ta.getStatus() == ROUND1_APPLYING);
+            if (alreadyAppliedRound1) {
+                return false;
+            }
+        }
+
+        if (currentStatus == ROUND2_APPLYING) {
+            boolean alreadyAppliedRound2 = teamApplicants.stream()
+                    .anyMatch(ta -> ta.getStatus() == ROUND2_APPLYING);
+            if (alreadyAppliedRound2) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void acceptTeamApplication(Long teamApplicantId) {
@@ -274,5 +304,13 @@ public class TeamMatchService {
     private TeamApplicant getTeamApplicantById(Long teamApplicantId) {
         return teamApplicantRepository.findById(teamApplicantId)
                 .orElseThrow(() -> new KupageException(NONE_APPLICANT));
+    }
+
+    public void getTeamMatchingTime() {
+        LocalDateTime firstRoundResultTime = constantProperties.getFirstRoundResultTime();
+        LocalDateTime secondRoundResultTime = constantProperties.getSecondRoundResultTime();
+
+        log.info("[팀매칭 시간] 첫번째 결과 발표 = {}", firstRoundResultTime);
+        log.info("[팀매칭 시간] 두번째 결과 발표 = {}", secondRoundResultTime);
     }
 }

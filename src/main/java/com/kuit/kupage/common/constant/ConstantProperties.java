@@ -27,6 +27,14 @@ public class ConstantProperties {
         return Batch.valueOf(currentBatch);
     }
 
+
+    public LocalDateTime getFirstRoundResultTime() {
+        return firstRoundResultTime;
+    }
+    public LocalDateTime getSecondRoundResultTime() {
+        return secondRoundResultTime;
+    }
+
     public ApplicantStatus getApplicantStatus() {
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(firstRoundResultTime)) {

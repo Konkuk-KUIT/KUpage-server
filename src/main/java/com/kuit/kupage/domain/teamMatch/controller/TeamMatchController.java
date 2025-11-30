@@ -141,4 +141,9 @@ public class TeamMatchController {
         teamMatchService.rejectTeamApplicant(teamApplicantId);
         return new BaseResponse<>(ResponseCode.SUCCESS);
     }
+
+    @GetMapping("/team-matching/time")
+    public void rejectApplicant() {
+        teamMatchService.getTeamMatchingTime();
+    }
 }
