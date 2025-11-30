@@ -49,7 +49,7 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 20, nullable = false)
     private ApplicantStatus status;
 
-    @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2))")
+    @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2))", nullable = false)
     private Integer slotNo;
 
     @Enumerated(EnumType.STRING)
