@@ -268,7 +268,7 @@ public class TeamMatchService {
         try {
             LocalDateTime now = LocalDateTime.now();
             log.info("[getAllTeamIdeas] now = {}", now);
-            boolean canApply = canApply(teamApplicants) && !now.isAfter(constantProperties.getSecondRoundResultTime());
+            boolean canApply = canApply(teamApplicants);
             return AllTeamsResponse.from(teams, canApply);
         } catch (KupageException e) {
             return AllTeamsResponse.from(teams, false);

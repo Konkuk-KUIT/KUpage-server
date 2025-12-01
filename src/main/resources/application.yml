@@ -85,7 +85,7 @@ springdoc:
 const:
   current-batch: SIXTH
   first-round-result-time: 2025-12-01T04:00:00 # 2025-12-02T12:00:00      # KST: 2025-12-02 21:00
-  second-round-result-time: 2025-12-01T05:00:00 # 2025-12-04T12:00:00     # KST: 2025-12-04 21:00
+  second-round-result-time: 2025-12-01T06:00:00 # 2025-12-04T12:00:00     # KST: 2025-12-04 21:00
 
 management:
   endpoints:
@@ -111,7 +111,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
@@ -144,7 +144,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
