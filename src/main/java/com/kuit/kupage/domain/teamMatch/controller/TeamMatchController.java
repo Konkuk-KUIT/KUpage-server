@@ -100,14 +100,17 @@ public class TeamMatchController {
     @AllowedParts(Part.PM)
     @PostMapping("/ideas")
     @Operation(summary = "팀 아이디어 등록",
-            description = "현재 기수에서 사용할 팀 아이디어를 등록합니다. PM이 자신의 팀 아이디어를 등록할 때 사용합니다.")
+            description = """
+                    현재 기수에서 사용할 팀 아이디어를 등록합니다. PM이 자신의 팀 아이디어를 등록할 때 사용합니다.
+                    PM 부원의 경우 1번, 운영진의 경우 무제한 등록이 가능합니다.
+                    """)
     @SwaggerErrorResponses(SwaggerErrorResponse.AUTH_COMMON)
     public BaseResponse<?> registerIdea(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
             @Validated @RequestBody IdeaRegisterRequest request) {
         Long memberId = authMember.getId();
         log.debug("[registerIdea] memberId = {}, 팀매칭 지원 request = {}", memberId, request.toString());
-        IdeaRegisterResponse response = teamMatchService.register(memberId, request);
+        IdeaRegisterResponse response = teamMatchService.register(memberId, request, authMember.isAdmin());
         return new BaseResponse<>(response);
     }
 

@@ -31,4 +31,11 @@ public class Role extends BaseEntity {
         this.discordRoleId = roleDto.getId();
         this.position = roleDto.getPosition();
     }
+
+    public Role(Batch batch, String name, String discordRoleId, Integer position) {
+        this.batch = batch;
+        this.name = name;
+        this.discordRoleId = discordRoleId;
+        this.position = position;
+    }
 }

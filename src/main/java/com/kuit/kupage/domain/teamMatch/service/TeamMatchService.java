@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.kuit.kupage.common.response.ResponseCode.*;
@@ -245,12 +246,19 @@ public class TeamMatchService {
         return teamRepository.findById(teamId).orElseThrow(() -> new KupageException(ResponseCode.NONE_TEAM));
     }
 
-    public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request) {
+    public IdeaRegisterResponse register(Long memberId, IdeaRegisterRequest request, boolean isAdmin) {
         Member owner = memberService.getMember(memberId);
         Batch batch = constantProperties.getCurrentBatch();
-        Team team = new Team(owner.getId(), owner.getName(), batch, request);
-        Team saved = teamRepository.save(team);
-        return new IdeaRegisterResponse(saved.getId());
+        validateTeamRegisterPermission(isAdmin, owner, batch);
+        Team team = teamRepository.save(new Team(owner.getId(), owner.getName(), batch, request));
+        return new IdeaRegisterResponse(team.getId());
+    }
+
+    private void validateTeamRegisterPermission(boolean isAdmin, Member owner, Batch batch) {
+        Optional<Team> existingTeam = teamRepository.findByOwnerIdAndBatch(owner.getId(), batch);
+        if (!isAdmin && existingTeam.isPresent()) {
+            throw new KupageException(PM_PROJECT_LIMIT_EXCEEDED);
+        }
     }
 
     @Transactional(readOnly = true)
