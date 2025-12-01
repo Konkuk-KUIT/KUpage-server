@@ -266,7 +266,9 @@ public class TeamMatchService {
         List<Team> teams = teamRepository.findAllByBatch(constantProperties.getCurrentBatch());
         List<TeamApplicant> teamApplicants = teamApplicantRepository.findByMember_IdAndTeam_Batch(memberId, constantProperties.getCurrentBatch());
         try {
-            boolean canApply = canApply(teamApplicants);
+            LocalDateTime now = LocalDateTime.now();
+            log.info("[getAllTeamIdeas] now = {}", now);
+            boolean canApply = canApply(teamApplicants) && !now.isAfter(constantProperties.getSecondRoundResultTime());
             return AllTeamsResponse.from(teams, canApply);
         } catch (KupageException e) {
             return AllTeamsResponse.from(teams, false);
