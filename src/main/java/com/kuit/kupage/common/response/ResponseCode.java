@@ -95,7 +95,8 @@ public enum ResponseCode {
     TEAM_APPLY_FAILED(false, 6007, "팀매칭 지원에 실패했습니다. 다시 시도해주세요."),
     NONE_APPLICANT(false, 6008, "팀매칭 지원 정보가 존재하지 않습니다."),
     ALREADY_COMPLETED_TEAM_MATCH(false, 6009, "이미 완료된 팀매칭입니다."),
-    PM_PROJECT_LIMIT_EXCEEDED(false, 6010, "PM 부원은 한 기수에 1개의 프로젝트만 등록할 수 있습니다.");
+    PM_PROJECT_LIMIT_EXCEEDED(false, 6010, "PM 부원은 한 기수에 1개의 프로젝트만 등록할 수 있습니다."),
+    FINAL_RESULT(true, 6011, "팀매칭 최종 결과입니다.");
 
 
     private boolean isSuccess;
