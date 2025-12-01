@@ -58,11 +58,11 @@ public class TeamMatchController {
             return new BaseResponse<>(teamMatchService.getCurrentBatchOwnTeam(id));
         }
 
-//        if (LocalDateTime.now().isAfter(constantProperties.getSecondRoundResultTime())) {
+        if (LocalDateTime.now().isAfter(constantProperties.getSecondRoundResultTime())) {
             return new BaseResponse<>(ResponseCode.FINAL_RESULT, teamMatchService.getFinalResultTeamMatching(id));
-//        }
+        }
 
-//        return new BaseResponse<>(teamMatchService.getCurrentBatchAppliedTeam(id));
+        return new BaseResponse<>(teamMatchService.getCurrentBatchAppliedTeam(id));
     }
 
 
