@@ -45,7 +45,7 @@ public class TeamMatchController {
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_STATUS)
     public BaseResponse<?> applicationStatus(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
-            @RequestAttribute("role") String role) {
+            @RequestAttribute("roles") Object roles) {
 
         if (authMember.isAdmin()) {
             List<TeamApplicantOverviewDto> allCurrentBatchTeamApplicants = teamMatchService.getAllCurrentBatchTeamApplicants();
@@ -54,7 +54,10 @@ public class TeamMatchController {
 
         Long id = authMember.getId();
 
-        if (role.equals(Part.PM.name())) {
+        //todo 롤 주입받을 때 사용법 고려해볼 것
+        List<Part> roleList = (List<Part>) roles;
+
+        if (roleList.contains(Part.PM)) {
             return new BaseResponse<>(teamMatchService.getCurrentBatchOwnTeam(id));
         }
 

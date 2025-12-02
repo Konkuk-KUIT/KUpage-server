@@ -177,7 +177,7 @@ public class TeamMatchControllerTest {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
                     // 테스트에서 강제로 PM 역할 넣어줌
-                    request.setAttribute("role", "PM");
+                    request.setAttribute("roles", List.of(Part.PM));
                     return true;
                 }
             };

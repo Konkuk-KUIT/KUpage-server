@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Optional;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -26,25 +26,24 @@ public class InjectionRoleInterceptor implements HandlerInterceptor {
 
         AuthMember authMember = (AuthMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Part> currentMemberPart = getCurrentMemberPart(authMember);
-        currentMemberPart.ifPresentOrElse(
-                part -> request.setAttribute("role", part.name()),
-                () -> request.setAttribute("role", ""));
+        List<Part> currentMemberPart = getCurrentMemberParts(authMember);
+        request.setAttribute("roles", currentMemberPart);
 
         return true;
     }
 
-    private Optional<Part> getCurrentMemberPart(AuthMember authMember) {
+    private List<Part> getCurrentMemberParts(AuthMember authMember) {
         String batchDescription = constantProperties.getCurrentBatch().getDescription();
         return memberRoleService.getMemberRolesByMemberId(authMember.getId()).stream()
                 .filter(mr -> mr.getRole().getName().contains(batchDescription)
-                        && (mr.getRole().getName().contains("부원") || mr.getRole().getName().contains("스터디장")))
+                        && (mr.getRole().getName().contains("부원")
+                        || mr.getRole().getName().contains("스터디장"))
+                        || mr.getRole().getName().contains("튜터"))
                 .map(mr -> {
                     Role role = mr.getRole();
                     String[] split = role.getName().split(" ");
                     return Part.valueOf(split[1]);
-                })
-                .findFirst();
+                }).toList();
     }
 
 }
