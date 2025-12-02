@@ -42,6 +42,9 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 1000)
     private String motivation;
 
+    @Column(length = 20)
+    private String applicantName;
+
     @Column(length = 500)
     private String portfolioUrl;
 

@@ -71,15 +71,13 @@ public class DetailService {
         byOwnerNameTeam.ifPresent(
                 team -> {
                     team.setOwnerId(member.getId());
-                    log.info("[SIGNUP] 팀 연관관계 생성 {memberId}, {teamId}", member.getId(), team.getId() );
                 }
         );
 
-        Optional<TeamApplicant> byNameTeamApplicant = teamApplicantRepository.findByName(member.getName());
+        Optional<TeamApplicant> byNameTeamApplicant = teamApplicantRepository.findByApplicantName(member.getName());
         byNameTeamApplicant.ifPresent(
                 teamApplicant -> {
                     teamApplicant.setMember(member);
-                    log.info("[SIGNUP] 팀지원 연관관계 생성 {memberId}, {teamApplicantId}", member.getId(), teamApplicant.getId() );
                 }
         );
 
