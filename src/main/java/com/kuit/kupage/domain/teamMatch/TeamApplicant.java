@@ -94,4 +94,8 @@ public class TeamApplicant extends BaseEntity {
         }
         throw new KupageException(ALREADY_COMPLETED_TEAM_MATCH);
     }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
 }
