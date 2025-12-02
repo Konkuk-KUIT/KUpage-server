@@ -16,6 +16,7 @@ import com.kuit.kupage.domain.teamMatch.repository.TeamApplicantRepository;
 import com.kuit.kupage.domain.teamMatch.repository.TeamRepository;
 import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ import static com.kuit.kupage.common.response.ResponseCode.NONE_MEMBER;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class DetailService {
 
     private final MemberRepository memberRepository;
@@ -69,12 +71,15 @@ public class DetailService {
         byOwnerNameTeam.ifPresent(
                 team -> {
                     team.setOwnerId(member.getId());
+                    log.info("[SIGNUP] 팀 연관관계 생성 {memberId}, {teamId}", member.getId(), team.getId() );
                 }
         );
+
         Optional<TeamApplicant> byNameTeamApplicant = teamApplicantRepository.findByName(member.getName());
         byNameTeamApplicant.ifPresent(
                 teamApplicant -> {
                     teamApplicant.setMember(member);
+                    log.info("[SIGNUP] 팀지원 연관관계 생성 {memberId}, {teamApplicantId}", member.getId(), teamApplicant.getId() );
                 }
         );
 
