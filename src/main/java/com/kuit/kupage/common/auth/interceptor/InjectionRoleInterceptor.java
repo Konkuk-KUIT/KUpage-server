@@ -37,8 +37,8 @@ public class InjectionRoleInterceptor implements HandlerInterceptor {
         return memberRoleService.getMemberRolesByMemberId(authMember.getId()).stream()
                 .filter(mr -> mr.getRole().getName().contains(batchDescription)
                         && (mr.getRole().getName().contains("부원")
-                        || mr.getRole().getName().contains("스터디장"))
-                        || mr.getRole().getName().contains("튜터"))
+                        || mr.getRole().getName().contains("스터디장")
+                        || mr.getRole().getName().contains("튜터")))
                 .map(mr -> {
                     Role role = mr.getRole();
                     String[] split = role.getName().split(" ");
