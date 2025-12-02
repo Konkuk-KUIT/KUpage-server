@@ -57,6 +57,7 @@ public class EntityFactory {
                 null,
                 Part.Server,
                 "테스트 지원 동기입니다.",
+                member.getName(),
                 "https://example.com/portfolio",
                 ROUND1_APPLYING,
                 1,
