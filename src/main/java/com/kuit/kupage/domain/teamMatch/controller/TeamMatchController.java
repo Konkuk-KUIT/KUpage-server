@@ -104,7 +104,7 @@ public class TeamMatchController {
                     현재 기수에서 사용할 팀 아이디어를 등록합니다. PM이 자신의 팀 아이디어를 등록할 때 사용합니다.
                     PM 부원의 경우 1번, 운영진의 경우 무제한 등록이 가능합니다.
                     """)
-    @SwaggerErrorResponses(SwaggerErrorResponse.AUTH_COMMON)
+    @SwaggerErrorResponses(SwaggerErrorResponse.REGISTER_TEAM)
     public BaseResponse<?> registerIdea(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
             @Validated @RequestBody IdeaRegisterRequest request) {

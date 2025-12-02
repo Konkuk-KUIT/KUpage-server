@@ -5,7 +5,9 @@ import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
@@ -44,9 +46,11 @@ public class TeamMatchService {
     private final TeamRepository teamRepository;
     private final TeamApplicantRepository teamApplicantRepository;
     private final ConstantProperties constantProperties;
+    private final MemberRoleService memberRoleService;
 
     public TeamMatchResponse apply(Long memberId, Long teamId, TeamMatchRequest request) {
         Member member = memberService.getMember(memberId);
+        isValidPart(member, request.appliedPart());
         Team team = getTeam(teamId);
         ApplicantStatus status = constantProperties.getApplicantStatus();
         Batch batch = constantProperties.getCurrentBatch();
@@ -69,6 +73,20 @@ public class TeamMatchService {
             throw new KupageException(TEAM_APPLY_FAILED);
         } catch (OptimisticLockingFailureException e) {
             throw new KupageException(TEAM_APPLY_FAILED);
+        }
+    }
+
+    private void isValidPart(Member member, Part appliedPart) {
+        List<Role> currentRoles = memberRoleService.getMemberCurrentRolesByMemberId(member.getId());
+        String appliedPartName = appliedPart.name().toLowerCase(Locale.ROOT);
+
+        boolean hasRoleForAppliedPart = currentRoles.stream()
+                .map(Role::getName)
+                .map(name -> name.toLowerCase(Locale.ROOT))
+                .anyMatch(roleName -> roleName.contains(appliedPartName));
+
+        if (!hasRoleForAppliedPart) {
+            throw new KupageException(INVALID_APPLY_PART);
         }
     }
 
@@ -329,6 +347,7 @@ public class TeamMatchService {
 
         return new TeamMatchingTimeResponse(firstRoundResultTime, secondRoundResultTime);
     }
+
     public static record TeamMatchingTimeResponse(
             LocalDateTime firstRoundResultTime,
             LocalDateTime secondRoundResultTime

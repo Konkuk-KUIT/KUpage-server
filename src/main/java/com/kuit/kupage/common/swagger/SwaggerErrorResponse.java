@@ -55,18 +55,20 @@ public enum SwaggerErrorResponse {
     ), AUTH_COMMON)),
 
     TEAM_MATCH_STATUS(merge(Set.of(
-            NOT_CURRENT_BATCH_MEMBER,
             NONE_TEAM,
             NONE_OWN_TEAM,
             NONE_APPLIED_TEAM,
             REJECTED_TEAM_MATCH
-    ), AUTH_COMMON)),
+    ), TEAM_MATCH_VIEW)),
 
     TEAM_MATCH_APPLICANT(merge(Set.of(
-            NOT_CURRENT_BATCH_MEMBER,
             NONE_TEAM,
             NONE_OWN_TEAM
-    ), AUTH_COMMON)),
+    ), TEAM_MATCH_VIEW)),
+
+    REGISTER_TEAM(merge(Set.of(
+            PM_PROJECT_LIMIT_EXCEEDED
+    ), TEAM_MATCH_VIEW)),
 
     GET_MY_PAGE(merge(Set.of(
             NONE_MEMBER,
