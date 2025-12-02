@@ -7,9 +7,11 @@ import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeamApplicantRepository extends JpaRepository<TeamApplicant, Long> {
@@ -22,4 +24,7 @@ public interface TeamApplicantRepository extends JpaRepository<TeamApplicant, Lo
     long countByMemberAndTeamAndStatus(Member member, Team team, ApplicantStatus status);
 
     List<TeamApplicant> findByMember_IdAndTeam_Batch(Long memberId, Batch batch);
+
+    @Query("SELECT ta FROM TeamApplicant ta WHERE ta.member.name =:name")
+    Optional<TeamApplicant> findByName(@Param("name") String name);
 }

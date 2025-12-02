@@ -61,7 +61,6 @@ public class Team extends BaseEntity {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamApplicant> teamApplicants = new ArrayList<>();
 
-
     public Team(Long ownerId, String ownerName, Batch currentBatch, IdeaRegisterRequest request) {
         this.ownerId = ownerId;
         this.ownerName = ownerName;
@@ -73,5 +72,9 @@ public class Team extends BaseEntity {
         this.serviceIntroFile = request.serviceIntroFile();
         this.featureRequirements = request.featureRequirements();
         this.preferredDeveloper = request.preferredDeveloper();
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }
