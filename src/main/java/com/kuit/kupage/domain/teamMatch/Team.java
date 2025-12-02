@@ -74,7 +74,7 @@ public class Team extends BaseEntity {
         this.preferredDeveloper = request.preferredDeveloper();
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 }

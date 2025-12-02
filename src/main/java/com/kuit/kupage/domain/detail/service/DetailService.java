@@ -68,7 +68,7 @@ public class DetailService {
         Optional<Team> byOwnerNameTeam = teamRepository.findByOwnerName(member.getName());
         byOwnerNameTeam.ifPresent(
                 team -> {
-                    team.setOwnerName(member.getName());
+                    team.setOwnerId(member.getId());
                 }
         );
         Optional<TeamApplicant> byNameTeamApplicant = teamApplicantRepository.findByName(member.getName());
