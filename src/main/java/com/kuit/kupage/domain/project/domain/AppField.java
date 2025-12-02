@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.project.entity;
+package com.kuit.kupage.domain.project.domain;
 
 public enum AppField {
     헬스케어, 에듀테크, 핀테크, 커뮤니티, 이커머스, 푸드테크,

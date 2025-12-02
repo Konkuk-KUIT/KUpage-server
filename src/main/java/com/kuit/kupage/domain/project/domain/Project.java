@@ -1,8 +1,8 @@
-package com.kuit.kupage.domain.project.entity;
+package com.kuit.kupage.domain.project.domain;
 
 import com.kuit.kupage.common.type.BaseEntity;
-import com.kuit.kupage.domain.project.entity.converter.AppFieldListStringConverter;
-import com.kuit.kupage.domain.project.entity.converter.StringListStringConverter;
+import com.kuit.kupage.domain.project.domain.converter.AppFieldListStringConverter;
+import com.kuit.kupage.domain.project.domain.converter.StringListStringConverter;
 import com.kuit.kupage.domain.common.Batch;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -25,6 +25,7 @@ public class Project extends BaseEntity {
 
     private String summary;
 
+    @Column(length = 1024)
     private String detail_url;
 
     private Batch batch;
@@ -42,6 +43,7 @@ public class Project extends BaseEntity {
     // notion url
     private String description;
 
+    @Column(length = 1024)
     private String detail_file_url;
 
     private String service_links;

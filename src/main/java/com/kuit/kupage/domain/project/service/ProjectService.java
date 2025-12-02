@@ -1,7 +1,7 @@
 package com.kuit.kupage.domain.project.service;
 
 import com.kuit.kupage.domain.common.Batch;
-import com.kuit.kupage.domain.project.entity.Project;
+import com.kuit.kupage.domain.project.domain.Project;
 import com.kuit.kupage.domain.project.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

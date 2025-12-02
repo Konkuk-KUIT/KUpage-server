@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.project.entity.converter;
+package com.kuit.kupage.domain.project.domain.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

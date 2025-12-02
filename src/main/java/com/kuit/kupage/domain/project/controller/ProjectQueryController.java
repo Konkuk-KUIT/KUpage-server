@@ -5,7 +5,7 @@ import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.project.dto.ProjectListResponse;
-import com.kuit.kupage.domain.project.entity.Project;
+import com.kuit.kupage.domain.project.domain.Project;
 import com.kuit.kupage.domain.project.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

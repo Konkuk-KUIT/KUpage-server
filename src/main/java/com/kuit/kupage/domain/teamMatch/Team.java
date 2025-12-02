@@ -3,7 +3,7 @@ package com.kuit.kupage.domain.teamMatch;
 import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.memberTeam.MemberTeam;
-import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.project.domain.AppType;
 import com.kuit.kupage.domain.teamMatch.dto.IdeaRegisterRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,7 +35,7 @@ public class Team extends BaseEntity {
     @Column(length = 500)
     private String topicSummary;
 
-    @Column(length = 500)
+    @Column(length = 1024)
     private String imageUrl;
 
     @Column(length = 500)

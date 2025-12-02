@@ -1,6 +1,6 @@
 package com.kuit.kupage.domain.project.repository;
 
-import com.kuit.kupage.domain.project.entity.MemberProject;
+import com.kuit.kupage.domain.project.domain.MemberProject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

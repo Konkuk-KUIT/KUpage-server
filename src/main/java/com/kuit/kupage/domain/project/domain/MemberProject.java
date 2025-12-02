@@ -1,4 +1,4 @@
-package com.kuit.kupage.domain.project.entity;
+package com.kuit.kupage.domain.project.domain;
 
 import com.kuit.kupage.common.type.BaseEntity;
 import com.kuit.kupage.domain.member.Member;

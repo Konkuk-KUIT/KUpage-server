@@ -6,7 +6,7 @@ import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
-import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.project.domain.AppType;
 import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;

@@ -1,9 +1,9 @@
 package com.kuit.kupage.unit.project;
 
 import com.kuit.kupage.domain.common.Batch;
-import com.kuit.kupage.domain.project.entity.AppField;
-import com.kuit.kupage.domain.project.entity.AppType;
-import com.kuit.kupage.domain.project.entity.Project;
+import com.kuit.kupage.domain.project.domain.AppField;
+import com.kuit.kupage.domain.project.domain.AppType;
+import com.kuit.kupage.domain.project.domain.Project;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -25,6 +25,7 @@ public class Article extends BaseEntity {
 
     private String title;
 
+    @Column(length = 1024)
     private String thumbnailImagePath;
 
     private static final Integer MAX_TITLE_LENGTH = 50;

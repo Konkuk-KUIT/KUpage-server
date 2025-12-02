@@ -1,6 +1,6 @@
-package com.kuit.kupage.domain.project.entity.converter;
+package com.kuit.kupage.domain.project.domain.converter;
 
-import com.kuit.kupage.domain.project.entity.AppField;
+import com.kuit.kupage.domain.project.domain.AppField;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

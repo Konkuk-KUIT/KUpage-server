@@ -1,6 +1,6 @@
 package com.kuit.kupage.unit.teamMatch.dto;
 
-import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.project.domain.AppType;
 import com.kuit.kupage.domain.teamMatch.dto.IdeaRegisterRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;

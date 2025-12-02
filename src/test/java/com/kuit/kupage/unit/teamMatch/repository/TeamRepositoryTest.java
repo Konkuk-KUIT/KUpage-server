@@ -1,7 +1,7 @@
 package com.kuit.kupage.unit.teamMatch.repository;
 
 import com.kuit.kupage.domain.common.Batch;
-import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.project.domain.AppType;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.repository.TeamRepository;
 import org.junit.jupiter.api.DisplayName;
