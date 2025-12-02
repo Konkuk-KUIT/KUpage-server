@@ -84,6 +84,16 @@ public enum SwaggerErrorResponse {
             NONE_APPLICANT
     ), AUTH_COMMON)),
 
+    TEAM_MATCH_APPLY(merge(Set.of(
+            NONE_MEMBER,
+            INVALID_APPLY_PART,
+            NONE_TEAM,
+            NOT_TEAM_MATCH_APPLY_PERIOD,
+            EXCEEDED_TEAM_APPLY_LIMIT,
+            DUPLICATED_TEAM_APPLY,
+            TEAM_APPLY_FAILED
+    ), AUTH_COMMON)),
+
     DEFAULT(new LinkedHashSet<>());
 
     private final Set<ResponseCode> responseCodeSet;
