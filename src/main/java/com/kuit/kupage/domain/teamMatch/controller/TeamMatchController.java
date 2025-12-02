@@ -86,7 +86,7 @@ public class TeamMatchController {
     @PostMapping("/teams/{teamId}/match")
     @Operation(summary = "팀매칭 지원 신청",
             description = "선택한 팀에 팀매칭 지원을 신청합니다. 이미 지원한 팀인 경우 비즈니스 로직에 따라 예외가 발생할 수 있습니다.")
-    @SwaggerErrorResponses()
+    @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_APPLY)
     public BaseResponse<?> apply(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
             @PathVariable(name = "teamId") Long teamId,
