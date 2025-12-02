@@ -2,7 +2,9 @@ package com.kuit.kupage.utils;
 
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
+import com.kuit.kupage.domain.memberRole.MemberRole;
 import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
 import com.kuit.kupage.domain.teamMatch.TeamApplicant;
@@ -62,5 +64,21 @@ public class EntityFactory {
                 member,
                 team
         );
+    }
+
+
+    public static Role role(Part part) {
+        return new Role(
+                Batch.SIXTH,
+                part.name(),
+                "test-discord-role-id",
+                1
+        );
+    }
+
+    public static MemberRole memberRole(Member member, Role role) {
+        MemberRole memberRole = new MemberRole(member.getDiscordId(), role);
+        memberRole.setMember(member);
+        return memberRole;
     }
 }

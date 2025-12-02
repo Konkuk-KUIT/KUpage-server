@@ -62,12 +62,15 @@ public class TeamMatchService {
         } catch (DataIntegrityViolationException e) {
             Throwable cause = e.getCause();
             if (cause instanceof org.hibernate.exception.ConstraintViolationException cve) {
-                String constraintName = cve.getConstraintName().toLowerCase(Locale.ROOT);
-                if (constraintName.contains("uk_status_team_applicant_member_team")) {
-                    throw new KupageException(DUPLICATED_TEAM_APPLY);
-                }
-                if (constraintName.contains("uk_member_status_slot")) {
-                    throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+                String constraintName = cve.getConstraintName();
+                if (constraintName != null) {
+                    String normalizedName = constraintName.toLowerCase(Locale.ROOT);
+                    if (normalizedName.contains("uk_status_team_applicant_member_team")) {
+                        throw new KupageException(DUPLICATED_TEAM_APPLY);
+                    }
+                    if (normalizedName.contains("uk_member_status_slot")) {
+                        throw new KupageException(EXCEEDED_TEAM_APPLY_LIMIT);
+                    }
                 }
             }
             throw new KupageException(TEAM_APPLY_FAILED);
@@ -148,8 +151,9 @@ public class TeamMatchService {
 
         Team team = memberTeamApplicants.stream()
                 .filter(ta -> !ta.isRejected())
-                .findFirst().get() // 앞 조건문을 통과하면 반드시 객체 존재
-                .getTeam();
+                .findFirst()
+                .map(TeamApplicant::getTeam)
+                .orElseThrow(() -> new TeamException(REJECTED_TEAM_MATCH));
 
         Long teamId = team.getId();
         String serviceName = team.getServiceName();
@@ -170,8 +174,7 @@ public class TeamMatchService {
         }
 
         // 팀의 지원자 중 자신의 지원 정보만 추출
-        List<TeamApplicant> memberTeamApplicant = allTeamsByMemberIdAndBatch.stream().flatMap(t -> t.getTeamApplicants().stream()).filter(ta -> ta.getMember().getId().equals(memberId)).toList();
-        return memberTeamApplicant;
+        return allTeamsByMemberIdAndBatch.stream().flatMap(t -> t.getTeamApplicants().stream()).filter(ta -> ta.getMember().getId().equals(memberId)).toList();
     }
 
     @Transactional(readOnly = true)
@@ -228,7 +231,7 @@ public class TeamMatchService {
     private List<ApplicantInfo> parseApplicantInfo(Team team) {
         List<TeamApplicant> teamApplicants = team.getTeamApplicants();
 
-        List<ApplicantInfo> applicantInfos = teamApplicants.stream().filter(ta -> !ta.isRejected()).map(ta -> {
+        return teamApplicants.stream().filter(ta -> !ta.isRejected()).map(ta -> {
             Member applicantMember = ta.getMember();
             String applicantMemberNameAndPart = applicantMember.getName() + " - " + team.getBatch().getDescription() + " " + ta.getAppliedPart();
             Part appliedPart = ta.getAppliedPart();
@@ -240,8 +243,6 @@ public class TeamMatchService {
 
             return new ApplicantInfo(applicantMember.getId(), applicantMemberNameAndPart, appliedPart, formattedTimetable, applicantDetail);
         }).toList();
-
-        return applicantInfos;
     }
 
     private Team getOwnTeam(Long memberId, Long teamId, boolean isAdmin) {
@@ -315,9 +316,7 @@ public class TeamMatchService {
         if (currentStatus == ROUND2_APPLYING) {
             boolean alreadyAppliedRound2 = teamApplicants.stream()
                     .anyMatch(ta -> ta.getStatus() == ROUND2_APPLYING);
-            if (alreadyAppliedRound2) {
-                return false;
-            }
+            return !alreadyAppliedRound2;
         }
 
         return true;
@@ -336,21 +335,5 @@ public class TeamMatchService {
     private TeamApplicant getTeamApplicantById(Long teamApplicantId) {
         return teamApplicantRepository.findById(teamApplicantId)
                 .orElseThrow(() -> new KupageException(NONE_APPLICANT));
-    }
-
-    public TeamMatchingTimeResponse getTeamMatchingTime() {
-        LocalDateTime firstRoundResultTime = constantProperties.getFirstRoundResultTime();
-        LocalDateTime secondRoundResultTime = constantProperties.getSecondRoundResultTime();
-
-        log.info("[팀매칭 시간] 첫번째 결과 발표 = {}", firstRoundResultTime);
-        log.info("[팀매칭 시간] 두번째 결과 발표 = {}", secondRoundResultTime);
-
-        return new TeamMatchingTimeResponse(firstRoundResultTime, secondRoundResultTime);
-    }
-
-    public static record TeamMatchingTimeResponse(
-            LocalDateTime firstRoundResultTime,
-            LocalDateTime secondRoundResultTime
-    ) {
     }
 }

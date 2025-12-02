@@ -1,9 +1,13 @@
-package com.kuit.kupage.unit.teamMatch.service;
+package com.kuit.kupage.integration.teamMatch;
 
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.common.Batch;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.repository.MemberRepository;
+import com.kuit.kupage.domain.memberRole.MemberRole;
+import com.kuit.kupage.domain.memberRole.repository.MemberRoleRepository;
+import com.kuit.kupage.domain.role.Role;
+import com.kuit.kupage.domain.role.repository.RoleRepository;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
@@ -38,6 +42,7 @@ import static org.mockito.Mockito.when;
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class TeamMatchServiceConcurrencyTest {
 
+
     @Autowired
     TeamMatchService teamMatchService;
 
@@ -49,10 +54,14 @@ class TeamMatchServiceConcurrencyTest {
 
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    MemberRoleRepository memberRoleRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-
     @MockitoBean
     ConstantProperties constantProperties;
 
@@ -60,6 +69,8 @@ class TeamMatchServiceConcurrencyTest {
     @BeforeEach
     void cleanDb() {
         // FK 순서 때문에 자식 → 부모 순으로 삭제
+        jdbcTemplate.update("DELETE FROM MEMBER_ROLE");
+        jdbcTemplate.update("DELETE FROM ROLE");
         jdbcTemplate.update("DELETE FROM TEAM_APPLICANT");
         jdbcTemplate.update("DELETE FROM TEAM");
         jdbcTemplate.update("DELETE FROM MEMBER");
@@ -67,6 +78,8 @@ class TeamMatchServiceConcurrencyTest {
 
     @BeforeEach
     void setUp() {
+        jdbcTemplate.update("DELETE FROM MEMBER_ROLE");
+        jdbcTemplate.update("DELETE FROM ROLE");
         jdbcTemplate.update("DELETE FROM TEAM_APPLICANT");
         jdbcTemplate.update("DELETE FROM TEAM");
         jdbcTemplate.update("DELETE FROM MEMBER");
@@ -84,6 +97,10 @@ class TeamMatchServiceConcurrencyTest {
         // given
         int threadCount = 5;
         Member member = memberRepository.save(EntityFactory.member());
+        // 회원이 가진 파트(Role)가 지원 파트(Part.Server)와 일치하도록 설정
+        Role serverRole = roleRepository.save(EntityFactory.role(Part.Server));
+        MemberRole memberRole = memberRoleRepository.save(EntityFactory.memberRole(member, serverRole));
+
         List<Team> teams = new ArrayList<>();
         for (int i = 0; i < threadCount; i++) {
             teams.add(teamRepository.save(EntityFactory.team()));
@@ -131,6 +148,9 @@ class TeamMatchServiceConcurrencyTest {
         // given
         int threadCount = 5;
         Member member = memberRepository.save(EntityFactory.member());
+        Role serverRole = roleRepository.save(EntityFactory.role(Part.Server));
+        MemberRole memberRole = memberRoleRepository.save(EntityFactory.memberRole(member, serverRole));
+
         Team team = teamRepository.save(EntityFactory.team());
         ApplicantStatus applicantStatus = constantProperties.getApplicantStatus();
 

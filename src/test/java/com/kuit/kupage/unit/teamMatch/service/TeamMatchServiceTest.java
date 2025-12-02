@@ -4,7 +4,10 @@ import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.ResponseCode;
 import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.member.service.MemberService;
+import com.kuit.kupage.domain.memberRole.MemberRole;
+import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.project.entity.AppType;
+import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.teamMatch.ApplicantStatus;
 import com.kuit.kupage.domain.teamMatch.Part;
 import com.kuit.kupage.domain.teamMatch.Team;
@@ -33,6 +36,7 @@ import static com.kuit.kupage.common.response.ResponseCode.FORBIDDEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -40,6 +44,8 @@ class TeamMatchServiceTest {
 
     @Mock
     private MemberService memberService;
+    @Mock
+    private MemberRoleService memberRoleService;
     @Mock
     private TeamRepository teamRepository;
     @Mock
@@ -52,6 +58,7 @@ class TeamMatchServiceTest {
     private Member mockMember;
     private Team mockTeam;
     private TeamApplicant mockApplicant;
+    private Role mockRole;
 
     @BeforeEach
     void setUp() {
@@ -60,12 +67,16 @@ class TeamMatchServiceTest {
         mockMember = mock(Member.class);
         mockTeam = mock(Team.class);
         mockApplicant = mock(TeamApplicant.class);
+        mockRole = mock(Role.class);
+        when(mockRole.getName()).thenReturn("server");
 
         when(mockApplicant.getId()).thenReturn(1L);
 
         given(constantProperties.getApplicantStatus()).willReturn(ApplicantStatus.ROUND1_APPLYING);
         given(teamApplicantRepository.findSlotNosByMemberAndStatus(any(), any(), any()))
                 .willReturn(List.of());
+        given(memberRoleService.getMemberCurrentRolesByMemberId(anyLong()))
+                .willReturn(List.of(mockRole));
     }
 
     @Test
@@ -98,7 +109,11 @@ class TeamMatchServiceTest {
     @DisplayName("존재하지 않는 팀에 지원 시 KupageException(NONE_TEAM) 발생")
     void apply_fail_whenTeamNotFound() {
         // given
-        TeamMatchRequest request = mock(TeamMatchRequest.class);
+        TeamMatchRequest request = new TeamMatchRequest(
+                Part.Server,
+                "백엔드 개발자로서 팀에 기여하고 싶습니다.",
+                "https://portfolio.com/jihun"
+        );
         given(memberService.getMember(1L)).willReturn(mockMember);
         given(teamRepository.findById(99L)).willReturn(Optional.empty());
 

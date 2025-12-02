@@ -120,7 +120,7 @@ public class TeamMatchController {
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_VIEW)
     public BaseResponse<AllTeamsResponse> getTeamIdeas(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember
-            ) {
+    ) {
         AllTeamsResponse response = teamMatchService.getAllTeamIdeas(authMember.getId());
         return new BaseResponse<>(response);
     }
@@ -145,9 +145,4 @@ public class TeamMatchController {
         return new BaseResponse<>(ResponseCode.SUCCESS);
     }
 
-    @GetMapping("/team-matching/time")
-    public BaseResponse<?> rejectApplicant() {
-        TeamMatchService.TeamMatchingTimeResponse teamMatchingTime = teamMatchService.getTeamMatchingTime();
-        return new BaseResponse<>(teamMatchingTime);
-    }
 }
