@@ -8,6 +8,7 @@ import com.kuit.kupage.domain.memberTeam.MemberTeam;
 import com.kuit.kupage.domain.oauth.dto.DiscordInfoResponse;
 import com.kuit.kupage.domain.oauth.dto.DiscordTokenResponse;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +29,7 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @Column(name = "discord_id", unique = true, nullable = false)

@@ -25,6 +25,4 @@ public interface TeamApplicantRepository extends JpaRepository<TeamApplicant, Lo
 
     List<TeamApplicant> findByMember_IdAndTeam_Batch(Long memberId, Batch batch);
 
-    @Query("SELECT ta FROM TeamApplicant ta WHERE ta.applicantName =:applicantName")
-    Optional<TeamApplicant> findByApplicantName(@Param("applicantName") String applicantName);
 }

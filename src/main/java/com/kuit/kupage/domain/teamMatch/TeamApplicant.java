@@ -6,10 +6,7 @@ import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import com.kuit.kupage.exception.KupageException;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static com.kuit.kupage.common.response.ResponseCode.ALREADY_COMPLETED_TEAM_MATCH;
 import static com.kuit.kupage.domain.teamMatch.ApplicantStatus.*;
@@ -42,9 +39,6 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 1000)
     private String motivation;
 
-    @Column(length = 20)
-    private String applicantName;
-
     @Column(length = 500)
     private String portfolioUrl;
 
@@ -59,6 +53,7 @@ public class TeamApplicant extends BaseEntity {
     @Column(nullable = false, length = 10)
     private Batch batch;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -98,7 +93,4 @@ public class TeamApplicant extends BaseEntity {
         throw new KupageException(ALREADY_COMPLETED_TEAM_MATCH);
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-    }
 }
