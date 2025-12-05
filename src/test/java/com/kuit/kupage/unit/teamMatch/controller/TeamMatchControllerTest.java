@@ -5,6 +5,7 @@ import com.kuit.kupage.common.auth.AuthMember;
 import com.kuit.kupage.common.auth.interceptor.AuthAllowedPartInterceptor;
 import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
 import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
+import com.kuit.kupage.common.auth.interceptor.MemberParts;
 import com.kuit.kupage.common.config.InterceptorConfig;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
@@ -16,6 +17,7 @@ import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchResponse;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
 import com.kuit.kupage.unit.common.config.SecurityTestConfig;
+import com.kuit.kupage.unit.common.config.WebConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TeamMatchController.class)
-@Import({SecurityTestConfig.class, InterceptorConfig.class})
+@Import({SecurityTestConfig.class, InterceptorConfig.class, WebConfig.class})
 @EnableConfigurationProperties(ConstantProperties.class)
 public class TeamMatchControllerTest {
 
@@ -59,8 +61,6 @@ public class TeamMatchControllerTest {
     private MemberRoleService memberRoleService;
     @MockitoBean
     private AuthAllowedPartInterceptor authAllowedPartInterceptor;
-    //    @MockitoBean
-//    private InjectionRoleInterceptor injectionRoleInterceptor;
     @MockitoBean
     private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
 
@@ -177,7 +177,7 @@ public class TeamMatchControllerTest {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
                     // 테스트에서 강제로 PM 역할 넣어줌
-                    request.setAttribute("roles", List.of(Part.PM));
+                    request.setAttribute("parts", new MemberParts(List.of(Part.PM)));
                     return true;
                 }
             };

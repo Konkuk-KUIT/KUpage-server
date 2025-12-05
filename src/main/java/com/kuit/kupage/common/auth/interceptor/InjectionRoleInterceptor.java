@@ -27,7 +27,8 @@ public class InjectionRoleInterceptor implements HandlerInterceptor {
         AuthMember authMember = (AuthMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         List<Part> currentMemberPart = getCurrentMemberParts(authMember);
-        request.setAttribute("roles", currentMemberPart);
+
+        request.setAttribute("parts", new MemberParts(currentMemberPart));
 
         return true;
     }
