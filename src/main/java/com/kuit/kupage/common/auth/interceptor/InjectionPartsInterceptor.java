@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class InjectionRoleInterceptor implements HandlerInterceptor {
+public class InjectionPartsInterceptor implements HandlerInterceptor {
 
     private final MemberRoleService memberRoleService;
     private final ConstantProperties constantProperties;
