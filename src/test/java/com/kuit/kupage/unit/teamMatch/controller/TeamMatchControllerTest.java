@@ -17,7 +17,6 @@ import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchResponse;
 import com.kuit.kupage.domain.teamMatch.service.TeamMatchService;
 import com.kuit.kupage.unit.common.config.SecurityTestConfig;
-import com.kuit.kupage.unit.common.config.WebConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TeamMatchController.class)
-@Import({SecurityTestConfig.class, InterceptorConfig.class, WebConfig.class})
+@Import({SecurityTestConfig.class, InterceptorConfig.class})
 @EnableConfigurationProperties(ConstantProperties.class)
 public class TeamMatchControllerTest {
 
