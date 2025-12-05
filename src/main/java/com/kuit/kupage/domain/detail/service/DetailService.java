@@ -10,10 +10,6 @@ import com.kuit.kupage.domain.member.repository.MemberRepository;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
 import com.kuit.kupage.domain.oauth.dto.LoginOrSignupResult;
 import com.kuit.kupage.domain.role.Role;
-import com.kuit.kupage.domain.teamMatch.Team;
-import com.kuit.kupage.domain.teamMatch.TeamApplicant;
-import com.kuit.kupage.domain.teamMatch.repository.TeamApplicantRepository;
-import com.kuit.kupage.domain.teamMatch.repository.TeamRepository;
 import com.kuit.kupage.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.kuit.kupage.common.response.ResponseCode.ALREADY_MEMBER;
 import static com.kuit.kupage.common.response.ResponseCode.NONE_MEMBER;
@@ -36,8 +31,6 @@ public class DetailService {
     private final DetailRepository detailRepository;
     private final MemberRoleService memberRoleService;
     private final JwtTokenService jwtTokenService;
-    private final TeamRepository teamRepository;
-    private final TeamApplicantRepository teamApplicantRepository;
 
     @Transactional
     public LoginOrSignupResult signup(SignupRequest signupRequest, Long memberId) {
@@ -66,20 +59,6 @@ public class DetailService {
         List<String> roles = memberRoleService.getMemberCurrentRolesByMemberId(memberId).stream()
                 .map(Role::getName)
                 .toList();
-
-        Optional<Team> byOwnerNameTeam = teamRepository.findByOwnerName(member.getName());
-        byOwnerNameTeam.ifPresent(
-                team -> {
-                    team.setOwnerId(member.getId());
-                }
-        );
-
-        Optional<TeamApplicant> byNameTeamApplicant = teamApplicantRepository.findByApplicantName(member.getName());
-        byNameTeamApplicant.ifPresent(
-                teamApplicant -> {
-                    teamApplicant.setMember(member);
-                }
-        );
 
         return new LoginOrSignupResult(memberId, roles, authTokenResponse);
     }
