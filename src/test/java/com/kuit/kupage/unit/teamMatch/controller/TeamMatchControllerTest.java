@@ -172,7 +172,7 @@ public class TeamMatchControllerTest {
     static class TestInterceptorConfig {
 
         @Bean
-        public InjectionPartsInterceptor injectionRoleInterceptor() {
+        public InjectionPartsInterceptor injectionPartsInterceptor() {
             return new InjectionPartsInterceptor(null, null) {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
