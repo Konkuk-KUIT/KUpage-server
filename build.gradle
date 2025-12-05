@@ -7,6 +7,11 @@ plugins {
 group = 'com.kuit'
 version = '0.0.1-SNAPSHOT'
 
+test {
+	// 테스트 실행 시 'spring.profiles.active' 시스템 속성을 'test'로 설정
+	systemProperty 'spring.profiles.active', 'test'
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
