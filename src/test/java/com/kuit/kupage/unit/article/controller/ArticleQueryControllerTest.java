@@ -2,7 +2,7 @@ package com.kuit.kupage.unit.article.controller;
 
 import com.kuit.kupage.common.auth.interceptor.AuthAllowedPartInterceptor;
 import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
-import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
+import com.kuit.kupage.common.auth.interceptor.InjectionPartsInterceptor;
 import com.kuit.kupage.common.response.PagedResponse;
 import com.kuit.kupage.domain.article.controller.ArticleQueryController;
 import com.kuit.kupage.domain.article.domain.BlockType;
@@ -41,7 +41,7 @@ class ArticleQueryControllerTest {
     @MockitoBean
     private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
     @MockitoBean
-    private InjectionRoleInterceptor injectionRoleInterceptor;
+    private InjectionPartsInterceptor injectionPartsInterceptor;
 
 
     @Test

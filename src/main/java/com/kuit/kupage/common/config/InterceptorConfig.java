@@ -2,7 +2,7 @@ package com.kuit.kupage.common.config;
 
 import com.kuit.kupage.common.auth.interceptor.AuthAllowedPartInterceptor;
 import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
-import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
+import com.kuit.kupage.common.auth.interceptor.InjectionPartsInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,7 +14,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     private final CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
     private final AuthAllowedPartInterceptor authAllowedPartInterceptor;
-    private final InjectionRoleInterceptor injectionRoleInterceptor;
+    private final InjectionPartsInterceptor injectionPartsInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -27,7 +27,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .order(2)
                 .addPathPatterns("/teams/{teamId}/applications");
 
-        registry.addInterceptor(injectionRoleInterceptor)
+        registry.addInterceptor(injectionPartsInterceptor)
                 .order(3)
                 .addPathPatterns("/teams/applications");
     }

@@ -2,6 +2,8 @@ package com.kuit.kupage.domain.teamMatch.controller;
 
 import com.kuit.kupage.common.auth.AllowedParts;
 import com.kuit.kupage.common.auth.AuthMember;
+import com.kuit.kupage.common.auth.CurrentParts;
+import com.kuit.kupage.common.auth.interceptor.MemberParts;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.ResponseCode;
@@ -45,7 +47,7 @@ public class TeamMatchController {
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_STATUS)
     public BaseResponse<?> applicationStatus(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
-            @RequestAttribute("roles") Object roles) {
+            @CurrentParts MemberParts memberParts) {
 
         if (authMember.isAdmin()) {
             List<TeamApplicantOverviewDto> allCurrentBatchTeamApplicants = teamMatchService.getAllCurrentBatchTeamApplicants();
@@ -54,10 +56,7 @@ public class TeamMatchController {
 
         Long id = authMember.getId();
 
-        //todo 롤 주입받을 때 사용법 고려해볼 것
-        List<Part> roleList = (List<Part>) roles;
-
-        if (roleList.contains(Part.PM)) {
+        if (memberParts.contains(Part.PM)) {
             return new BaseResponse<>(teamMatchService.getCurrentBatchOwnTeam(id));
         }
 

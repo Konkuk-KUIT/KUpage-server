@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuit.kupage.common.auth.AuthMember;
 import com.kuit.kupage.common.auth.interceptor.AuthAllowedPartInterceptor;
 import com.kuit.kupage.common.auth.interceptor.CheckCurrentBatchInterceptor;
-import com.kuit.kupage.common.auth.interceptor.InjectionRoleInterceptor;
+import com.kuit.kupage.common.auth.interceptor.InjectionPartsInterceptor;
+import com.kuit.kupage.common.auth.interceptor.MemberParts;
 import com.kuit.kupage.common.config.InterceptorConfig;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.domain.memberRole.service.MemberRoleService;
@@ -59,8 +60,6 @@ public class TeamMatchControllerTest {
     private MemberRoleService memberRoleService;
     @MockitoBean
     private AuthAllowedPartInterceptor authAllowedPartInterceptor;
-    //    @MockitoBean
-//    private InjectionRoleInterceptor injectionRoleInterceptor;
     @MockitoBean
     private CheckCurrentBatchInterceptor checkCurrentBatchInterceptor;
 
@@ -172,12 +171,12 @@ public class TeamMatchControllerTest {
     static class TestInterceptorConfig {
 
         @Bean
-        public InjectionRoleInterceptor injectionRoleInterceptor() {
-            return new InjectionRoleInterceptor(null, null) {
+        public InjectionPartsInterceptor injectionPartsInterceptor() {
+            return new InjectionPartsInterceptor(null, null) {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
                     // 테스트에서 강제로 PM 역할 넣어줌
-                    request.setAttribute("roles", List.of(Part.PM));
+                    request.setAttribute("parts", new MemberParts(List.of(Part.PM)));
                     return true;
                 }
             };
