@@ -9,12 +9,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.List;
 
-public class PartsArgumentResolver implements HandlerMethodArgumentResolver {
+public class CurrentPartsArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         // 어노테이션이 붙어 있는지 확인
-        boolean hasAnnotation = parameter.hasParameterAnnotation(MemberParts.class);
+        boolean hasAnnotation = parameter.hasParameterAnnotation(CurrentParts.class);
 
         // 파라미터의 타입이 MemberParts 확인 (인터셉터에서 저장한 타입과 일치해야 함)
         boolean isMemberParts = com.kuit.kupage.common.auth.interceptor.MemberParts.class.isAssignableFrom(parameter.getParameterType());

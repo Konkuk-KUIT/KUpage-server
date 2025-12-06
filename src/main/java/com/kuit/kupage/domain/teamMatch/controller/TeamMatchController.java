@@ -2,7 +2,8 @@ package com.kuit.kupage.domain.teamMatch.controller;
 
 import com.kuit.kupage.common.auth.AllowedParts;
 import com.kuit.kupage.common.auth.AuthMember;
-import com.kuit.kupage.common.auth.MemberParts;
+import com.kuit.kupage.common.auth.CurrentParts;
+import com.kuit.kupage.common.auth.interceptor.MemberParts;
 import com.kuit.kupage.common.constant.ConstantProperties;
 import com.kuit.kupage.common.response.BaseResponse;
 import com.kuit.kupage.common.response.ResponseCode;
@@ -46,7 +47,7 @@ public class TeamMatchController {
     @SwaggerErrorResponses(SwaggerErrorResponse.TEAM_MATCH_STATUS)
     public BaseResponse<?> applicationStatus(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthMember authMember,
-            @MemberParts com.kuit.kupage.common.auth.interceptor.MemberParts memberParts) {
+            @CurrentParts MemberParts memberParts) {
 
         if (authMember.isAdmin()) {
             List<TeamApplicantOverviewDto> allCurrentBatchTeamApplicants = teamMatchService.getAllCurrentBatchTeamApplicants();
