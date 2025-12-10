@@ -75,7 +75,6 @@ public enum SwaggerErrorResponse {
             NONE_DETAIL
     ), AUTH_COMMON)),
 
-
     UPDATE_MY_PAGE(merge(Set.of(
             INVALID_INPUT_ENUM
     ), AUTH_COMMON)),
