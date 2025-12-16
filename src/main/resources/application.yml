@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
     group:
-      local: common,local
-      prod: common,prod
-    
+      local: common,local-db,local-runtime
+      prod: common,prod-db,prod-runtime
+
 ---
 
 spring:
@@ -38,10 +38,6 @@ spring:
     multipart:
       max-file-size: 120MB
       max-request-size: 400MB
-
-logging:
-  level:
-    root: INFO
 
 discord:
   guild-id: ${DISCORD_GUILD_ID}
@@ -84,8 +80,8 @@ springdoc:
 
 const:
   current-batch: SIXTH
-  first-round-result-time: 2025-12-02T12:00:00 # 2025-12-02T12:00:00      # KST: 2025-12-02 21:00
-  second-round-result-time: 2025-12-04T12:00:00 # 2025-12-04T12:00:00     # KST: 2025-12-04 21:00
+  first-round-result-time: 2025-12-02T12:00:00         # KST: 2025-12-02 21:00
+  second-round-result-time: 2025-12-04T12:00:00        # KST: 2025-12-04 21:00
 
 management:
   endpoints:
@@ -101,23 +97,45 @@ management:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: local-db
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: ${LOCAL_DB_URL:jdbc:h2:mem:kupage}
-    username: ${LOCAL_DB_USERNAME:sa}
-    password: ${LOCAL_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${LOCAL_DB_URL}
+    username: ${LOCAL_DB_USERNAME}
+    password: ${LOCAL_DB_PASSWORD}
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+
+  sql:
+    init:
+      mode: never
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
-        default_batch_fetch_size: 100
+        default_batch_fetch_size: 50
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
     show-sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true              # 이미 스키마/데이터 있는 DB를 baseline 처리
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local-runtime
 
 server:
   port: 9000
@@ -131,7 +149,7 @@ logging:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod-db
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -141,17 +159,37 @@ spring:
     hikari:
       data-source-properties:
         rewriteBatchedStatements: true
-
+  sql:
+    init:
+      mode: never
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: false
-        jdbc.batch_size: 50
+        default_batch_fetch_size: 50
+        jdbc:
+          batch_size: 50
         order_inserts: true
         order_updates: true
+    show-sql: false
 
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true              # 이미 스키마/데이터 있는 DB를 baseline 처리
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod-runtime
 
 server:
   port: 8080
+
+logging:
+  level:
+    com.kuit.kupage: INFO

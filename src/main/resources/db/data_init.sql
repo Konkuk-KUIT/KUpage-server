@@ -26,7 +26,7 @@ VALUES
     ('윤아람', '202112310', '컴퓨터공학부',       'SECOND_YEAR', 'aram-dev', 'aram@example.com', '010-0000-0000', '2002-04-18');
 
 
-INSERT INTO role (role_id, batch, name, discord_role_id, position, created_at, modified_at)
+INSERT INTO roles (role_id, batch, name, discord_role_id, position, created_at, modified_at)
 VALUES (1,'SIXTH', '6th PM 부원', 1, 0, NOW(), NOW()),
        (2, 'FIFTH', '5th 운영진', 2, 0, NOW(), NOW()),
        (3, 'SIXTH', '6th Server 튜터', 3, 0, NOW(), NOW()),
@@ -179,7 +179,7 @@ INSERT INTO team_applicant (
     motivation,
     status,
     slot_no,
-                            batch,
+    batch,
     member_id,
     team_id,
     created_at,
@@ -237,7 +237,7 @@ SELECT * FROM MEMBER;
 
 SELECT * FROM DETAIL;
 
-SELECT * FROM ROLE ;
+SELECT * FROM ROLES ;
 
 SELECT * FROM MEMBER_ROLE ;
 
