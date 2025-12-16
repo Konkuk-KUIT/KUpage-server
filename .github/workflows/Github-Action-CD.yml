@@ -50,9 +50,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          source: "src/main/resources/db/migration/*"
-          target: "/home/ubuntu/migrations"
-          overwrite: true
+          source: "src/main/resources/db/migration/"
+          target: "/home/ubuntu/migrations/"
+          strip_components: 4
 
 
       - name: executing remote ssh commands using password
