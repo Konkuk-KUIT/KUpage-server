@@ -77,7 +77,6 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-            SPRING_FLYWAY_ENABLED=false
             
             PROD_DB_URL=${{ secrets.PROD_DB_URL }}
             PROD_DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}
