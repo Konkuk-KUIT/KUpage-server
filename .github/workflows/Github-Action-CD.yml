@@ -43,6 +43,18 @@ jobs:
         run:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}
 
+      - name: Upload Flyway migrations to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "src/main/resources/db/migration/"
+          target: "/home/ubuntu/migrations/"
+          strip_components: 4
+
+
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -56,7 +68,6 @@ jobs:
             DISCORD_CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID }}
             DISCORD_CLIENT_SECRET=${{ secrets.DISCORD_CLIENT_SECRET }}
             DISCORD_REDIRECT_URI=${{ secrets.DISCORD_REDIRECT_URI }}
-
             DISCORD_GUILD_ID=${{ secrets.DISCORD_GUILD_ID }}
             DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
 
@@ -66,10 +77,27 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-
+            SPRING_FLYWAY_ENABLED=false
+            
             PROD_DB_URL=${{ secrets.PROD_DB_URL }}
             PROD_DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}
             PROD_DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
             EOF'
+            
+            echo "🛫 Running Flyway migrations (one-off)"
+            sudo mkdir -p /home/ubuntu/migrations
+
+            set -a
+            source /home/ubuntu/.env
+            set +a
+
+            sudo docker run --rm --network host \
+              -v /home/ubuntu/migrations:/flyway/sql \
+              flyway/flyway:10 \
+              -url="$PROD_DB_URL" \
+              -user="$PROD_DB_USERNAME" \
+              -password="$PROD_DB_PASSWORD" \
+              migrate
+            
             
             sudo /home/ubuntu/deploy.sh

@@ -6,6 +6,8 @@ import com.kuit.kupage.domain.member.Member;
 import com.kuit.kupage.domain.teamMatch.dto.TeamMatchRequest;
 import com.kuit.kupage.exception.KupageException;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import static com.kuit.kupage.common.response.ResponseCode.ALREADY_COMPLETED_TEAM_MATCH;
@@ -46,7 +48,8 @@ public class TeamApplicant extends BaseEntity {
     @Column(length = 20, nullable = false)
     private ApplicantStatus status;
 
-    @Column(columnDefinition = "TINYINT CHECK (slot_no IN (1, 2))", nullable = false)
+    @Min(1) @Max(2)
+    @Column(nullable = false)
     private Integer slotNo;
 
     @Enumerated(EnumType.STRING)

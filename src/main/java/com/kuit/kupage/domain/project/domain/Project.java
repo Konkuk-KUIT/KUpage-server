@@ -28,8 +28,12 @@ public class Project extends BaseEntity {
     @Column(length = 1024)
     private String detail_url;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private Batch batch;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private AppType appType;
 
     @Convert(converter = AppFieldListStringConverter.class)

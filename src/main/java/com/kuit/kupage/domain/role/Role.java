@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
+@Table(name = "roles")
 @Getter
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

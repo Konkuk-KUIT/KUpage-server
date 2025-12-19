@@ -70,7 +70,7 @@ class TeamMatchServiceConcurrencyTest {
     void cleanDb() {
         // FK 순서 때문에 자식 → 부모 순으로 삭제
         jdbcTemplate.update("DELETE FROM MEMBER_ROLE");
-        jdbcTemplate.update("DELETE FROM ROLE");
+        jdbcTemplate.update("DELETE FROM ROLES");
         jdbcTemplate.update("DELETE FROM TEAM_APPLICANT");
         jdbcTemplate.update("DELETE FROM TEAM");
         jdbcTemplate.update("DELETE FROM MEMBER");
@@ -79,7 +79,7 @@ class TeamMatchServiceConcurrencyTest {
     @BeforeEach
     void setUp() {
         jdbcTemplate.update("DELETE FROM MEMBER_ROLE");
-        jdbcTemplate.update("DELETE FROM ROLE");
+        jdbcTemplate.update("DELETE FROM ROLES");
         jdbcTemplate.update("DELETE FROM TEAM_APPLICANT");
         jdbcTemplate.update("DELETE FROM TEAM");
         jdbcTemplate.update("DELETE FROM MEMBER");
