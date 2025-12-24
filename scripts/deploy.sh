@@ -6,6 +6,9 @@ if ! docker network ls --format '{{.Name}}' | grep -q '^monitoring$'; then
   docker network create monitoring
 fi
 
+if ! docker compose -p infra -f docker-compose.infra.yml ps | grep -q "kafka"; then
+  docker compose -p infra -f docker-compose.infra.yml up -d
+fi
 
 IS_GREEN=$(docker ps | grep green)
 
