@@ -42,6 +42,13 @@ spring:
             token-uri: https://discord.com/api/oauth2/token
             user-info-uri: https://discord.com/api/users/@me
             user-name-attribute: id
+  kafka:
+    bootstrap-servers: localhost:9094
+    admin:
+      fail-fast: false                  # false => kafka 연결 안돼도 부팅 실패 안함
+    listener:
+      auto-startup: false               # false => @KafkaListener가 있어도 부팅 때 안 붙음
+      missing-topics-fatal: false       # false => 토픽 없어도 부팅 실패 안 함
 
 discord:
   guild-id: 999999999999999999

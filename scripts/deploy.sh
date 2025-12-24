@@ -6,8 +6,6 @@ if ! docker network ls --format '{{.Name}}' | grep -q '^monitoring$'; then
   docker network create monitoring
 fi
 
-set -euo pipefail
-
 if ! docker compose -p infra -f docker-compose.infra.yml ps --services --filter "status=running" | grep -qx "kafka"; then
   docker compose -p infra -f docker-compose.infra.yml up -d kafka kafka-ui
 fi

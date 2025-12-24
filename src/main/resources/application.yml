@@ -2,8 +2,8 @@ spring:
   profiles:
     active: local
     group:
-      local: common,local-db,local-runtime
-      prod: common,prod-db,prod-runtime
+      local: common, local-db, local-runtime
+      prod: common, prod-db, prod-runtime
 
 ---
 
@@ -91,6 +91,10 @@ management:
   endpoint:
     health:
       show-details: always
+      show-components: always
+  health:
+    kafka:
+      enabled: true
 
 ---
 
@@ -137,12 +141,22 @@ spring:
     activate:
       on-profile: local-runtime
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
+    admin:
+      fail-fast: true                  # false => kafka 연결 안돼도 부팅 실패 안함
+    listener:
+      auto-startup: false               # false => @KafkaListener가 있어도 부팅 때 안 붙음
+      missing-topics-fatal: false       # false => 토픽 없어도 부팅 실패 안 함
+
 server:
   port: 9000
 
 logging:
   level:
     com.kuit.kupage: DEBUG
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: DEBUG
 
 ---
 
@@ -186,6 +200,14 @@ spring:
   config:
     activate:
       on-profile: prod-runtime
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    admin:
+      fail-fast: false
+    listener:
+      auto-startup: true
+      missing-topics-fatal: false
 
 server:
   port: 8080

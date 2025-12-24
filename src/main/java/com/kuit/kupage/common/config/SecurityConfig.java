@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers("/oauth2/code/discord", "/", "/error", "/auth-token/member/**",
                                 "/favicon.ico", "/v3/api-docs/**", "/swagger-ui/**",
-                                "/actuator/health", "/actuator/prometheus",
+                                "/actuator/health/**", "/actuator/prometheus",
                                 "/team-matching/time","/role/sync"
                         )
                         .permitAll()
