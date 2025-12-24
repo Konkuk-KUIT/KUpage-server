@@ -19,7 +19,7 @@ services:
   kafka-ui:     # 토픽/메시지 확인용
     image: provectuslabs/kafka-ui:latest
     ports:
-      - "8080:8080"
+      - "18080:8080"
     restart: unless-stopped
     networks:
       - monitoring
