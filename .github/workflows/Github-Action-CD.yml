@@ -119,4 +119,4 @@ jobs:
               migrate
             
             
-            sudo /home/ubuntu/deploy.sh
+            sudo bash /home/ubuntu/deploy.sh
