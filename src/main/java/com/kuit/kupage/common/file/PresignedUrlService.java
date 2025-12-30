@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -24,7 +23,11 @@ public class PresignedUrlService {
             fileName = createPath(prefix, fileName);
         }
 
-        PutObjectRequest putObjectRequest = buildPutObjectRequest(bucket, fileName, contentType, contentLength);
+        // NOTE: Presigned PUT은 서명에 포함된 헤더/파라미터가 클라이언트 요청과 100% 일치해야 합니다.
+        // - 브라우저 환경에서는 Content-Length를 직접 지정하기 어렵고,
+        // - ACL(PUBLIC_READ)을 넣으면 x-amz-acl 헤더가 SignedHeaders에 포함되어 누락 시 403이 발생할 수 있습니다.
+        // 따라서 presign에는 content-length/acl을 포함하지 않고, 공개 접근은 버킷 정책/CloudFront 등으로 제어하는 것을 권장합니다.
+        PutObjectRequest putObjectRequest = buildPutObjectRequest(bucket, fileName, contentType);
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(2)) // 유효기간: 2분
@@ -34,32 +37,19 @@ public class PresignedUrlService {
         return s3Presigner.presignPutObject(presignRequest).url().toString();
     }
 
-    private PutObjectRequest buildPutObjectRequest(String bucket, String key, String contentType, String contentLength) {
+    private PutObjectRequest buildPutObjectRequest(String bucket, String key, String contentType) {
         PutObjectRequest.Builder builder = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key);
 
+        // content-type은 presign에 포함될 수 있으므로, 프론트 PUT에서도 동일하게 보내도록 유지합니다.
         if (StringUtils.hasText(contentType)) {
             builder.contentType(contentType);
         }
 
-        Long length = parseLongOrNull(contentLength);
-        if (length != null) {
-            builder.contentLength(length);
-        }
-
-        builder.acl(ObjectCannedACL.PUBLIC_READ);
-
+        // IMPORTANT:
+        // - contentLength/acl은 presign 서명 조건을 까다롭게 만들어(특히 브라우저에서) 403을 유발하기 쉬워 제외합니다.
         return builder.build();
-    }
-
-    private Long parseLongOrNull(String value) {
-        if (!StringUtils.hasText(value)) return null;
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            return null;
-        }
     }
 
     /**
