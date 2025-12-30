@@ -2,6 +2,31 @@
 
 cd /home/ubuntu
 
+# --- discord-bot (always-on) update strategy --- #
+# Bot은 Gateway 이벤트를 실시간으로 받기 때문에, 배포 때마다 불필요하게 재시작하지 않는 것이 정합성/안정성에 유리합니다.
+# bot 코드가 변경되어 새로운 이미지가 pull 된 경우에만 컨테이너를 재생성(up -d)
+echo "### discord-bot update check ###"
+
+# 현재 실행 중인 discord-bot 컨테이너가 있다면, 컨테이너가 사용하는 이미지 ID(sha)를 저장
+CURRENT_BOT_IMAGE_ID=""
+if docker ps --format '{{.Names}}' | grep -q '^discord-bot$'; then
+  CURRENT_BOT_IMAGE_ID=$(docker inspect -f '{{.Image}}' discord-bot 2>/dev/null || true)
+fi
+
+docker compose -f "$COMPOSE_FILE" pull discord-bot >/dev/null 2>&1 || true
+NEW_BOT_IMAGE_ID=$(docker compose -f "$COMPOSE_FILE" images -q discord-bot 2>/dev/null | head -n 1)
+
+if [ -z "$CURRENT_BOT_IMAGE_ID" ]; then
+  echo "discord-bot is not running. starting..."
+  docker compose -f "$COMPOSE_FILE" up -d discord-bot
+elif [ -n "$NEW_BOT_IMAGE_ID" ] && [ "$CURRENT_BOT_IMAGE_ID" != "$NEW_BOT_IMAGE_ID" ]; then
+  echo "discord-bot image changed. recreating..."
+  docker compose -f "$COMPOSE_FILE" up -d --no-deps discord-bot
+else
+  echo "discord-bot unchanged. skip restart."
+fi
+
+
 # Ensure monitoring network exists (for Prometheus/Grafana/blue-green app communication)
 if ! docker network ls --format '{{.Name}}' | grep -q '^monitoring$'; then
   echo "0. create monitoring network"
@@ -71,4 +96,4 @@ else
 fi
 
 echo "6. prune unused docker images"
-sudo docker image prune -f
+sudo docker image prune -a -f
