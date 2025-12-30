@@ -11,11 +11,23 @@ services:
 
   green:
     container_name: green
-    image : konkukkuit/kuitee
+    image: konkukkuit/kuitee
     env_file:
       - .env
     ports:
       - "8081:8080"
+    networks:
+      - monitoring
+
+  discord-bot:
+    container_name: discord-bot
+    image: konkukkuit/kuitee-bot
+    env_file:
+      - .env
+    environment:
+      AWS_REGION: ap-northeast-2
+      LOG_LEVEL: info
+    restart: unless-stopped
     networks:
       - monitoring
 

@@ -61,6 +61,8 @@ cloud:
       auto: false
     stack:
       auto: false
+sqs:
+  queue-url: https://sqs.ap-northeast-2.amazonaws.com/12341234/test-sqs
 secret:
   jwt:
     key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest

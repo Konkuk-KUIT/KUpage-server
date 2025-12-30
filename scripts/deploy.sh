@@ -1,15 +1,16 @@
 #!/bin/bash
 
+cd /home/ubuntu
+
 # Ensure monitoring network exists (for Prometheus/Grafana/blue-green app communication)
 if ! docker network ls --format '{{.Name}}' | grep -q '^monitoring$'; then
   echo "0. create monitoring network"
   docker network create monitoring
 fi
 
-
 IS_GREEN=$(docker ps | grep green)
 
-if [ -z "$IS_GREEN"  ];then # green라면
+if [ -z "$IS_GREEN"  ];then     # green라면
 
   echo "### BLUE => GREEN ###"
 
