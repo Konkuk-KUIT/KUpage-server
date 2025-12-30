@@ -39,6 +39,17 @@ spring:
       max-file-size: 120MB
       max-request-size: 400MB
 
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      region:
+        static: ap-northeast-2
+      s3:
+        region: ap-northeast-2
+
+
 discord:
   guild-id: ${DISCORD_GUILD_ID}
   bot-token: ${DISCORD_BOT_TOKEN}
@@ -49,14 +60,7 @@ cloud:
       bucket-name: ${AWS_S3_BUCKET_NAME}
     cloudfront:
       deploy-url: ${CLOUDFRONT_DEPLOY_URL}
-    credentials:
-      access-key: ${AWS_ACCESS_KEY_ID}
-      secret-key: ${AWS_SECRET_ACCESS_KEY}
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
+
 
 sqs:
   queue-url: ${SQS_QUEUE_URL}

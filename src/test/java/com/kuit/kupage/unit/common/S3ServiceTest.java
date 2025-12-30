@@ -1,25 +1,26 @@
 package com.kuit.kupage.unit.common;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.kuit.kupage.common.file.S3Service;
 import com.kuit.kupage.exception.KupageException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class S3ServiceTest {
 
@@ -27,7 +28,17 @@ public class S3ServiceTest {
     @DisplayName("파일 업로드 성공")
     void test() {
         // given
-        S3Service s3Service = new S3Service(new TestAmazonClient());
+        S3Client s3Client = mock(S3Client.class);
+        when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class)))
+                .thenReturn(PutObjectResponse.builder().eTag("etag").build());
+
+        S3Service s3Service = new S3Service(s3Client);
+
+        // 테스트에서는 반환 URL이 '/image/..', '/file/..' 형태가 되도록 cloudFrontUrl을 빈 문자열로 둡니다.
+        // (실서비스에서는 cloudFrontUrl이 'https://xxxx.cloudfront.net' 처럼 들어갈 수 있음)
+        ReflectionTestUtils.setField(s3Service, "bucketName", "test-bucket");
+        ReflectionTestUtils.setField(s3Service, "cloudFrontUrl", "");
+
         TestMultipartFile image = new TestMultipartFile("testImage.png", "application/png");
         TestMultipartFile file = new TestMultipartFile("testFile.pdf", "application/pdf");
 
@@ -36,58 +47,33 @@ public class S3ServiceTest {
         String url2 = s3Service.uploadFile(file);
 
         // then
-        System.out.println("url1 = " + url1);
         String[] url1Tokens = url1.split("/");
         assertThat(url1Tokens[1]).isEqualTo("image");
-        assertThat(url1Tokens[2].endsWith(".png")).isEqualTo(true);
+        assertThat(url1Tokens[2].endsWith(".png")).isTrue();
 
-        System.out.println("url1 = " + url1);
         String[] url2Tokens = url2.split("/");
         assertThat(url2Tokens[1]).isEqualTo("file");
-        assertThat(url2Tokens[2].endsWith(".pdf")).isEqualTo(true);
+        assertThat(url2Tokens[2].endsWith(".pdf")).isTrue();
     }
 
     @Test
     @DisplayName("파일 업로드 실패")
     void testFail() {
         // given
-        S3Service s3Service = new S3Service(new TestAmazonClient());
+        S3Client s3Client = mock(S3Client.class);
+        when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class)))
+                .thenThrow(new RuntimeException("업로드 실패"));
+
+        S3Service s3Service = new S3Service(s3Client);
+        ReflectionTestUtils.setField(s3Service, "bucketName", "test-bucket");
+        ReflectionTestUtils.setField(s3Service, "cloudFrontUrl", "");
+
         TestMultipartFile image = new TestMultipartFile("testFailImage.png", "application/png");
         TestMultipartFile file = new TestMultipartFile("testFailFile.pdf", "application/pdf");
-
-        // when
 
         // then
         assertThrows(KupageException.class, () -> s3Service.uploadImage(image));
         assertThrows(KupageException.class, () -> s3Service.uploadFile(file));
-    }
-
-    static class TestAmazonClient extends AmazonS3Client {
-        @Override
-        public PutObjectResult putObject(PutObjectRequest putObjectRequest) throws SdkClientException, AmazonServiceException {
-            String key = putObjectRequest.getKey();
-            long contentLength = putObjectRequest.getMetadata().getContentLength();
-            String contentType = putObjectRequest.getMetadata().getContentType();
-            String content = "";
-            try {
-                byte[] bytes = putObjectRequest.getInputStream().readAllBytes();
-                content = new String(bytes, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            System.out.println("===== 업로드 파일 정보 =====");
-            System.out.println("key = " + key);
-            System.out.println("content = " + content);
-            System.out.println("contentLength = " + contentLength);
-            System.out.println("contentType = " + contentType);
-            System.out.println();
-
-            if (content.contains("Fail"))
-                throw new AmazonServiceException("업로드 실패");
-
-            return new PutObjectResult();
-        }
     }
 
     static class TestMultipartFile implements MultipartFile {
@@ -97,8 +83,8 @@ public class S3ServiceTest {
             this.type = type;
         }
 
-        private String data;
-        private String type;
+        private final String data;
+        private final String type;
 
         @Override
         public String getName() {
@@ -126,18 +112,18 @@ public class S3ServiceTest {
         }
 
         @Override
-        public byte[] getBytes() throws IOException {
+        public byte[] getBytes() {
             return data.getBytes();
         }
 
         @Override
-        public InputStream getInputStream() throws IOException {
+        public InputStream getInputStream() {
             return new ByteArrayInputStream(data.getBytes());
         }
 
         @Override
         public void transferTo(File dest) throws IOException, IllegalStateException {
-
+            // no-op for test
         }
     }
 }
