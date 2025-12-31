@@ -6,12 +6,14 @@ import com.kuit.kupage.exception.KupageException;
 import com.kuit.kupage.infra.dto.DiscordRoleChangeEvent;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import static com.kuit.kupage.common.response.ResponseCode.SQS_MESSAGE_HANDLE_FAIL;
 
 @Slf4j
 @Service
+@Profile("!test")
 public class RoleChangeListener {
 
     private final ObjectMapper objectMapper;

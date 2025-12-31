@@ -49,8 +49,11 @@ spring:
         secret-key: TEST_SECRET_KEY_XYZ789
       region:
         static: ap-northeast-2
-      s3:
-        region: ap-northeast-2
+      sqs:
+        listener:
+          poll-timeout: 20s
+          max-messages-per-poll: 10
+          message-visibility: 60s
 
 discord:
   guild-id: 999999999999999999
@@ -65,6 +68,8 @@ cloud:
 
 sqs:
   queue-url: https://sqs.ap-northeast-2.amazonaws.com/12341234/test-sqs
+  queue-name: queue-name
+
 secret:
   jwt:
     key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
