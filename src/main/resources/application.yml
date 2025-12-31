@@ -46,8 +46,15 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY}
       region:
         static: ap-northeast-2
-      s3:
-        region: ap-northeast-2
+      sqs:
+        listener:
+          poll-timeout: 20s             # long polling (최대 20초)
+          max-messages-per-poll: 10     # SQS 1회 poll 최대 10개
+          message-visibility: 60s  # 처리 시간에 맞춰(옵션)
+
+sqs:
+  queue-url: ${SQS_QUEUE_URL}
+  queue-name: ${SQS_QUEUE_NAME}
 
 
 discord:
@@ -60,10 +67,6 @@ cloud:
       bucket-name: ${AWS_S3_BUCKET_NAME}
     cloudfront:
       deploy-url: ${CLOUDFRONT_DEPLOY_URL}
-
-
-sqs:
-  queue-url: ${SQS_QUEUE_URL}
 
 secret:
   jwt:

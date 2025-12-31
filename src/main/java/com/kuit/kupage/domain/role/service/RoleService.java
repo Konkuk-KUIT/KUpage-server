@@ -6,6 +6,7 @@ import com.kuit.kupage.domain.role.Role;
 import com.kuit.kupage.domain.role.dto.DiscordMemberResponse;
 import com.kuit.kupage.domain.role.dto.DiscordRoleResponse;
 import com.kuit.kupage.domain.role.repository.RoleRepository;
+import com.kuit.kupage.infra.dto.DiscordRoleChangeEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -120,7 +121,12 @@ public class RoleService {
         return memberRoleRepository.saveAll(newMemberRoles).size();
     }
 
+    public void applyDiscordRoleChangeEvent(DiscordRoleChangeEvent event) {
+        // TODO. 역할 변경사항 DB에 반영
+    }
+
     private String createKey(String memberDiscordId, Long roleId) {
         return "(" + memberDiscordId + "," + roleId + ")";
     }
+
 }
