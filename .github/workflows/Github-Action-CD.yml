@@ -11,6 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Detect changed paths
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            bot:
+              - 'discord-bot/**'
+
       - name: Cache gradle
         uses: actions/setup-java@v4
         with:
@@ -29,9 +37,13 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-      - name: Build Docker Image
-        run:
+      - name: Build Docker Images (Spring)
+        run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }} .
+      - name: Build Docker Image (Discord Bot)
+        if: steps.changes.outputs.bot == 'true'
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_BOT_IMAGE_NAME }}:latest ./discord-bot
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -39,9 +51,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Publish Docker Image to Docker Hub
-        run:
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}
+      - name: Publish Docker Image to Docker Hub (Spring)
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
+
+      - name: Publish Docker Image to Docker Hub (Discord Bot)
+        if: steps.changes.outputs.bot == 'true'
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_BOT_IMAGE_NAME }}:latest
 
       - name: Upload Flyway migrations to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -54,6 +71,26 @@ jobs:
           target: "/home/ubuntu/migrations/"
           strip_components: 4
 
+      - name: Upload docker compose files to EC2 (overwrite)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/"
+
+      - name: Upload deploy script to EC2 (overwrite)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "scripts/deploy.sh"
+          target: "/home/ubuntu/"
+          strip_components: 1
 
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.2
@@ -63,6 +100,9 @@ jobs:
           key: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            echo "🔧 Ensuring deploy.sh is executable"
+            sudo chmod +x /home/ubuntu/deploy.sh
+            
             echo "📄 Writing /home/ubuntu/.env"
             sudo bash -c 'cat > /home/ubuntu/.env << EOF
             DISCORD_CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID }}
@@ -81,6 +121,9 @@ jobs:
             PROD_DB_URL=${{ secrets.PROD_DB_URL }}
             PROD_DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}
             PROD_DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
+            
+            SQS_QUEUE_URL=${{ secrets.SQS_QUEUE_URL }}
+            SQS_QUEUE_NAME=${{ secrets.SQS_QUEUE_NAME }}
             EOF'
             
             echo "🛫 Running Flyway migrations (one-off)"
@@ -97,6 +140,5 @@ jobs:
               -user="$PROD_DB_USERNAME" \
               -password="$PROD_DB_PASSWORD" \
               migrate
-            
             
             sudo /home/ubuntu/deploy.sh

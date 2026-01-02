@@ -6,7 +6,6 @@ import com.kuit.kupage.exception.ArticleException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +23,7 @@ public class PresignedUrlController {
     );
     private final static Integer MAX_IMAGE_SIZE = 20 * 1024 * 1024;     // 20MB
     private final static Integer MAX_FILE_SIZE = 120 * 1024 * 1024;      // 120MB
+
 
     @PostMapping("/pre-signed/articles/file")
     @Operation(summary = "게시글 파일 업로드 링크 제공 API", description = "로그인 한 유저가 게시글을 위한 파일 업로드 링크를 제공받습니다.")

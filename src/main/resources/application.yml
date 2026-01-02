@@ -39,6 +39,24 @@ spring:
       max-file-size: 120MB
       max-request-size: 400MB
 
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      region:
+        static: ap-northeast-2
+      sqs:
+        listener:
+          poll-timeout: 20s             # long polling (최대 20초)
+          max-messages-per-poll: 10     # SQS 1회 poll 최대 10개
+          message-visibility: 60s  # 처리 시간에 맞춰(옵션)
+
+sqs:
+  queue-url: ${SQS_QUEUE_URL}
+  queue-name: ${SQS_QUEUE_NAME}
+
+
 discord:
   guild-id: ${DISCORD_GUILD_ID}
   bot-token: ${DISCORD_BOT_TOKEN}
@@ -49,14 +67,6 @@ cloud:
       bucket-name: ${AWS_S3_BUCKET_NAME}
     cloudfront:
       deploy-url: ${CLOUDFRONT_DEPLOY_URL}
-    credentials:
-      access-key: ${AWS_ACCESS_KEY_ID}
-      secret-key: ${AWS_SECRET_ACCESS_KEY}
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
 
 secret:
   jwt:
