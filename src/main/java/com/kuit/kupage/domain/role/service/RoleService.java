@@ -146,7 +146,7 @@ public class RoleService {
                 .collect(Collectors.toMap(Role::getDiscordRoleId, Function.identity(), (a, b) -> a));
 
         // 2. 현재 사용자(memberDiscordId)의 기존 MemberRole 목록 조회
-        List<MemberRole> existingForMember = memberRoleRepository.findAll().stream()
+        List<MemberRole> existingForMember = memberRoleRepository.findByMemberDiscordId(memberDiscordId).stream()
                 .filter(mr -> memberDiscordId.equals(mr.getMemberDiscordId()))
                 .toList();
 

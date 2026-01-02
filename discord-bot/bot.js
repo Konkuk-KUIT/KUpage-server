@@ -92,7 +92,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
         };
 
         log.info(
-            { eventId: payload.eventId, userId: payload.userId, added, removed },
+            { eventId: payload.eventId, discordUserId: payload.discordUserId, added, removed },
             "Role change detected"
         );
 
